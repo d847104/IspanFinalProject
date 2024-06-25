@@ -14,6 +14,13 @@ Wallet
 | balance   | int          |
 | memberID  | int          |FK
 
+WalletRecord
+|  column   |     type     |
+|  ------   | -----------  |
+| recordID  | int          |PK
+| walletID  | int          |FK
+| balanceVar| int          |
+
 BankAcc
 |  column     |     type     |
 |  ------     | -----------  |
