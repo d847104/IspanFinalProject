@@ -1,28 +1,26 @@
-<ol>
-  <li>[Members 會員](#members-會員)</li>
-  <li>Wallet 錢包</li>
-  <li>WalletRecord 錢包紀錄</li>
-  <li>BankAcc 銀行帳號</li>
-  <li>Recepient 常用收件人</li>
-  <li>Products 商品</li>
-  <li>ProductSpec 商品規格</li>
-  <li>ProductImg 商品圖片</li>
-  <li>PayMethod 付款方式</li>
-  <li>ProductPayMethod 商品付款方式 (中介表)</li>
-  <li>Delivery 配送方式</li>
-  <li>ProductDelivery 商品配送方式 (中介表)</li>
-  <li>MainCategory 商品主分類</li>
-  <li>SubCategory 商品子分類</li>
-  <li>Rank 商品評價</li>
-  <li>Favorite 收藏商品 (中介表)</li>
-  <li>Cart 購物車</li>
-  <li>CartProduct 購物車商品 (中介表)</li>
-  <li>Order 訂單</li>
-  <li>OrderProduct 訂單商品 (中介表)</li>
-  <li>Notification 通知小鈴鐺</li>
-  <li>SecondHand 二手換物</li>
-  <li>Messenger 聊天室</li>
-</ol>
+1. [Members 會員](#members-會員)
+2. [Wallet 錢包](#wallet-錢包)
+3. [WalletRecord 錢包紀錄](#walletrecord-錢包紀錄)
+4. [BankAcc 銀行帳號](#bankacc-銀行帳號)
+5. [Recepient 常用收件人](#recepient-常用收件人)
+6. [Products 商品](#products-商品)
+7. [ProductSpec 商品規格](#productspec-商品規格)
+8. [ProductImg 商品圖片](#productimg-商品圖片)
+9. [PayMethod 付款方式](#paymethod-付款方式)
+10. [ProductPayMethod 商品付款方式 (中介表)](#productpaymethod-商品付款方式-中介表)
+11. [Delivery 配送方式](#delivery-配送方式)
+12. [ProductDelivery 商品配送方式 (中介表)](#productdelivery-商品配送方式-中介表)
+13. [MainCategory 商品主分類](#maincategory-商品主分類)
+14. [SubCategory 商品子分類](#subcategory-商品子分類)
+15. [Rank 商品評價](#rank-商品評價)
+16. [Favorite 收藏商品 (中介表)](#favorite-收藏商品-中介表)
+17. [Cart 購物車](#cart-購物車)
+18. [CartProduct 購物車商品 (中介表)](#cartproduct-購物車商品-中介表)
+19. [Order 訂單](#order-訂單)
+20. [OrderProduct 訂單商品 (中介表)](#orderproduct-訂單商品-中介表)
+21. [Notification 通知小鈴鐺](#notification-通知小鈴鐺)
+22. [SecondHand 二手換物](#secondhand-二手換物)
+23. [Messenger 聊天室](#messenger-聊天室)
 
 ## Members 會員
 
