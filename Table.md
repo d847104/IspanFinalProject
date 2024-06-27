@@ -1,3 +1,29 @@
+<ol>
+  <li>[Members 會員](#members-會員)</li>
+  <li>Wallet 錢包</li>
+  <li>WalletRecord 錢包紀錄</li>
+  <li>BankAcc 銀行帳號</li>
+  <li>Recepient 常用收件人</li>
+  <li>Products 商品</li>
+  <li>ProductSpec 商品規格</li>
+  <li>ProductImg 商品圖片</li>
+  <li>PayMethod 付款方式</li>
+  <li>ProductPayMethod 商品付款方式 (中介表)</li>
+  <li>Delivery 配送方式</li>
+  <li>ProductDelivery 商品配送方式 (中介表)</li>
+  <li>MainCategory 商品主分類</li>
+  <li>SubCategory 商品子分類</li>
+  <li>Rank 商品評價</li>
+  <li>Favorite 收藏商品 (中介表)</li>
+  <li>Cart 購物車</li>
+  <li>CartProduct 購物車商品 (中介表)</li>
+  <li>Order 訂單</li>
+  <li>OrderProduct 訂單商品 (中介表)</li>
+  <li>Notification 通知小鈴鐺</li>
+  <li>SecondHand 二手換物</li>
+  <li>Messenger 聊天室</li>
+</ol>
+
 ## Members 會員
 
 | 欄位     | Column     | Type           | Key | Identity | Nullable | Default   |
@@ -11,7 +37,7 @@
 | 照片     | profileImg | varbinary(max) |     |          |          |           |
 | 賣場介紹 | intro      | nvarchar(max)  |     |          |          |           |
 | 創建時間 | createTime | datetime       |     |          | Not null | getDate() |
-| 最後登入 | lastLogin  | datetime       |     |          | Not null | getDate() |
+| 最後登入 | lastLogin  | datetime       |     |          |          | getDate() |
 | 帳號狀態 | status     | nvarchar(255)  |     |          | Not null | 'active'  |
 
 status:
@@ -19,7 +45,8 @@ status:
 * ban -- 被禁用
 
 
-## Wallet 錢包  (會員-錢包: One to One)
+## Wallet 錢包
+(會員-錢包: One to One)
 
 | 欄位   | Column   | Type | Key | Identity | Nullable |
 |--------|----------|------|-----|----------|----------|
@@ -28,16 +55,19 @@ status:
 | 餘額   | balance  | int  |     |          | Not null |
 
 
-## WalletRecord 錢包紀錄  (錢包-錢包紀錄: One to Many)
+## WalletRecord 錢包紀錄
+(錢包-錢包紀錄: One to Many)
 
-| 欄位      | Column        | Type | Key | Identity | Nullable |
-|-----------|---------------|------|-----|----------|----------|
-| 錢包紀錄ID | recordID      | int  | PK  | (1,1)    | Not null |
-| 錢包ID     | walletID      | int  | FK  |          | Not null |
-| 收支紀錄   | balanceChange | int  |     |          | Not null |
+| 欄位      | Column            | Type      | Key | Identity | Nullable |
+|-----------|-------------------|-----------|-----|----------|----------|
+| 錢包紀錄ID | recordID          | int       | PK  | (1,1)    | Not null |
+| 錢包ID     | walletID          | int       | FK  |          | Not null |
+| 收支金額   | balanceChange     | int       |     |          | Not null |
+| 異動時間   | balanceChangeTime | timestamp |     |          | Not null |
 
 
-## BankAcc 銀行帳號  (錢包-銀行帳號: One to Many)
+## BankAcc 銀行帳號
+(錢包-銀行帳號: One to Many)
 
 | 欄位      | Column     | Type          | Key | Identity | Nullable |
 |-----------|------------|---------------|-----|----------|----------|
@@ -48,17 +78,20 @@ status:
 | 銀行帳號   | bankAcc    | nvarchar(255) |     |          | Not null |
 
 
-## Recepient 常用收件人 (會員-常用收件人: One to Many)
-| 欄位        | Column      | Type          | Key |
-|-------------|-------------|---------------|-----|
-| 常用收件人ID | recepientID | int           | PK  |
-| 會員ID       | membwrID    | int           | FK  |
-| 收件人姓名    | name        | nvarchar(255) |     |
-| 收件人手機    | mobile      | nvarchar(255) |     |
-| 收件地址      | address     | nvarchar(255) |     |
+## Recepient 常用收件人
+(會員-常用收件人: One to Many)
+
+| 欄位        | Column      | Type          | Key | Identity | Nullable |
+|-------------|-------------|---------------|-----|----------|----------|
+| 常用收件人ID | recepientID | int           | PK  | (1,1)    | Not null |
+| 會員ID       | membwrID    | int           | FK  |          | Not null |
+| 收件人姓名    | name        | nvarchar(255) |     |          | Not null |
+| 收件人手機    | mobile      | nvarchar(255) |     |          | Not null |
+| 收件地址      | address     | nvarchar(255) |     |          |          |
 
 
-## Products 商品  (會員-商品: One to Many | 子分類-商品: One to Many)
+## Products 商品
+(會員-商品: One to Many | 子分類-商品: One to Many)
 
 | 欄位      | Column        | Type          | Key | Identity | Nullable | Default   |
 |-----------|---------------|---------------|-----|----------|----------|-----------|
@@ -73,7 +106,8 @@ status:
 | 更新時間  | updateTime    | timestamp     |     |          | Not null |           |
 
 
-## ProductSpec 商品規格  (商品-商品規格: One to Many)
+## ProductSpec 商品規格
+(商品-商品規格: One to Many)
 
 | 欄位   | column      | type          | Key | Identity | Nullable |
 |--------|-------------|---------------|-----|----------|----------|
@@ -82,7 +116,8 @@ status:
 | 規格   | spec        | nvarchar(255) |     |          | Not null |
 
 
-## ProductImg 商品圖片  (商品-商品圖片: One to Many)
+## ProductImg 商品圖片
+(商品-商品圖片: One to Many)
 
 | 欄位      | Column      | Type           | Key | Identity | Nullable |
 |-----------|-------------|----------------|-----|-----------|----------|
@@ -98,7 +133,9 @@ status:
 | 付款方式   | payMethod   | nvarchar(255) |     |          | Not null |
 
 
-## ProductPayMethod 商品付款方式 (中介表) (商品-付款方式: Many to Many)
+## ProductPayMethod 商品付款方式 (中介表)
+(商品-付款方式: Many to Many)
+
 | 欄位      | Column      | Type | Key | Nullable |
 |-----------|-------------|------|-----|----------|
 | 付款方式ID | payMethodID | int  | FK  | Not null |
@@ -106,27 +143,32 @@ status:
 
 
 ## Delivery 配送方式
-| 欄位      | Column     | Type          | Key | Identity | Nullable |
-|-----------|------------|---------------|-----|----------|----------|
-| 配送方式ID | deliveryID | int           | PK  | (1,1)    | Not null |
-| 配送方式   | delivery   | nvarchar(255) |     |          | Not null |
+| 欄位      | Column      | Type          | Key | Identity | Nullable |
+|-----------|-------------|---------------|-----|----------|----------|
+| 配送方式ID | deliveryID  | int           | PK  | (1,1)    | Not null |
+| 配送方式   | delivery    | nvarchar(255) |     |          | Not null |
+| 運費       | deliveryFee | int           |     |          | Not null |
 
 
-## ProductDelivery 商品配送方式 (中介表) (商品-商品配送方式:  Many to Many)
-| 欄位      | Column         | Type | Key | Nullable |
-|-----------|----------------|------|-----|----------|
-| 配送方式ID | transportWayID | int  | FK  | Not null |
-| 商品ID     | productID      | int  | FK  | Not null |
+## ProductDelivery 商品配送方式 (中介表)
+(商品-商品配送方式:  Many to Many)
+
+| 欄位      | Column     | Type | Key | Nullable |
+|-----------|------------|------|-----|----------|
+| 配送方式ID | deliveryID | int  | FK  | Not null |
+| 商品ID     | productID  | int  | FK  | Not null |
 
 
-## MainCategory 主分類
+## MainCategory 商品主分類
 | 欄位     | Column         | Type         | Key | Identity | Nullable |
 |----------|----------------|--------------|-----|----------|----------|
 | 主分類ID | mainCategoryID | int           | PK  | (1,1)    | Not null |
 | 主分類   | mainCategory   | nvarchar(255) |     |          | Not null |
 
 
-## SubCategory 子分類  (主分類-子分類: One to Many)
+## SubCategory 商品子分類
+(主分類-子分類: One to Many)
+
 | 欄位     | Column        | Type          | Key | Identity | Nullable |
 |----------|---------------|---------------|-----|----------|----------|
 | 子分類ID | subCategoryID  | int           | PK  | (1,1)    | Not null |
@@ -134,31 +176,40 @@ status:
 | 主分類ID | mainCategoryID | int           | FK  |          | Not null |
 
 
-## Rank 商品評價 (商品-商品評價: One to Many | 會員-商品評價: One to Many)
-| 欄位        | Column    | Type         | Key | Identity | Nullable |
-|-------------|-----------|--------------|-----|----------|----------|
-| 商品評價ID   | rankID    | int          | PK  | (1,1)    | Not null |
-| 商品ID       | productID | int          | FK  |          | Not null |
-| 會員ID       | memberID  | int          | FK  |          | Not null |
-| 商品評價     | ranking   | int           |     |          | Not null |
-| 商品評價留言 | message   | nvarchar(max) |     |          |          |
+## Rank 商品評價
+(商品-商品評價: One to Many | 會員-商品評價: One to Many)
+
+| 欄位      | Column    | Type         | Key | Identity | Nullable | Default   | 
+|-----------|-----------|--------------|-----|----------|----------|-----------|
+| 商品評價ID | rankID    | int          | PK  | (1,1)    | Not null |           |
+| 商品ID     | productID | int          | FK  |          | Not null |           |
+| 會員ID     | memberID  | int          | FK  |          | Not null |           |
+| 商品評價   | ranking   | int           |     |          | Not null |           |
+| 評價留言   | rankmsg   | nvarchar(max) |     |          |          |           |
+| 評價日期   | rankDate  | datetime      |     |          | Not null | getDate() |
 
 
-## Favorite 收藏商品 (中介表) (會員-收藏商品: Many to Many)
+## Favorite 收藏商品 (中介表)
+(會員-收藏商品: Many to Many)
+
 | 欄位   | Column   | Type | Key | Nullable |
 |--------|----------|------|-----|----------|
 | 會員ID | memberID  | int  | FK  | Not null |
 | 商品ID | productID | int  | FK  | Not null |
 
 
-## Cart 購物車  (會員-購物車: One to Many)
+## Cart 購物車
+(會員-購物車: One to Many)
+
 | 欄位    | Column   | Type | Key | Identity | Nullable |
 |---------|----------|------|-----|----------|----------|
 | 購物車ID | cartID   | int  | PK  | (1,1)    | Not null |
 | 會員ID   | membwrID | int  | FK  |          | Not null |
 
 
-## CartProduct 購物車商品 (中介表) (購物車-商品: Many to Many)
+## CartProduct 購物車商品 (中介表)
+(購物車-商品: Many to Many)
+
 | 欄位    | Column    | Type | Key | Nullable |
 |---------|-----------|------|-----|----------|
 | 購物車ID | cartID    | int  | FK  | Not null |
@@ -167,38 +218,71 @@ status:
 
 
 ## Order 訂單
-|  column      |     type     |
-|--------------|--------------|
-| transport    | int          |FK
-| paymentWay   | int          |FK
+(賣家會員-訂單: One to Many | 買家會員-訂單: One to Many | 配送方式-訂單: One to Many | 付款方式-訂單: One to Many)
+
+| 欄位         | Column      | Type          | Key | Identity | Nullable | Default    | 
+|--------------|-------------|---------------|-----|----------|----------|------------|
+| 訂單ID       | orderID     | int           | PK  | (1,1)    | Not null |            |
+| 賣家會員ID   | sellerID    | int           | FK  |          | Not null |            |
+| 買家會員ID   | buyerID     | int           | FK  |          | Not null |            |
+| 配送方式ID   | deliveryID  | int           | FK  |          | Not null |            |
+| 運費         | deliveryFee | int           |     |          | Not null |            |
+| 付款方式ID   | payMethodID | int           | FK  |          | Not null |            |
+| 下單時間     | orderTime   | timestamp     |     |          | Not null |            |
+| 訂單狀態     | orderStatus | nvarchar(255) |     |          | Not null | 'newOrder' |
+| 狀態更新時間 | orderUpdate | timestamp     |     |          |          |            |
+
+orderStatus:
+* newOrder -- 買家下單
+* paid -- 已付款
+* confirmed -- 賣家接單
+* shipped -- 已出貨
+* completed -- 已到貨
+* returned -- 退貨中
+* canceled -- 已取消
 
 
-OrderProduct (中介表)
-|  column      |     type     |
-|--------------|--------------|
-| orderID      | int          |FK
-| productID    | int          |FK
-| quantity     | int          |nn
+## OrderProduct 訂單商品 (中介表)
+(訂單-商品 Many to Many)
 
-Notification
-|  column      |     type     |
-|--------------|--------------|
-| notificationID| int         |PK
-| senderID     | int          |FK
-| receiverID   | int          |FK
-| content      | nvarchar     |
+| 欄位     | Column    | Type | Key | Nullable |
+|----------|-----------|------|----|-----------|
+| 訂單ID   | orderID   | int  | FK | Not null  |
+| 商品ID   | productID | int  | FK | Not null  |
+| 商品數量 | quantity  | int  |    | Not null  |
+| 商品價格 | price     | int  |    | Not null  |
 
-SecondHand
-|  column      |     type     |
-|--------------| -------------|
-| secondHandID | int          |PK
-| wishItem     | nvarchar     |
 
-Messenger
-|  column      |     type     |
-|--------------|--------------|
-| msgID        | int          |PK
-| senderID     | int          |FK
-| receiverID   | int          |FK
-| content      | nvarchar     |
-| sendTime     | timestamp    |
+## Notification 通知小鈴鐺
+| 欄位       | Column         | Type         | Key | Identity | Nullable | Default   | 
+|------------|----------------|--------------|-----|----------|----------|-----------|
+| 通知ID     | notificationID | int           | PK | (1,1)    | Not null |           |
+| 收訊會員ID | receiverID     | int           | FK |          | Not null |           |
+| 發訊會員ID | senderID       | int           | FK |          |          |           |
+| 訂單ID     | orderID        | int           | FK |          |          |           |
+| 通知內容   | content        | nvarchar(max) |    |          | Not null |           |
+| 通知日期   | notifyDate     | datetime      |    |          | Not null | getDate() |
+
+
+## SecondHand 二手換物
+| 欄位      | Column       | Type          | Key | Identity | Nullable | Default   |
+|-----------|--------------| --------------|-----|----------|----------|-----------|
+| 二手物品ID | secondHandID | int           | PK  | (1,1)    | Not null |           |
+| 會員ID    | memberID      | int           | FK  |          | Not null |           |
+| 商品名稱  | productName   | nvarchar(255) |     |          | Not null |           |
+| 庫存量    | stock         | int           |     |          | Not null |           |
+| 子分類    | subCategoryID | int           | FK  |          | Not null |           |
+| 商品描述  | description   | nvarchar(max) |     |          |          |           |
+| 許願物品  | wishItem      | nvarchar(max) |     |          |          |           |
+| 上架時間  | uploadDate    | datetime      |     |          | Not null | getDate() |
+| 更新時間  | updateTime    | timestamp     |     |          |          |           |
+
+
+## Messenger 聊天室
+| 欄位       | Column     | Type         | Key | Identity | Nullable | 
+|------------|------------|--------------|-----|----------|----------|
+| 訊息ID     | msgID      | int           | PK | (1,1)    | Not null |
+| 發訊會員ID | senderID   | int           | FK |          | Not null |
+| 收訊會員ID | receiverID | int           | FK |          | Not null |
+| 訊息內容   | msg        | nvarchar(max) |    |          | Not null |
+| 發訊時間   | msgTime    | timestamp     |    |          | Not null |
