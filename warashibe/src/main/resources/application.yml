@@ -11,13 +11,13 @@ spring:
   datasource:
     username: sa
     password: sA123456
-    url: jdbc:sqlserver://35.208.67.46:1433;database=test2DB;trustServerCertificate=true
+    url: jdbc:sqlserver://localhost:1433;database=test2DB;trustServerCertificate=true
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
