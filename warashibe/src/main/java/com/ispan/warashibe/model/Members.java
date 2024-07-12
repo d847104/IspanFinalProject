@@ -1,6 +1,5 @@
 package com.ispan.warashibe.model;
 
-
 import java.util.Date;
 import java.util.List;
 
@@ -31,68 +30,67 @@ import lombok.Setter;
 @Table(name = "Members")
 public class Members {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "memberID")
+    private Integer memberID;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "memberID")
-	private Integer memberID;
-	
-	@Column(name = "account")
-	private String account;
-	
-	@Column(name = "password")
-	private String password;
-	
-	@Column(name = "username")
-	private String username;
-	
-	@Column(name = "mobile")
-	private String mobile;
-	
-	@Column(name = "gender")
-	private String gender;
-	
-	@Column(name = "profileImg", columnDefinition = "image")
-	private byte[] profileImg;
-	
-	@Column(name = "intro")
-	private String intro;
-	
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "createTime")
-	private Date createTime;
-	
-	@Column(name = "lastLogin")
-	private Date lastLogin;
-	
-	@Column(name = "status")
-	private String status;
-	
-	@PrePersist
-	public void onCreate() {
-		if(createTime == null) {
-			createTime = new java.util.Date();
-		}
-	}
+    @Column(name = "account")
+    private String account;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "memberID")
-	private List<Recepient> byRecepioent;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "receiverID")
-	private List<Notification> receiverID;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "senderID")
-	private List<Notification> senderID;
+    @Column(name = "password")
+    private String password;
 
-	
-	//products @ManyToMany
-	
-//    @ManyToMany
-//    @JoinTable(
-//        name = "Favorite",
-//        joinColumns = {@JoinColumn(name = "memberID"), @JoinColumn(name = "sellerID")},
-//        inverseJoinColumns = @JoinColumn(name = "productID")
-//    )
-//    private List<Products> Products;
+    @Column(name = "username")
+    private String username;
+
+    @Column(name = "mobile")
+    private String mobile;
+
+    @Column(name = "gender")
+    private String gender;
+
+    @Column(name = "profileImg", columnDefinition = "image")
+    private byte[] profileImg;
+
+    @Column(name = "intro")
+    private String intro;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "createTime")
+    private Date createTime;
+
+    @Column(name = "lastLogin")
+    private Date lastLogin;
+
+    @Column(name = "status")
+    private String status;
+
+    @PrePersist
+    public void onCreate() {
+        if (createTime == null) {
+            createTime = new java.util.Date();
+        }
+    }
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "memberID")
+    private List<Recepient> byRecepioent;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "receiverID")
+    private List<Notification> receiverID;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "senderID")
+    private List<Notification> senderID;
+
+    // products @ManyToMany
+
+    // @ManyToMany
+    // @JoinTable(
+    // name = "Favorite",
+    // joinColumns = {@JoinColumn(name = "memberID"), @JoinColumn(name =
+    // "sellerID")},
+    // inverseJoinColumns = @JoinColumn(name = "productID")
+    // )
+    // private List<Products> Products;
 }
