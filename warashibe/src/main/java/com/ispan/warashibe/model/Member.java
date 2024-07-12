@@ -1,5 +1,5 @@
 package com.ispan.warashibe.model;
 
-public class Product {
+public class Member {
 
 }
