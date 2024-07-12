@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: warashibe
+  
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+    
+  # datasource connection
+  datasource:
+    username: sa
+    password: sA123456
+    url: jdbc:sqlserver://35.208.67.46:1433;database=test2DB;trustServerCertificate=true
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect
+    
+server:
+  servlet:
+    context-path: /warashibe
+  port: 8080
