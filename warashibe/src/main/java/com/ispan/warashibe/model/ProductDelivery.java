@@ -1,4 +1,4 @@
-package com.ispan.eeit184.model;
+package com.ispan.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,18 +16,18 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name="ProductPayMethod")
-public class ProductPayMethod {
-
+@Table(name="ProductDelivery")
+public class ProductDelivery {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id")
 	private Integer id;
 	
-//	@Column(name="payMethodID")
+//	@Column(name="deliveryID")
 	@ManyToOne
-	@MapsId("payMethodID")
-	private Integer payMethodID;
+	@MapsId("deliveryID")
+	private Integer deliveryID;
 	
 //	@Column(name="productID")
 	@ManyToOne

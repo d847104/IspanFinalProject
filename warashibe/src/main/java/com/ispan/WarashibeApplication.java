@@ -1,4 +1,4 @@
-package com.ispan.eeit184;
+package com.ispan;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

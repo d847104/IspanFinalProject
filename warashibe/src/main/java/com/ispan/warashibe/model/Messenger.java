@@ -1,4 +1,4 @@
-package com.ispan.eeit184.model;
+package com.ispan.model;
 
 import java.sql.Date;
 import org.springframework.format.annotation.DateTimeFormat;
