@@ -1,4 +1,4 @@
-package com.ispan.model;
+package com.ispan.warashibe.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
