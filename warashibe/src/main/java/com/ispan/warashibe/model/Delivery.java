@@ -1,4 +1,4 @@
-package com.ispan.eeit184.model;
+package com.ispan.warashibe.model;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
