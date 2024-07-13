@@ -1,6 +1,8 @@
 package com.ispan.warashibe.model;
 
-import jakarta.persistence.CascadeType;
+
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,10 +26,8 @@ public class Delivery {
 	@Column(name="deliveryID")
 	private Integer deliveryID;
 	
-//	@Column(name="delivery")
-	@OneToMany(cascade = CascadeType.ALL,mappedBy = "delivery")
-//	@MapsId("delivery")
-	private String delivery;
+	@OneToMany(mappedBy = "delivery")
+	private List<Delivery> delivery;
 	
 	@Column(name="deliveryFee")
 	private Integer deliveryFee;

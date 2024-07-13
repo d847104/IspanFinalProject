@@ -9,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -29,15 +28,13 @@ public class Messenger {
 	@Column(name="msgID")
 	private Integer msgID;
 	
-//	@Column(name="senderID")
 	@ManyToOne
 	@MapsId("senderID")
-	private Integer senderID;
-	
-//	@Column(name="receiverID")
-	@OneToMany
+	private Members senderID;
+		
+	@ManyToOne
 	@MapsId("receiverID")
-	private Integer receiverID;
+	private Members receiverID;
 	
 	@Column(name="msg")
 	private String msg;

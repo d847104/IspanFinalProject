@@ -3,7 +3,6 @@ package com.ispan.warashibe.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,8 +18,7 @@ public class PayMethod {
 	@Id
 	@Column(name="payMethodID")
 	private Integer payMethodID;
-	
-	
+		
 	@Column(name="payMethod")
 	private String payMethod;
 	
