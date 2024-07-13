@@ -1,6 +1,7 @@
 package com.ispan.warashibe.model;
 
-import jakarta.persistence.CascadeType;
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,19 +17,17 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name="Delivery")
+@Table(name = "Delivery")
 public class Delivery {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="deliveryID")
+	@Column(name = "deliveryID")
 	private Integer deliveryID;
-	
-//	@Column(name="delivery")
-	@OneToMany(cascade = CascadeType.ALL,mappedBy = "delivery")
-//	@MapsId("delivery")
-	private String delivery;
-	
-	@Column(name="deliveryFee")
+
+	@OneToMany(mappedBy = "delivery")
+	private List<Delivery> delivery;
+
+	@Column(name = "deliveryFee")
 	private Integer deliveryFee;
 }

@@ -9,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -21,28 +20,26 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name="Messenger")
+@Table(name = "Messenger")
 public class Messenger {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="msgID")
+	@Column(name = "msgID")
 	private Integer msgID;
-	
-//	@Column(name="senderID")
+
 	@ManyToOne
 	@MapsId("senderID")
-	private Integer senderID;
-	
-//	@Column(name="receiverID")
-	@OneToMany
+	private Members senderID;
+
+	@ManyToOne
 	@MapsId("receiverID")
-	private Integer receiverID;
-	
-	@Column(name="msg")
+	private Members receiverID;
+
+	@Column(name = "msg")
 	private String msg;
-	
-	@Column(name="msgTime")
+
+	@Column(name = "msgTime")
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date msgTime;
