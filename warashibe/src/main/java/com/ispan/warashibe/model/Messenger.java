@@ -1,14 +1,15 @@
 package com.ispan.warashibe.model;
 
-import java.sql.Date;
+
+import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -29,11 +30,11 @@ public class Messenger {
 	private Integer msgID;
 	
 	@ManyToOne
-	@MapsId("senderID")
+	@JoinColumn(name = "senderID")
 	private Members senderID;
 		
 	@ManyToOne
-	@MapsId("receiverID")
+	@JoinColumn(name = "receiverID")
 	private Members receiverID;
 	
 	@Column(name="msg")

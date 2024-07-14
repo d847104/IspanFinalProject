@@ -1,6 +1,5 @@
 package com.ispan.warashibe.model;
 
-
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -10,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,10 +25,16 @@ public class Delivery {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="deliveryID")
 	private Integer deliveryID;
-	
-	@OneToMany(mappedBy = "delivery")
-	private List<Delivery> delivery;
+		
+//	@ManyToOne
+//	@JoinColumn(name = "delivery")
+	@Size(max = 255)
+	private String delivery;
+//	private Delivery delivery;
 	
 	@Column(name="deliveryFee")
 	private Integer deliveryFee;
+	
+	@OneToMany(mappedBy = "delivery")
+	private List<Delivery> deliverys;
 }

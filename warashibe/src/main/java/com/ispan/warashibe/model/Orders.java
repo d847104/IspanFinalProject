@@ -1,9 +1,7 @@
 package com.ispan.warashibe.model;
 
 import java.util.Date;
-
 import org.springframework.format.annotation.DateTimeFormat;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -47,6 +45,7 @@ public class Orders {
 
 	@Column(name = "payMethod", nullable = false, columnDefinition = "nvarchar(255)")
 	private String payMethod;
+	
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
