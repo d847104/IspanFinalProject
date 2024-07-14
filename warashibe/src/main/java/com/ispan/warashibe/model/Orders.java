@@ -1,6 +1,8 @@
 package com.ispan.warashibe.model;
 
 import java.util.Date;
+import java.util.Set;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -62,7 +65,11 @@ public class Orders {
 
 	@Column(name = "isSecondHand", nullable = false, columnDefinition = "bit default 0")
 	private boolean isSecondHand;
-
+	
+	@OneToMany(mappedBy = "order")
+	@Column
+	private Set<OrderProducts> orderProducts;
+	
 	@PrePersist
 	public void onCreate() {
 		if (orderTime == null) {orderTime = new Date();}
