@@ -1,9 +1,10 @@
 package com.ispan.warashibe.model;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -68,7 +69,7 @@ public class Orders {
 	
 	@OneToMany(mappedBy = "order")
 	@Column
-	private Set<OrderProducts> orderProducts;
+	private List<OrderProducts> orderProducts;
 	
 	@PrePersist
 	public void onCreate() {

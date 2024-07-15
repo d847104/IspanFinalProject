@@ -1,4 +1,4 @@
-package com.ispan.demo;
+package com.ispan.warashibe;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
