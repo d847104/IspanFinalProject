@@ -1,9 +1,6 @@
 package com.ispan.warashibe.model;
-<<<<<<< HEAD
-=======
 
 import java.util.List;
->>>>>>> dev
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

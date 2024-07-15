@@ -1,12 +1,25 @@
 package com.ispan.warashibe.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -19,6 +32,7 @@ public class Products {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "memberID")
+    @JsonIgnoreProperties("products") // 防止無限遞歸
     private Members member;
 
     @NotNull
@@ -33,20 +47,26 @@ public class Products {
 
     @NotNull
     @ManyToOne
+    @JsonIgnoreProperties("products") // 防止無限遞歸
     @JoinColumn(name = "subCategoryID")
     private SubCategory subCategory;
 
     @Lob
     private String description;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
     @NotNull
-    private LocalDateTime uploadDate;
+    private Date uploadDate;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
     @NotNull
-    private LocalDateTime updateTime;
+    private Date updateTime;
 
     @NotNull
     private boolean isSecondHand;
+    
+    @Column(name = "productStatus")
+	private Boolean productStatus;
 
     @Lob
     private String wishItem;
@@ -56,9 +76,4 @@ public class Products {
 
     @OneToMany(mappedBy = "product")
     private List<ProductImg> productImgs;
-
-    // Constructors, Getters, and Setters
-    public Products() {}
-
-    // Getters and Setters
 }

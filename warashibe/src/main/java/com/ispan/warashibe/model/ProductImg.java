@@ -28,8 +28,4 @@ public class ProductImg {
     @Lob
     private byte[] img;
 
-    // Constructors, Getters, and Setters
-    public ProductImg() {}
-
-    // Getters and Setters
 }

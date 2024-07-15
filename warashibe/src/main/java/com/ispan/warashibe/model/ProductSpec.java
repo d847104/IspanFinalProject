@@ -35,9 +35,4 @@ public class ProductSpec {
 
     @Lob
     private byte[] specImg;
-
-    // Constructors, Getters, and Setters
-    public ProductSpec() {}
-
-    // Getters and Setters
 }

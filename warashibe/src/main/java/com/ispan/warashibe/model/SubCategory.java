@@ -1,11 +1,20 @@
 package com.ispan.warashibe.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -21,12 +30,12 @@ public class SubCategory {
 
     @NotNull
     @ManyToOne
+    
     @JoinColumn(name = "mainCategoryID")
+    @JsonIgnoreProperties("subCategories") // 防止無限遞歸
     private MainCategory mainCategory;
 
+    @JsonIgnoreProperties("subCategory") // 防止無限遞歸
     @OneToMany(mappedBy = "subCategory")
     private List<Products> products;
-
-    public SubCategory() {}
-
 }

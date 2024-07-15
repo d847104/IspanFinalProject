@@ -13,10 +13,7 @@
 	<artifactId>warashibe</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>warashibe</name>
-<<<<<<< HEAD
 	<description>warashibe</description>
-=======
-	<description>Demo project for Spring Boot</description>
 	<url />
 	<licenses>
 		<license />
@@ -30,7 +27,6 @@
 		<tag />
 		<url />
 	</scm>
->>>>>>> dev
 	<properties>
 		<java.version>17</java.version>
 	</properties>
