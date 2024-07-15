@@ -18,23 +18,23 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name="Delivery")
+@Table(name = "Delivery")
 public class Delivery {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="deliveryID")
+	@Column(name = "deliveryID")
 	private Integer deliveryID;
-		
-//	@ManyToOne
-//	@JoinColumn(name = "delivery")
+
+	// @ManyToOne
+	// @JoinColumn(name = "delivery")
 	@Size(max = 255)
 	private String delivery;
-//	private Delivery delivery;
-	
-	@Column(name="deliveryFee")
+	// private Delivery delivery;
+
+	@Column(name = "deliveryFee")
 	private Integer deliveryFee;
-	
+
 	@OneToMany(mappedBy = "delivery")
 	private List<Delivery> deliverys;
 }

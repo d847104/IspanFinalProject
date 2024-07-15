@@ -9,6 +9,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -78,14 +81,10 @@ public class Members {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "senderID")
     private List<Notification> senderID;
 
-    // products @ManyToMany
+    // products @ManyToMany , @JoinColumn(name = "sellerID")
 
-    // @ManyToMany
-    // @JoinTable(
-    // name = "Favorite",
-    // joinColumns = {@JoinColumn(name = "memberID"), @JoinColumn(name =
-    // "sellerID")},
-    // inverseJoinColumns = @JoinColumn(name = "productID")
-    // )
-    // private List<Products> Products;
+    @ManyToMany
+    @JoinTable(name = "Favorite", joinColumns = {
+            @JoinColumn(name = "memberID") }, inverseJoinColumns = @JoinColumn(name = "productID"))
+    private List<Products> Products;
 }

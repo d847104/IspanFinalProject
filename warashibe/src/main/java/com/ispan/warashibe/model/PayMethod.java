@@ -12,14 +12,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name="PayMethod")
+@Table(name = "PayMethod")
 public class PayMethod {
 
 	@Id
-	@Column(name="payMethodID")
+	@Column(name = "payMethodID")
 	private Integer payMethodID;
-		
-	@Column(name="payMethod")
+
+	@Column(name = "payMethod")
 	private String payMethod;
-	
+
 }

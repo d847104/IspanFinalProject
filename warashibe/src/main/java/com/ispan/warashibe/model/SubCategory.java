@@ -2,8 +2,13 @@ package com.ispan.warashibe.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
 public class SubCategory {
     @Id
@@ -22,38 +27,6 @@ public class SubCategory {
     @OneToMany(mappedBy = "subCategory")
     private List<Products> products;
 
-    // Constructors, Getters, and Setters
     public SubCategory() {}
 
-    public int getSubCategoryID() {
-        return subCategoryID;
-    }
-
-    public void setSubCategoryID(int subCategoryID) {
-        this.subCategoryID = subCategoryID;
-    }
-
-    public String getSubCategory() {
-        return subCategory;
-    }
-
-    public void setSubCategory(String subCategory) {
-        this.subCategory = subCategory;
-    }
-
-    public MainCategory getMainCategory() {
-        return mainCategory;
-    }
-
-    public void setMainCategory(MainCategory mainCategory) {
-        this.mainCategory = mainCategory;
-    }
-
-    public List<Products> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Products> products) {
-        this.products = products;
-    }
 }

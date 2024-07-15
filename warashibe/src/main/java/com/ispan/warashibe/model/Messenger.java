@@ -21,26 +21,26 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name="Messenger")
+@Table(name = "Messenger")
 public class Messenger {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="msgID")
+	@Column(name = "msgID")
 	private Integer msgID;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "senderID")
 	private Members senderID;
-		
+
 	@ManyToOne
 	@JoinColumn(name = "receiverID")
 	private Members receiverID;
-	
-	@Column(name="msg")
+
+	@Column(name = "msg")
 	private String msg;
-	
-	@Column(name="msgTime")
+
+	@Column(name = "msgTime")
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date msgTime;
