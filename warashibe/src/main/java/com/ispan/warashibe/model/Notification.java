@@ -39,9 +39,9 @@ public class Notification {
 	@JoinColumn(name = "senderID")
 	private Members senderID;
 	
-//	@ManyToOne
-//	@JoinColumn(name = "orderID")
-//	private Orders orderID;
+	@ManyToOne
+	@JoinColumn(name = "orderID")
+	private Orders orderID;
 	
 	@Column(name = "content")
 	private String content;
