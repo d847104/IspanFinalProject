@@ -9,9 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -48,6 +46,7 @@ public class Members {
     @Column(name = "gender")
     private String gender;
 
+    @Lob
     @Column(name = "profileImg", columnDefinition = "image")
     private byte[] profileImg;
 
@@ -88,11 +87,11 @@ public class Members {
 //            @JoinColumn(name = "memberID") }, inverseJoinColumns = @JoinColumn(name = "productID"))
 //    private List<Products> Products;
     
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "memberID")
+    // mappedBy是對應屬性名稱
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "member")
     private List<Favorite> favoritesToBuyer;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "sellerID")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "seller")
     private List<Favorite> favoritesToSeller;
     
     
