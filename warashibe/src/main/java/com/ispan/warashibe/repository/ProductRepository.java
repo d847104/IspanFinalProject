@@ -17,8 +17,15 @@ public interface ProductRepository extends JpaRepository<Products, Integer> {
     @Query("SELECT p FROM Products p WHERE p.isSecondHand = true")
     List<Products> findSecondHandProducts();
 
-    @Query("SELECT p FROM Products p JOIN Rank r ON p.productID = r.product.productID " +
-            "ORDER BY COUNT(r.rankID) DESC")
+    @Query(value = "SELECT p.productID, p.description, p.isSecondHand, p.memberID, " +
+            "       p.price, p.productName, p.productStatus, p.stock, p.subCategoryID, " +
+            "       p.updateTime, p.uploadDate, p.wishItem " +
+            "FROM Products p " +
+            "JOIN Rank r ON p.productID = r.productID " +
+            "GROUP BY p.productID, p.description, p.isSecondHand, p.memberID, " +
+            "         p.price, p.productName, p.productStatus, p.stock, p.subCategoryID, " +
+            "         p.updateTime, p.uploadDate, p.wishItem " +
+            "ORDER BY COUNT(r.productID) DESC", nativeQuery = true)
     List<Products> findPopularProducts(Pageable pageable);
 
     @Query("SELECT p FROM Products p WHERE p.subCategory IN :categories ORDER BY RAND()")
