@@ -2,8 +2,12 @@ package com.ispan.warashibe.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.Getter;
+import lombok.Setter;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
 public class MainCategory {
     @Id
