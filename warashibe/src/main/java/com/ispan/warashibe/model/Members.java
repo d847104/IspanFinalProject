@@ -81,10 +81,19 @@ public class Members {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "senderID")
     private List<Notification> senderID;
 
+    
     // products @ManyToMany , @JoinColumn(name = "sellerID")
-
-    @ManyToMany
-    @JoinTable(name = "Favorite", joinColumns = {
-            @JoinColumn(name = "memberID") }, inverseJoinColumns = @JoinColumn(name = "productID"))
-    private List<Products> Products;
+//    @ManyToMany
+//    @JoinTable(name = "Favorite", joinColumns = {
+//            @JoinColumn(name = "memberID") }, inverseJoinColumns = @JoinColumn(name = "productID"))
+//    private List<Products> Products;
+    
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "memberID")
+    private List<Favorite> favoritesToBuyer;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "sellerID")
+    private List<Favorite> favoritesToSeller;
+    
+    
 }
