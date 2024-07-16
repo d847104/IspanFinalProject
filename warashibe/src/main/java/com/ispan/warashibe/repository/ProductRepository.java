@@ -11,11 +11,11 @@ import com.ispan.warashibe.model.Products;
 import com.ispan.warashibe.model.SubCategory;
 
 public interface ProductRepository extends JpaRepository<Products, Integer> {
-	@Query("SELECT p FROM Products p ORDER BY RAND()")
+    @Query("SELECT p FROM Products p ORDER BY RAND()")
     List<Products> findRandomProducts(Pageable pageable);
 
     @Query("SELECT p FROM Products p WHERE p.isSecondHand = true")
-    List<Products> findSecondHandProducts();
+    List<Products> findSecondHandProducts(Pageable pageable);
 
     @Query(value = "SELECT p.productID, p.description, p.isSecondHand, p.memberID, " +
             "       p.price, p.productName, p.productStatus, p.stock, p.subCategoryID, " +
@@ -31,8 +31,8 @@ public interface ProductRepository extends JpaRepository<Products, Integer> {
     @Query("SELECT p FROM Products p WHERE p.subCategory IN :categories ORDER BY RAND()")
     List<Products> findRecommendedProducts(List<SubCategory> categories, Pageable pageable);
 
-    List<Products> findBySubCategory(SubCategory subCategory);
-    
+    List<Products> findBySubCategory(SubCategory subCategory, Pageable pageable);
+
     List<Products> findByMember(Members member);
 
     List<Products> findByProductStatusAndMember(Boolean status, Members member);

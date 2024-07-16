@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,24 +22,24 @@ public class ProductService {
     @Autowired
     private ObjectMapper objectMapper; // 用來解析 JSON 字符串
 
-    public List<Products> getRandomProducts() {
-        return productRepository.findRandomProducts(PageRequest.of(0, 4));
+    public List<Products> getRandomProducts(Pageable pageable) {
+        return productRepository.findRandomProducts(pageable);
     }
 
-    public List<Products> getSecondHandProducts() {
-        return productRepository.findSecondHandProducts();
+    public List<Products> getSecondHandProducts(Pageable pageable) {
+        return productRepository.findSecondHandProducts(pageable);
     }
 
-    public List<Products> getPopularProducts() {
-        return productRepository.findPopularProducts(PageRequest.of(0, 4));
+    public List<Products> getPopularProducts(Pageable pageable) {
+        return productRepository.findPopularProducts(pageable);
     }
 
-    public List<Products> getRecommendedProducts(List<SubCategory> categories) {
-        return productRepository.findRecommendedProducts(categories, PageRequest.of(0, 4));
+    public List<Products> getRecommendedProducts(List<SubCategory> categories, Pageable pageable) {
+        return productRepository.findRecommendedProducts(categories, pageable);
     }
 
-    public List<Products> getProductsBySubCategory(SubCategory subCategory) {
-        return productRepository.findBySubCategory(subCategory);
+    public List<Products> getProductsBySubCategory(SubCategory subCategory, Pageable pageable) {
+        return productRepository.findBySubCategory(subCategory, pageable);
     }
 
     public List<Products> getProductsByMember(Members member) {

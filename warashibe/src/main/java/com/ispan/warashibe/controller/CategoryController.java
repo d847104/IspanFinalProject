@@ -1,12 +1,20 @@
 package com.ispan.warashibe.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONArray;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ispan.warashibe.model.Products;
@@ -17,21 +25,65 @@ import com.ispan.warashibe.service.ProductService;
 @RestController
 @RequestMapping("/api/categories")
 public class CategoryController {
-	@Autowired
+    @Autowired
     private CategoryService categoryService;
 
     @Autowired
     private ProductService productService;
 
-    @GetMapping("/recommended")
-    public List<Products> getRecommendedProducts(@RequestParam List<Integer> categoryIds) {
+    @PostMapping("/recommended")
+    public String getRecommendedProducts(@RequestBody JSONObject request) throws JSONException {
+        JSONArray categoryIdsArray = request.getJSONArray("categoryIds");
+        List<Integer> categoryIds = new ArrayList<>();
+        for (int i = 0; i < categoryIdsArray.length(); i++) {
+            categoryIds.add(categoryIdsArray.getInt(i));
+        }
+
         List<SubCategory> categories = categoryService.getSubCategoriesByIds(categoryIds);
-        return productService.getRecommendedProducts(categories);
+        Pageable pageable = createPageRequest(request);
+        List<Products> products = productService.getRecommendedProducts(categories, pageable);
+        return createResponse(products);
     }
 
     @GetMapping("/category/{id}")
-    public List<Products> getProductsByCategory(@PathVariable int id) {
-        SubCategory subCategory = categoryService.getSubCategoryById(id);
-        return productService.getProductsBySubCategory(subCategory);
+    public String getProductsByCategory(@PathVariable int id, @RequestBody String request) throws JSONException {
+    	SubCategory subCategory = categoryService.getSubCategoryById(id);
+        Pageable pageable = createPageRequest(new JSONObject(request));
+        List<Products> products = productService.getProductsBySubCategory(subCategory, pageable);
+        return createResponse(products);
+    }
+
+    private Pageable createPageRequest(JSONObject request) throws JSONException {
+        int start = request.optInt("start", 0);
+        int max = request.optInt("max", 30);
+        boolean dir = request.optBoolean("dir", false);
+        String order = request.optString("order", "productID");
+
+        // 根據 dir 參數選擇升序或降序排序
+        Sort.Direction direction = dir ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        // 創建 Pageable 對象
+        return PageRequest.of(start, max, Sort.by(direction, order));
+    }
+
+    private String createResponse(List<Products> products) throws JSONException {
+        JSONObject responseBody = new JSONObject();
+        responseBody.put("count", products.size());  // 添加產品數量
+        
+        JSONArray productList = new JSONArray();  // 創建 JSON 陣列來存放產品資料
+        for (Products product : products) {
+            JSONObject item = new JSONObject();
+            item.put("productId", product.getProductID());  // 根據需要添加更多屬性
+            item.put("productName", product.getProductName());
+            item.put("price", product.getPrice());
+            item.put("description", product.getDescription());
+            // 添加更多屬性，根據需要
+            
+            productList.put(item);  // 將產品 JSON 對象添加到陣列中
+        }
+        
+        responseBody.put("list", productList);  // 將產品陣列添加到主體 JSON 對象中
+        
+        return responseBody.toString();
     }
 }
