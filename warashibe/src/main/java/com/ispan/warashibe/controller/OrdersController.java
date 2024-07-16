@@ -26,33 +26,16 @@ public class OrdersController {
 	@Autowired
 	private ObjectMapper objMapper;
 	
-	@GetMapping("/orders/{id}")
-	public String findById(@PathVariable Integer id) {
-		JSONObject responseBody = new JSONObject();
-		JSONArray array = new JSONArray();
-		Orders order = ordersServ.findById(id);
-		if(order!=null) {
-			try {
-				array = array.put(objMapper.writeValueAsString(order));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		responseBody.put("list", array);
-		return responseBody.toString();
-	}
-	
-	@PostMapping("/orders/create")
+	@PostMapping("/orders/create")	// 新增一筆
 	public String create(@RequestBody String body) {
 		JSONObject responseBody = new JSONObject();
 		Orders order = ordersServ.create(body);
-		if(order!=null) {
-			return responseBody.put("success", true).put("message", "新增成功").toString();
-		}
-		return responseBody.put("success", false).put("message", "新增失敗").toString();
+		return order!=null ?
+				responseBody.put("success", true).put("message", "新增成功").toString() :
+					responseBody.put("success", false).put("message", "新增失敗").toString();
 	}
 	
-	@PutMapping("/orders/modify")
+	@PutMapping("/orders/modify")	// 修改一筆
 	public String modify(@RequestBody String body) {
 		JSONObject responseBody = new JSONObject();
 		Orders order = ordersServ.modify(body);
@@ -62,7 +45,22 @@ public class OrdersController {
 		return responseBody.put("success", false).put("message", "修改失敗").toString();
 	}
 	
-	@DeleteMapping("/orders/delete/{id}")
+	@GetMapping("/orders/{id}")	// 查詢一筆
+	public String findById(@PathVariable Integer id) {
+		JSONObject responseBody = new JSONObject();
+		JSONArray array = new JSONArray();
+		Orders order = ordersServ.findById(id);
+		if(order!=null) {
+			try {array.put(new JSONObject(objMapper.writeValueAsString(order))
+					.put("seller", order.getSeller().getMemberID())
+					.put("buyer", order.getBuyer().getMemberID()));
+			} catch (Exception e) {e.printStackTrace();}
+		}
+		responseBody.put("list", array);
+		return responseBody.toString();
+	}
+	
+	@DeleteMapping("/orders/delete/{id}")	// 刪除一筆
 	public String delete(@PathVariable Integer id) {
 		JSONObject responseBody = new JSONObject();
 		if(ordersServ.deleteById(id)) {
