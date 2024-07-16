@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
@@ -17,6 +18,17 @@ public class MemberService {
 
 	@Autowired
 	private MembersRepository membersRepo;
+	
+	@Autowired
+	private PasswordEncoder pwdEncoder;
+	
+	public boolean checkIfAccountExist(String account) {
+		Members result = membersRepo.findByAccount(account);
+		if(result != null) {
+			return true;
+		}
+		return false;
+	}
 	
 	//查詢單筆
 	public Members findById(Integer id) {
@@ -32,12 +44,13 @@ public class MemberService {
 		return membersRepo.findAll();
 	}
 	
-	//新增單筆
+	//新增單筆(註冊)
 	public Members insert(String json) {
 		JSONObject obj = new JSONObject(json);
 		Integer memberID = obj.isNull("memberID") ? null : obj.getInt("memberID");
 		String account = obj.isNull("account") ? null : obj.getString("account");
 		String password = obj.isNull("password") ? null : obj.getString("password");
+		password = pwdEncoder.encode(password);
 		String username = obj.isNull("username") ? null : obj.getString("username");
 		String mobile = obj.isNull("mobile") ? null : obj.getString("mobile");
 		String gender = obj.isNull("gender") ? null : obj.getString("gender");
@@ -46,7 +59,7 @@ public class MemberService {
 //		String createTime = obj.isNull("createTime") ? null : obj.getString("createTime");
 //		String lastLogin = obj.isNull("lastLogin") ? null : obj.getString("lastLogin");
 		String status = obj.isNull("status") ? null : obj.getString("status");
-
+		
 //		Optional<Members> optional = membersRepo.findById(memberID);
 		if(memberID == null) {
 			Members newMember = new Members();
@@ -64,6 +77,19 @@ public class MemberService {
 		}
 		return null;
 	} // end of insert
+	
+	// 登入
+	public Members login(String account, String password) {	
+		Members dbMem = membersRepo.findByAccount(account);
+		if(dbMem == null) {
+			return null;
+		}
+		boolean result  = pwdEncoder.matches(password, dbMem.getPassword());
+		if(result) {
+			return dbMem;
+		}
+		return null;
+	}
 	
 	// 修改單筆
 	public Members modify(String json) {
