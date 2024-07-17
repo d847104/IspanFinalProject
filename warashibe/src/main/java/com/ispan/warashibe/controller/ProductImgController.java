@@ -3,92 +3,121 @@ package com.ispan.warashibe.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONArray;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ispan.warashibe.model.ProductImg;
 import com.ispan.warashibe.service.ProductImgService;
 
 @RestController
-@RequestMapping("/api/product-imgs")
+@RequestMapping("/api/productImg")
 public class ProductImgController {
+
     @Autowired
     private ProductImgService productImgService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @GetMapping
-    public String getAllProductImgs() throws JsonProcessingException {
-        List<ProductImg> productImgs = productImgService.getAllProductImgs();
-        return objectMapper.writeValueAsString(productImgs);
-    }
-
-    @GetMapping("/{id}")
-    public String getProductImgById(@PathVariable int id) throws JsonProcessingException {
-        ProductImg productImg = productImgService.getProductImgById(id);
-        return objectMapper.writeValueAsString(productImg);
-    }
-
     @PostMapping
-    public String saveProductImg(@RequestBody ProductImg productImg) throws JsonProcessingException {
-        ProductImg savedProductImg = productImgService.saveProductImg(productImg);
-        return createResponse(savedProductImg != null, "新增成功", "新增失敗");
+    public String saveProductImg(@RequestParam("jsonProduct") String jsonProduct, @RequestParam(value = "image", required = false) MultipartFile image) throws JSONException {
+        JSONObject responseBody = new JSONObject();
+        try {
+            productImgService.saveProductImgFromJson(jsonProduct, image);
+            responseBody.put("success", true);
+            responseBody.put("message", "新增成功");
+        } catch (Exception e) {
+            responseBody.put("success", false);
+            responseBody.put("message", "新增失敗: " + e.getMessage());
+        }
+        return responseBody.toString();
     }
 
     @PutMapping("/{id}")
-    public String updateProductImg(@PathVariable int id, @RequestBody ProductImg productImg) throws JsonProcessingException {
-        ProductImg updatedProductImg = productImgService.updateProductImg(id, productImg);
-        return createResponse(updatedProductImg != null, "修改成功", "修改失敗");
+    public String updateProductImg(@PathVariable int id, @RequestParam("jsonProduct") String jsonProduct, @RequestParam(value = "image", required = false) MultipartFile image) throws JSONException {
+        JSONObject responseBody = new JSONObject();
+        try {
+            productImgService.updateProductImgFromJson(id, jsonProduct, image);
+            responseBody.put("success", true);
+            responseBody.put("message", "更新成功");
+        } catch (Exception e) {
+            responseBody.put("success", false);
+            responseBody.put("message", "更新失敗: " + e.getMessage());
+        }
+        return responseBody.toString();
     }
 
     @DeleteMapping("/{id}")
-    public String deleteProductImg(@PathVariable int id) throws JsonProcessingException {
-        productImgService.deleteProductImg(id);
-        return createResponse(true, "刪除成功", "刪除失敗");
-    }
-
-    @PostMapping("/{id}/upload-image")
-    public String uploadProductImage(@PathVariable int id, @RequestParam("file") MultipartFile file) throws Exception {
-        productImgService.saveProductImage(id, file);
-        return createResponse(true, "上傳成功", "上傳失敗");
-    }
-
-    @DeleteMapping("/{id}/delete-image")
-    public String deleteProductImage(@PathVariable int id) throws JsonProcessingException {
-        productImgService.deleteProductImage(id);
-        return createResponse(true, "刪除成功", "刪除失敗");
-    }
-
-    private String createResponse(boolean success, String successMessage, String failureMessage) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(new Response(success, success ? successMessage : failureMessage));
-    }
-
-    static class Response {
-        private boolean success;
-        private String message;
-
-        public Response(boolean success, String message) {
-            this.success = success;
-            this.message = message;
+    public String deleteProductImg(@PathVariable int id) throws JSONException {
+        JSONObject responseBody = new JSONObject();
+        try {
+            productImgService.deleteProductImg(id);
+            responseBody.put("success", true);
+            responseBody.put("message", "刪除成功");
+        } catch (Exception e) {
+            responseBody.put("success", false);
+            responseBody.put("message", "刪除失敗: " + e.getMessage());
         }
+        return responseBody.toString();
+    }
 
-        public boolean isSuccess() {
-            return success;
+    @GetMapping("/{id}")
+    public String getProductImgById(@PathVariable int id) throws JSONException {
+        JSONObject responseBody = new JSONObject();
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            ProductImg productImg = productImgService.getProductImgById(id);
+            responseBody.put("success", true);
+            responseBody.put("list", new JSONObject(objectMapper.writeValueAsString(productImg)));
+        } catch (Exception e) {
+            responseBody.put("success", false);
+            responseBody.put("message", "查詢失敗: " + e.getMessage());
         }
+        return responseBody.toString();
+    }
 
-        public String getMessage() {
-            return message;
+    @GetMapping("/all")
+    public String getAllProductImgs() throws JSONException {
+        JSONObject responseBody = new JSONObject();
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            List<ProductImg> productImgs = productImgService.getAllProductImgs();
+            responseBody.put("success", true);
+            responseBody.put("count", productImgs.size());
+            
+            JSONArray productImgList = new JSONArray();
+            for (ProductImg productImg : productImgs) {
+                JSONObject item = new JSONObject(objectMapper.writeValueAsString(productImg));
+                productImgList.put(item);
+            }
+            
+            responseBody.put("list", productImgList);
+        } catch (Exception e) {
+            responseBody.put("success", false);
+            responseBody.put("message", "查詢失敗: " + e.getMessage());
         }
+        return responseBody.toString();
+    }
+
+    @DeleteMapping("/image/{id}")
+    public String deleteProductImgImage(@PathVariable int id) throws JSONException {
+        JSONObject responseBody = new JSONObject();
+        try {
+            productImgService.deleteProductImgImage(id);
+            responseBody.put("success", true);
+            responseBody.put("message", "圖片刪除成功");
+        } catch (Exception e) {
+            responseBody.put("success", false);
+            responseBody.put("message", "圖片刪除失敗: " + e.getMessage());
+        }
+        return responseBody.toString();
     }
 }

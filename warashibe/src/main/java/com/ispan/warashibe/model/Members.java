@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -28,6 +31,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "memberID")
 @Entity
 @Table(name = "Members")
 public class Members {
@@ -89,6 +93,7 @@ public class Members {
 
     @ManyToMany
     @JsonIgnoreProperties("member") // 防止無限遞歸
+    @JsonIdentityReference(alwaysAsId = true)
     @JoinTable(name = "Favorite", joinColumns = {
             @JoinColumn(name = "memberID") }, inverseJoinColumns = @JoinColumn(name = "productID"))
     private List<Products> Products;

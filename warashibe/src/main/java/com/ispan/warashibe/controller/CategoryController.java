@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ispan.warashibe.model.Products;
 import com.ispan.warashibe.model.SubCategory;
 import com.ispan.warashibe.service.CategoryService;
@@ -32,7 +34,7 @@ public class CategoryController {
     private ProductService productService;
 
     @PostMapping("/recommended")
-    public String getRecommendedProducts(@RequestBody JSONObject request) throws JSONException {
+    public String getRecommendedProducts(@RequestBody JSONObject request) throws JSONException, JsonProcessingException {
         JSONArray categoryIdsArray = request.getJSONArray("categoryIds");
         List<Integer> categoryIds = new ArrayList<>();
         for (int i = 0; i < categoryIdsArray.length(); i++) {
@@ -46,7 +48,7 @@ public class CategoryController {
     }
 
     @GetMapping("/category/{id}")
-    public String getProductsByCategory(@PathVariable int id, @RequestBody String request) throws JSONException {
+    public String getProductsByCategory(@PathVariable int id, @RequestBody String request) throws JSONException, JsonProcessingException {
     	SubCategory subCategory = categoryService.getSubCategoryById(id);
         Pageable pageable = createPageRequest(new JSONObject(request));
         List<Products> products = productService.getProductsBySubCategory(subCategory, pageable);
@@ -66,19 +68,14 @@ public class CategoryController {
         return PageRequest.of(start, max, Sort.by(direction, order));
     }
 
-    private String createResponse(List<Products> products) throws JSONException {
+    private String createResponse(List<Products> products) throws JSONException, JsonProcessingException {
         JSONObject responseBody = new JSONObject();
+        ObjectMapper objectMapper = new ObjectMapper();
         responseBody.put("count", products.size());  // 添加產品數量
         
         JSONArray productList = new JSONArray();  // 創建 JSON 陣列來存放產品資料
         for (Products product : products) {
-            JSONObject item = new JSONObject();
-            item.put("productId", product.getProductID());  // 根據需要添加更多屬性
-            item.put("productName", product.getProductName());
-            item.put("price", product.getPrice());
-            item.put("description", product.getDescription());
-            // 添加更多屬性，根據需要
-            
+            JSONObject item = new JSONObject(objectMapper.writeValueAsString(product));     
             productList.put(item);  // 將產品 JSON 對象添加到陣列中
         }
         

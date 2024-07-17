@@ -83,8 +83,11 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public Products getProductById(@PathVariable int id) {
-        return productService.getProductById(id);
+    public String getProductById(@PathVariable int id) throws JsonProcessingException, JSONException {
+    	ObjectMapper objectMapper = new ObjectMapper();
+    	Products product = productService.getProductById(id);
+    	JSONObject item = new JSONObject(objectMapper.writeValueAsString(product));
+        return item.toString();
     }
 
     @PostMapping
@@ -119,9 +122,16 @@ public class ProductController {
     public String deleteProduct(@PathVariable int id) throws JSONException {
         JSONObject responseBody = new JSONObject();
         try {
-            productService.deleteProduct(id);
-            responseBody.put("success", true);
-            responseBody.put("message", "刪除成功");
+        	Products productById = productService.getProductById(id);
+        	if(productById != null) {        		
+        		productService.deleteProduct(id);
+        		responseBody.put("success", true);
+        		responseBody.put("message", "刪除成功");
+        	}
+        	else {
+        		responseBody.put("success", false);
+                responseBody.put("message", "查無產品");
+        	}
         } catch (Exception e) {
             responseBody.put("success", false);
             responseBody.put("message", "刪除失敗: " + e.getMessage());
@@ -151,12 +161,6 @@ public class ProductController {
         for (Products product : products) {
         	// 將 Products 對象轉換為 JSONObject
             JSONObject item = new JSONObject(objectMapper.writeValueAsString(product));
-            
-            // 移除多餘屬性，添加更多屬性，根據需要
-            item.remove("member");
-            item.remove("subCategory");
-            item.put("memberID", product.getMember().getMemberID());
-            item.put("subCategoryID", product.getSubCategory().getSubCategoryID());
             productList.put(item);  // 將產品 JSON 對象添加到陣列中
         }
         

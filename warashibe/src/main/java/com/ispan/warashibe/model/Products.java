@@ -5,7 +5,11 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,16 +27,18 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "productID")
 @Entity
 public class Products {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int productID;
+    private Integer productID;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "memberID")
-    @JsonIgnoreProperties("products") // 防止無限遞歸
+    @JsonIgnoreProperties("productSpecs") // 防止無限遞歸
+    @JsonIdentityReference(alwaysAsId = true)
     private Members member;
 
     @NotNull
@@ -48,6 +54,7 @@ public class Products {
     @NotNull
     @ManyToOne
     @JsonIgnoreProperties("products") // 防止無限遞歸
+    @JsonIdentityReference(alwaysAsId = true)
     @JoinColumn(name = "subCategoryID")
     private SubCategory subCategory;
 
@@ -71,9 +78,25 @@ public class Products {
     @Lob
     private String wishItem;
 
+    @JsonIgnoreProperties("products") // 防止無限遞歸
+    @JsonIdentityReference(alwaysAsId = true)
     @OneToMany(mappedBy = "product")
     private List<ProductSpec> productSpecs;
 
+    @JsonIgnoreProperties("products") // 防止無限遞歸
     @OneToMany(mappedBy = "product")
+    @JsonIdentityReference(alwaysAsId = true)
     private List<ProductImg> productImgs;
+    
+    @JsonProperty("member")
+    public void setMemberById(Integer memberID) {
+    	this.member = new Members();
+    	this.member.setMemberID(memberID);
+    }
+    
+    @JsonProperty("subCategory")
+    public void setSubCategoryById(Integer subCategoryID) {
+    	this.subCategory = new SubCategory();
+    	this.subCategory.setSubCategoryID(subCategoryID);
+    }
 }
