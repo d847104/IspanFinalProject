@@ -39,7 +39,7 @@ public class MemberService {
 		return null;	
 	}
 	
-	//查詢多筆
+	//查詢全部
 	public List<Members> findAllMem() {
 		return membersRepo.findAll();
 	}
@@ -77,19 +77,6 @@ public class MemberService {
 		}
 		return null;
 	} // end of insert
-	
-	// 登入
-	public Members login(String account, String password) {	
-		Members dbMem = membersRepo.findByAccount(account);
-		if(dbMem == null) {
-			return null;
-		}
-		boolean result  = pwdEncoder.matches(password, dbMem.getPassword());
-		if(result) {
-			return dbMem;
-		}
-		return null;
-	}
 	
 	// 修改單筆
 	public Members modify(String json) {
@@ -146,6 +133,22 @@ public class MemberService {
 		return false;
 	} // end of deleteOne
 
+	
+	// 登入
+	public Members login(String account, String password) {	
+		Members dbMem = membersRepo.findByAccount(account);
+		if(dbMem == null) {
+			return null;
+		}
+		boolean result  = pwdEncoder.matches(password, dbMem.getPassword());
+		if(result) {
+			return dbMem;
+		}
+		return null;
+	}
+	
+	
+	
 	// 刪除全部[選填]	
 	// 一鍵填入
 	

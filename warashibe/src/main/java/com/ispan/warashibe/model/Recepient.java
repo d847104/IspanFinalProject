@@ -1,5 +1,7 @@
 package com.ispan.warashibe.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,6 +36,7 @@ public class Recepient {
 	
 	@ManyToOne
 	@JoinColumn(name="memberID")
+	@JsonIgnore //防止無限遞歸
 	private Members memberID;
 	
 

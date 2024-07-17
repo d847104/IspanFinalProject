@@ -2,10 +2,17 @@ package com.ispan.warashibe.model;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -71,13 +78,17 @@ public class Members {
         }
     }
 
+   
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "memberID")
+    @JsonIgnore   //防止無限遞歸
     private List<Recepient> byRecepioent;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "receiverID")
+    @JsonIgnore   //防止無限遞歸
     private List<Notification> receiverID;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "senderID")
+    @JsonIgnore   //防止無限遞歸
     private List<Notification> senderID;
 
     
@@ -93,6 +104,9 @@ public class Members {
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "seller")
     private List<Favorite> favoritesToSeller;
+    
+//    @ElementCollection(fetch = FetchType.EAGER)
+//    private Set<String> roles;
     
     
 }

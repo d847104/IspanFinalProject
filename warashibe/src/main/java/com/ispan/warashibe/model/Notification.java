@@ -5,6 +5,8 @@ import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,14 +35,17 @@ public class Notification {
 	
 	@ManyToOne
 	@JoinColumn(name = "receiverID")
+	@JsonIgnore   //防止無限遞歸
 	private Members receiverID;
 	
 	@ManyToOne
 	@JoinColumn(name = "senderID")
+	@JsonIgnore   //防止無限遞歸
 	private Members senderID;
 	
 	@ManyToOne
 	@JoinColumn(name = "orderID")
+	@JsonIgnore   //防止無限遞歸
 	private Orders orderID;
 	
 	@Column(name = "content")

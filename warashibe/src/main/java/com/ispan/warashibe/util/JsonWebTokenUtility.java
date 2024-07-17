@@ -1,6 +1,7 @@
 package com.ispan.warashibe.util;
 
 import java.util.Base64;
+import java.util.Date;
 
 import javax.crypto.SecretKey;
 
@@ -19,7 +20,40 @@ import jakarta.annotation.PostConstruct;
 public class JsonWebTokenUtility {
 	@Value("${jwt.token.expire}")
 	private long expire;
-
+	
+	private String secretKey  = "ABCDEFGHJKLM23456789npqrstuvwxyz";
+	
+//    public String generateToken(String username) {
+//        return Jwts.builder()
+//                .setSubject(username)
+//                .setIssuedAt(new Date())
+//                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+//                .signWith(SignatureAlgorithm.HS512, secretKey)
+//                .compact();
+//    }
+	
+	
+//    public String getUsernameFromToken(String token) {
+//        return ((JwtParser) Jwts.parser()
+//                .setSigningKey(secretKey))
+//                .parseClaimsJws(token)
+//                .getBody()
+//                .getSubject();
+//    }
+	
+//    public static String parseToken(String token){
+//    	Password password = Keys.hmacShaKeyFor(secretKey.getBytes());
+//
+//        JwtParser parser = Jwts.builder()
+//                .setSigningKey(secretKey).build();
+//
+//        Claims claims = parser.parseClaimsJws(token).getBody();
+//        String username = claims.getSubject();
+//
+//        return username;
+//    }
+	
+	
 	private byte[] base64EncodedSecret;	//用在簽章
 	private char[] charArraySecret;		//用在加密
 	@PostConstruct
@@ -53,6 +87,33 @@ public class JsonWebTokenUtility {
 		String token = builder.compact();
 		return token;
 	}
+	
+	public  String parseToken(String token){
+		//建立密碼
+		Password password = Keys.password(charArraySecret);
+		JwtParser parser = Jwts.parser()
+				.decryptWith(password)			//解密：以便讀取內容
+				.build();
+		try {
+			Claims claims = parser.parseEncryptedClaims(token).getPayload();
+
+			//取出JWT主體內容
+			String subject = claims.getSubject();
+			System.out.println("＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝這是："+subject);
+			return subject;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	public String validateEncryptedToken(String token) {
 		//建立密碼
 		Password password = Keys.password(charArraySecret);
@@ -64,6 +125,7 @@ public class JsonWebTokenUtility {
 
 			//取出JWT主體內容
 			String subject = claims.getSubject();
+			System.out.println("＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝這是："+subject);
 			return subject;
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -71,6 +133,20 @@ public class JsonWebTokenUtility {
 		return null;
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public String createToken(String data, Long lifespan) {
 		java.util.Date now = new java.util.Date();
 		if(lifespan==null) {
@@ -107,4 +183,12 @@ public class JsonWebTokenUtility {
 		}
 		return null;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
 }
