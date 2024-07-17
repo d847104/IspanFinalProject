@@ -2,7 +2,6 @@ package com.ispan.warashibe.model;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,7 +12,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.CascadeType;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,7 +29,6 @@ import jakarta.persistence.TemporalType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "orderID")
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "orderID")	// 處理JACKSON循環引用
 @Entity
