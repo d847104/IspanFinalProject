@@ -19,7 +19,9 @@ public class DatetimeConverter {
 	public static Date parse(String datetime, String format) {
 		Date result = new Date();
 		try {
-			result = new SimpleDateFormat(format).parse(datetime);
+			if(datetime != null) {
+				result = new SimpleDateFormat(format).parse(datetime);
+			}
 		} catch (Exception e) {
 			result = new Date();
 //			e.printStackTrace();

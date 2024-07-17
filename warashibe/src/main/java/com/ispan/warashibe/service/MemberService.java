@@ -121,7 +121,6 @@ public class MemberService {
 	}
 	
 	// 刪除單筆
-	@DeleteMapping
 	public Boolean deleteOne(Integer id) {
 		if (id != null) {
 			Optional<Members> optional = membersRepo.findById(id);

@@ -2,23 +2,23 @@ package com.ispan.warashibe.model;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "memberID")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -76,37 +77,38 @@ public class Members {
         if (createTime == null) {
             createTime = new java.util.Date();
         }
+        if(lastLogin == null) {
+        	lastLogin = new Date();
+        }
     }
-
+    @PreUpdate
+    protected void onUpdate() {
+        lastLogin = new Date();
+    }
    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "memberID")
-    @JsonIgnore   //防止無限遞歸
+    @JsonIdentityReference(alwaysAsId = true)
     private List<Recepient> byRecepioent;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "receiverID")
-    @JsonIgnore   //防止無限遞歸
+    @JsonIdentityReference(alwaysAsId = true)
     private List<Notification> receiverID;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "senderID")
-    @JsonIgnore   //防止無限遞歸
+    @JsonIdentityReference(alwaysAsId = true)
     private List<Notification> senderID;
 
     
-    // products @ManyToMany , @JoinColumn(name = "sellerID")
-//    @ManyToMany
-//    @JoinTable(name = "Favorite", joinColumns = {
-//            @JoinColumn(name = "memberID") }, inverseJoinColumns = @JoinColumn(name = "productID"))
-//    private List<Products> Products;
-    
     // mappedBy是對應屬性名稱
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "member")
+    @JsonIdentityReference(alwaysAsId = true)
     private List<Favorite> favoritesToBuyer;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "seller")
+    @JsonIdentityReference(alwaysAsId = true)
     private List<Favorite> favoritesToSeller;
     
-//    @ElementCollection(fetch = FetchType.EAGER)
-//    private Set<String> roles;
+
     
     
 }

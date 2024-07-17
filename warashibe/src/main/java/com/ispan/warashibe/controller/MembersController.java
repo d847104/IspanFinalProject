@@ -89,7 +89,7 @@ public class MembersController {
 	} // end of findAll
 	
 	//新增會員(註冊)
-	@PostMapping("/members")
+	@PostMapping("/members/insert")
 	public String insert(@RequestBody String body) {
         JSONObject responseBody = new JSONObject();
         JSONObject obj = new JSONObject(body);
@@ -108,7 +108,6 @@ public class MembersController {
                 responseBody.put("message", "新增成功");
             }
         }
-        
         return responseBody.toString();
 	} // end of insert
 	

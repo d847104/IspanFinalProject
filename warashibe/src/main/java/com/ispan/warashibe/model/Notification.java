@@ -5,7 +5,9 @@ import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,12 +16,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "notificationID")
 
 @Getter
 @Setter
@@ -35,17 +39,17 @@ public class Notification {
 	
 	@ManyToOne
 	@JoinColumn(name = "receiverID")
-	@JsonIgnore   //防止無限遞歸
+	@JsonIdentityReference(alwaysAsId = true)
 	private Members receiverID;
 	
 	@ManyToOne
 	@JoinColumn(name = "senderID")
-	@JsonIgnore   //防止無限遞歸
+	@JsonIdentityReference(alwaysAsId = true)
 	private Members senderID;
 	
 	@ManyToOne
 	@JoinColumn(name = "orderID")
-	@JsonIgnore   //防止無限遞歸
+	@JsonIdentityReference(alwaysAsId = true)
 	private Orders orderID;
 	
 	@Column(name = "content")
@@ -58,4 +62,10 @@ public class Notification {
 	
 	@Column(name = "isRead")
 	private Boolean isRead;
+	
+	@PrePersist
+	public void onCreate() {
+		if (notifyDate == null) {notifyDate = new Date();}
+	}
+	
 }
