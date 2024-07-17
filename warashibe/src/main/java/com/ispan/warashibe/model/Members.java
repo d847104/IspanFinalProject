@@ -1,5 +1,6 @@
 package com.ispan.warashibe.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,6 +17,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -26,7 +30,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "memberID")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "memberID")	// 處理JACKSON循環引用
 @Getter
 @Setter
 @NoArgsConstructor
@@ -108,7 +112,9 @@ public class Members {
     @JsonIdentityReference(alwaysAsId = true)
     private List<Favorite> favoritesToSeller;
     
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyer")
+    private List<Orders> buyerOrders = new ArrayList<>();
     
-    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "seller")
+    private List<Orders> sellerOrders = new ArrayList<>();
 }
