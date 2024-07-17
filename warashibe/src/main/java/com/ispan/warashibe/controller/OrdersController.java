@@ -1,5 +1,7 @@
 package com.ispan.warashibe.controller;
 
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +43,7 @@ public class OrdersController {
 		Orders order = ordersServ.modify(body);
 		if(order!=null) {
 			return responseBody.put("success", true).put("message", "修改成功").toString();
-		}
-		return responseBody.put("success", false).put("message", "修改失敗").toString();
+		} return responseBody.put("success", false).put("message", "修改失敗").toString();
 	}
 	
 	@GetMapping("/orders/{id}")	// 查詢一筆
@@ -63,7 +64,36 @@ public class OrdersController {
 		JSONObject responseBody = new JSONObject();
 		if(ordersServ.deleteById(id)) {
 			return responseBody.put("success", true).put("message", "刪除成功").toString();
+		} return responseBody.put("success", false).put("message", "刪除失敗").toString();
+	}
+	
+	@GetMapping("/orders/buyer/{id}")	// 以買家ID查詢多筆
+	public String findByBuyerId(@PathVariable Integer id) {
+		JSONObject responseBody = new JSONObject();
+		JSONArray array = new JSONArray();
+		List<Orders> result = ordersServ.findByBuyerId(id);
+		for(Orders order : result) {
+			if(order!=null) {
+				try {array.put(new JSONObject(objMapper.writeValueAsString(order)));
+				} catch (Exception e) {e.printStackTrace();}
+			}
 		}
-		return responseBody.put("success", false).put("message", "刪除失敗").toString();
+		responseBody.put("list", array);
+		return responseBody.toString();
+	}
+	
+	@GetMapping("/orders/seller/{id}")	// 以賣家ID查詢多筆
+	public String findBySellerId(@PathVariable Integer id) {
+		JSONObject responseBody = new JSONObject();
+		JSONArray array = new JSONArray();
+		List<Orders> result = ordersServ.findBySellerId(id);
+		for(Orders order : result) {
+			if(order!=null) {
+				try {array.put(new JSONObject(objMapper.writeValueAsString(order)));
+				} catch (Exception e) {e.printStackTrace();}
+			}
+		}
+		responseBody.put("list", array);
+		return responseBody.toString();
 	}
 }

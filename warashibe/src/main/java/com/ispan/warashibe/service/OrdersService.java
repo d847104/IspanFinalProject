@@ -1,5 +1,6 @@
 package com.ispan.warashibe.service;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,10 +40,11 @@ public class OrdersService {
 	public Orders modify(String json) {	// 修改一筆
 		try {
 			Orders newOrder = objMapper.readValue(json, Orders.class);
-			if(newOrder.getOrderID()!=null) {	// 檢查JSON是否含ID資料
-				Optional<Orders> opt = ordersRepo.findById(newOrder.getOrderID());	// 若JSON有ID則檢查DB是否已有該ID
-				return opt.isPresent() ? ordersRepo.save(newOrder) : null;	// ID存在則修改資料,否則回傳NULL
+			for(Method m : newOrder.getClass().getDeclaredMethods()) {	// 檢查JSON資料是否全部符合NOT NULL
+				if(m.getName().startsWith("get") || m.getName().startsWith("is")) {if(m.invoke(newOrder)==null) return null;}
 			}
+			Optional<Orders> opt = ordersRepo.findById(newOrder.getOrderID());	// 檢查DB是否已有該ID對應資料
+			return opt.isPresent() ? ordersRepo.save(newOrder) : null;	// 若該ID存在對應資料則修改資料,否則回傳NULL
 		} catch (Exception e) {e.printStackTrace();}
 		return null;
 	}
@@ -65,10 +67,10 @@ public class OrdersService {
 	}
 
 	public List<Orders> findByBuyerId(Integer buyerID) {	// 以買家ID查詢多筆
-		return ordersRepo.findOne(OrdersRepository.buyerIdEqualTo(buyerID));
+		return ordersRepo.findAll(OrdersRepository.buyerIdEqualTo(buyerID));
 	}
 
 	public List<Orders> findBySellerId(Integer buyerID) {	// 以賣家ID查詢多筆
-		return ordersRepo.findOne(OrdersRepository.sellerIdEqualTo(buyerID));
+		return ordersRepo.findAll(OrdersRepository.sellerIdEqualTo(buyerID));
 	}
 }

@@ -70,7 +70,7 @@ public class Orders {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
-	@Column(name = "orderUpdate")
+	@Column(name = "orderUpdate", columnDefinition = "datetime2 default ''")
 	private Date orderUpdate;
 
 	@Column(name = "isSecondHand", nullable = false, columnDefinition = "bit default 0")
