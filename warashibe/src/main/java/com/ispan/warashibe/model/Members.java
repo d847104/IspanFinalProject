@@ -6,7 +6,8 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -26,6 +27,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "memberID")	// 處理JACKSON循環引用
 @Getter
 @Setter
 @NoArgsConstructor
@@ -94,10 +96,8 @@ public class Members {
     private List<Products> Products;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyer")
-    @JsonBackReference
     private List<Orders> buyerOrders = new ArrayList<>();
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "seller")
-    @JsonBackReference
     private List<Orders> sellerOrders = new ArrayList<>();
 }

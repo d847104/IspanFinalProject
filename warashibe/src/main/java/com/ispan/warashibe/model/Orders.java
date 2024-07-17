@@ -5,10 +5,10 @@ import java.util.List;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,27 +27,28 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "orderID")	// 處理JACKSON循環引用
 @Entity
 @Table(name = "Orders")
 @Getter
 @Setter
 @NoArgsConstructor
 @DynamicInsert
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class Orders {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "orderID")
 	private Integer orderID;
-
-	@JsonManagedReference
+	
 	@ManyToOne
 	@JoinColumn(name = "sellerID")
+	@JsonIdentityReference(alwaysAsId = true)	//查詢 Orders 時僅引用 MemberID 而非整個 Member Object
 	private Members seller;
-
-	@JsonManagedReference
+	
 	@ManyToOne
 	@JoinColumn(name = "buyerID")
+	@JsonIdentityReference(alwaysAsId = true)	//查詢 Orders 時僅引用 MemberID 而非整個 Member Object
 	private Members buyer;
 	
 	@Column(name = "delivery", nullable = false, columnDefinition = "nvarchar(255)")
@@ -74,8 +75,7 @@ public class Orders {
 
 	@Column(name = "isSecondHand", nullable = false, columnDefinition = "bit default 0")
 	private boolean isSecondHand;
-
-	@JsonBackReference
+	
 	@OneToMany(mappedBy = "order")
 	private List<OrderProducts> orderProducts;
 

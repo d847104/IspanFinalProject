@@ -51,9 +51,7 @@ public class OrdersController {
 		JSONArray array = new JSONArray();
 		Orders order = ordersServ.findById(id);
 		if(order!=null) {
-			try {array.put(new JSONObject(objMapper.writeValueAsString(order))
-					.put("seller", order.getSeller().getMemberID())
-					.put("buyer", order.getBuyer().getMemberID()));
+			try {array.put(new JSONObject(objMapper.writeValueAsString(order)));
 			} catch (Exception e) {e.printStackTrace();}
 		}
 		responseBody.put("list", array);
