@@ -27,27 +27,14 @@ public class Delivery {
 	@Column(name = "deliveryID")
 	private Integer deliveryID;
 
-<<<<<<< HEAD
-	// @ManyToOne
-	// @JoinColumn(name = "delivery")
 	@Size(max = 255)
 	private String delivery;
-	// private Delivery delivery;
-=======
-//	@ManyToOne
-//	@JoinColumn(name = "delivery")
-	@Size(max = 255)
-	private String delivery;
-//	private Delivery delivery;
->>>>>>> YuShan
 
 	@Column(name = "deliveryFee")
 	private Integer deliveryFee;
 
 	@OneToMany(mappedBy = "delivery")
 	private List<Delivery> deliverys;
-<<<<<<< HEAD
-=======
 
 //	@Override
 //	public String toString() {
@@ -55,6 +42,4 @@ public class Delivery {
 //		return deliveryID;
 //	}
 
-
->>>>>>> YuShan
 }
