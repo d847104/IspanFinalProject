@@ -1,8 +1,18 @@
 package com.ispan.warashibe.model;
+<<<<<<< HEAD
 
 
 import java.util.Date;
+=======
+
+import java.util.Date;
+
+>>>>>>> YuShan
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,12 +41,45 @@ public class Messenger {
 
 	@ManyToOne
 	@JoinColumn(name = "senderID")
+<<<<<<< HEAD
 	private Members senderID;
 
 	@ManyToOne
 	@JoinColumn(name = "receiverID")
 	private Members receiverID;
 
+=======
+	@JsonIdentityReference(alwaysAsId = true)
+	private Members senderID;
+
+	@JsonProperty("senderID")
+	public void setSenderID(Integer memberID) {
+		this.senderID = new Members();
+		this.senderID.setMemberID(memberID);
+	}
+
+	@JsonProperty("senderID")
+	public Integer getSenderID() {
+		return (this.senderID != null) ? this.senderID.getMemberID() : null;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "receiverID")
+	@JsonIdentityReference(alwaysAsId = true)
+	private Members receiverID;
+
+	@JsonProperty("receiverID")
+	public void setReceiverID(Integer memberID) {
+		this.receiverID = new Members();
+		this.receiverID.setMemberID(memberID);
+	}
+	
+	@JsonProperty("receiverID")
+	public Integer getReceiverID() {
+		return (this.receiverID != null) ? this.receiverID.getMemberID() : null;
+	}
+
+>>>>>>> YuShan
 	@Column(name = "msg")
 	private String msg;
 
@@ -44,4 +87,10 @@ public class Messenger {
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date msgTime;
+
+//	@Override
+//	public String toString() {
+//		return "model.Messenger["+ msgID +"," + senderID +"," + receiverID +","+ msg +","+ msgTime +"]";
+//	}
+
 }

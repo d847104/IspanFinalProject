@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,15 +27,34 @@ public class Delivery {
 	@Column(name = "deliveryID")
 	private Integer deliveryID;
 
+<<<<<<< HEAD
 	// @ManyToOne
 	// @JoinColumn(name = "delivery")
 	@Size(max = 255)
 	private String delivery;
 	// private Delivery delivery;
+=======
+//	@ManyToOne
+//	@JoinColumn(name = "delivery")
+	@Size(max = 255)
+	private String delivery;
+//	private Delivery delivery;
+>>>>>>> YuShan
 
 	@Column(name = "deliveryFee")
 	private Integer deliveryFee;
 
 	@OneToMany(mappedBy = "delivery")
 	private List<Delivery> deliverys;
+<<<<<<< HEAD
+=======
+
+//	@Override
+//	public String toString() {
+//		return "model.Delivery["+deliveryID+","+ delivery+","+deliveryFee+"]";
+//		return deliveryID;
+//	}
+
+
+>>>>>>> YuShan
 }

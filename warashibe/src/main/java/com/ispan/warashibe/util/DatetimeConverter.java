@@ -19,12 +19,19 @@ public class DatetimeConverter {
 	public static Date parse(String datetime, String format) {
 		Date result = new Date();
 		try {
+<<<<<<< HEAD
 			if(datetime != null) {
 				result = new SimpleDateFormat(format).parse(datetime);
 			}
 		} catch (Exception e) {
 			result = new Date();
 //			e.printStackTrace();
+=======
+			result = new SimpleDateFormat(format).parse(datetime);
+		} catch (Exception e) {
+			result = new Date();
+			e.printStackTrace();
+>>>>>>> YuShan
 		}
 		return result;
 	}
