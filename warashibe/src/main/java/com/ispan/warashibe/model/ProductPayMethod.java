@@ -1,10 +1,7 @@
 package com.ispan.warashibe.model;
-<<<<<<< HEAD
-=======
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
->>>>>>> YuShan
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,9 +30,6 @@ public class ProductPayMethod {
 	
 	@ManyToOne
 	@JoinColumn(name = "payMethodID")
-<<<<<<< HEAD
-	private Members payMethodID;
-=======
 	@JsonIdentityReference(alwaysAsId = true)
 	private PayMethod payMethodID;
 
@@ -49,13 +43,9 @@ public class ProductPayMethod {
 	public Integer getpayMethodID() {
 		return (this.payMethodID != null) ? this.payMethodID.getPayMethodID() : null;
 	}
->>>>>>> YuShan
 	
 	@ManyToOne
 	@JoinColumn(name = "productID")
-<<<<<<< HEAD
-	private Members productID;
-=======
 	@JsonIdentityReference(alwaysAsId = true)
 	private Products productID;
 	
@@ -74,7 +64,5 @@ public class ProductPayMethod {
 //	public String toString() {
 //		return "model.ProductPayMethod["+id+","+ payMethodID+","+productID+"]";
 //	}
-	
-	
->>>>>>> YuShan
+
 }

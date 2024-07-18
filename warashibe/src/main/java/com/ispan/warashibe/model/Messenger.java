@@ -1,13 +1,6 @@
 package com.ispan.warashibe.model;
-<<<<<<< HEAD
-
-
-import java.util.Date;
-=======
-
 import java.util.Date;
 
->>>>>>> YuShan
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
@@ -41,14 +34,6 @@ public class Messenger {
 
 	@ManyToOne
 	@JoinColumn(name = "senderID")
-<<<<<<< HEAD
-	private Members senderID;
-
-	@ManyToOne
-	@JoinColumn(name = "receiverID")
-	private Members receiverID;
-
-=======
 	@JsonIdentityReference(alwaysAsId = true)
 	private Members senderID;
 
@@ -79,7 +64,6 @@ public class Messenger {
 		return (this.receiverID != null) ? this.receiverID.getMemberID() : null;
 	}
 
->>>>>>> YuShan
 	@Column(name = "msg")
 	private String msg;
 
