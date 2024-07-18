@@ -1,5 +1,6 @@
 package com.ispan.warashibe.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,11 +17,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+<<<<<<< HEAD
+=======
+import jakarta.persistence.Lob;
+>>>>>>> origin/dev
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -28,6 +34,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "memberID")	// 處理JACKSON循環引用
 @Getter
 @Setter
 @NoArgsConstructor
@@ -56,6 +63,7 @@ public class Members {
     @Column(name = "gender")
     private String gender;
 
+    @Lob
     @Column(name = "profileImg", columnDefinition = "image")
     private byte[] profileImg;
 
@@ -78,15 +86,25 @@ public class Members {
         if (createTime == null) {
             createTime = new java.util.Date();
         }
+        if(lastLogin == null) {
+        	lastLogin = new Date();
+        }
     }
-
+    @PreUpdate
+    protected void onUpdate() {
+        lastLogin = new Date();
+    }
+   
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "memberID")
+    @JsonIdentityReference(alwaysAsId = true)
     private List<Recepient> byRecepioent;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "receiverID")
+    @JsonIdentityReference(alwaysAsId = true)
     private List<Notification> receiverID;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "senderID")
+    @JsonIdentityReference(alwaysAsId = true)
     private List<Notification> senderID;
 
     // products @ManyToMany , @JoinColumn(name = "sellerID")
@@ -97,4 +115,19 @@ public class Members {
     @JoinTable(name = "Favorite", joinColumns = {
             @JoinColumn(name = "memberID") }, inverseJoinColumns = @JoinColumn(name = "productID"))
     private List<Products> Products;
+    
+    // mappedBy是對應屬性名稱
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "member")
+    @JsonIdentityReference(alwaysAsId = true)
+    private List<Favorite> favoritesToBuyer;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "seller")
+    @JsonIdentityReference(alwaysAsId = true)
+    private List<Favorite> favoritesToSeller;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyer")
+    private List<Orders> buyerOrders = new ArrayList<>();
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "seller")
+    private List<Orders> sellerOrders = new ArrayList<>();
 }
