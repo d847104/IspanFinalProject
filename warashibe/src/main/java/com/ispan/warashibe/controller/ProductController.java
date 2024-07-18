@@ -25,6 +25,7 @@ import com.ispan.warashibe.model.Products;
 import com.ispan.warashibe.model.SubCategory;
 import com.ispan.warashibe.service.CategoryService;
 import com.ispan.warashibe.service.ProductService;
+import com.ispan.warashibe.util.JsonUtil;
 
 @RestController
 @RequestMapping("/api/products")
@@ -34,9 +35,6 @@ public class ProductController {
 
     @Autowired
     private CategoryService categoryService;
-    
-    @Autowired
-	private ObjectMapper objectMapper;
     
     @GetMapping("/search")
     public String searchProductsByName(@RequestBody String request) throws JSONException, JsonProcessingException {
@@ -171,7 +169,7 @@ public class ProductController {
         JSONArray productList = new JSONArray();  // 創建 JSON 陣列來存放產品資料
         for (Products product : products) {
         	// 將 Products 對象轉換為 JSONObject
-            JSONObject item = new JSONObject(objectMapper.writeValueAsString(product));
+            JSONObject item = new JSONObject(JsonUtil.toJson(product));
             productList.put(item);  // 將產品 JSON 對象添加到陣列中
         }
         

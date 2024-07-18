@@ -9,6 +9,7 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,20 +20,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ispan.warashibe.model.Rank;
 import com.ispan.warashibe.service.RankService;
+import com.ispan.warashibe.util.JsonUtil;
 
 @RestController
 @RequestMapping("/api/ranks")
+@CrossOrigin
 public class RankController {
     @Autowired
     private RankService rankService;
-    
-    @Autowired
-	private ObjectMapper objectMapper;
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public String searchRanks(@RequestBody String request) throws JSONException, JsonProcessingException {
         JSONObject jsonObject = new JSONObject(request);
         Integer ranking = jsonObject.optInt("ranking", -1); // 默認值為 -1
@@ -52,8 +51,7 @@ public class RankController {
     public String getRankById(@PathVariable Integer id) throws JSONException, JsonProcessingException {
         Rank rank = rankService.findById(id);
         if (rank != null) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JSONObject jsonRank = new JSONObject(objectMapper.writeValueAsString(rank));
+            JSONObject jsonRank = new JSONObject(JsonUtil.toJson(rank));
             return jsonRank.toString();
         } else {
             JSONObject response = new JSONObject();
@@ -120,21 +118,15 @@ public class RankController {
         responseBody.put("count", ranks.size());
 
         JSONArray rankList = new JSONArray();
-        ObjectMapper objectMapper = new ObjectMapper();
         for (Rank rank : ranks) {
+        	System.out.println(rank);
             // 将 Rank 对象转换为 JSONObject
-            JSONObject item = new JSONObject(objectMapper.writeValueAsString(rank));
+            JSONObject item = new JSONObject(JsonUtil.toJson(rank));
             rankList.put(item);
         }
         
-        System.out.println(objectMapper.writeValueAsString(ranks)); // 打印调试信息
-        
         responseBody.put("list", rankList);
-        return responseBody.toString()
-        			.replace("\\", "")
-        			.replace("\"[\"", "[")
-        			.replace("\"]\"", "]")
-        			.replace("}\",\"{", "},{");
+        return responseBody.toString(); // 取代反斜线
     }
 
 }
