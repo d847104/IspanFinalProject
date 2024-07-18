@@ -11,10 +11,12 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+
 public class Products {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int productID;
+    @Column(name="productID")
+    private Integer productID;
 
     @NotNull
     @ManyToOne
@@ -57,6 +59,11 @@ public class Products {
     @OneToMany(mappedBy = "product")
     private List<ProductImg> productImgs;
 
+    @OneToMany
+	private List<ProductPayMethod> productPayMethod;
+    
+    @Column(name="productStatus")
+    private Boolean productStatus;
     // Constructors, Getters, and Setters
     public Products() {}
 

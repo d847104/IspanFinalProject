@@ -2,8 +2,11 @@ package com.ispan.warashibe.model;
 
 import java.util.Date;
 import java.util.List;
-
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -11,9 +14,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -23,8 +23,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "memberID")
+//@JsonIdentityReference(alwaysAsId = true)
+@Getter@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "Members")
@@ -83,6 +84,12 @@ public class Members {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "senderID")
     private List<Notification> senderID;
 
+    @OneToMany
+    private List<Messenger> messenger;
+//
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "senderID")
+//    private List<Messenger> senderID1;
+    
     // products @ManyToMany
 
     // @ManyToMany
