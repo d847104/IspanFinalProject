@@ -112,6 +112,10 @@ public class Members {
             @JoinColumn(name = "memberID") }, inverseJoinColumns = @JoinColumn(name = "productID"))
     private List<Products> Products;
     
+    @OneToMany(mappedBy = "member")
+    @JsonIdentityReference(alwaysAsId = true)
+    private List<Rank> ranks;
+    
     // mappedBy是對應屬性名稱
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "member")
     @JsonIdentityReference(alwaysAsId = true)

@@ -35,6 +35,9 @@ public class ProductController {
     @Autowired
     private CategoryService categoryService;
     
+    @Autowired
+	private ObjectMapper objectMapper;
+    
     @GetMapping("/search")
     public String searchProductsByName(@RequestBody String request) throws JSONException, JsonProcessingException {
         JSONObject jsonObject = new JSONObject(request);
@@ -162,7 +165,6 @@ public class ProductController {
     }
 
     private String createResponse(List<Products> products) throws JSONException, JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper(); // 用來解析 JSON 字符串
         JSONObject responseBody = new JSONObject();
         responseBody.put("count", products.size());  // 添加產品數量
         
@@ -174,7 +176,10 @@ public class ProductController {
         }
         
         responseBody.put("list", productList);  // 將產品陣列添加到主體 JSON 對象中
-        
-        return responseBody.toString();
+        return responseBody.toString()
+        		.replace("\\", "")
+    			.replace("\"[\"", "[")
+    			.replace("\"]\"", "]")
+    			.replace("\",\"", ",");
     }
 }
