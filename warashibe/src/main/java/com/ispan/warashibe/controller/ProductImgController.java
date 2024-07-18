@@ -106,17 +106,17 @@ public class ProductImgController {
         }
         return responseBody.toString();
     }
-
-    @DeleteMapping("/image/{id}")
-    public String deleteProductImgImage(@PathVariable int id) throws JSONException {
+    
+    @DeleteMapping("/product/{productId}")
+    public String deleteAllProductImgsByProductId(@PathVariable int productId) throws JSONException {
         JSONObject responseBody = new JSONObject();
         try {
-            productImgService.deleteProductImgImage(id);
+            productImgService.deleteAllProductImgsByProductId(productId);
             responseBody.put("success", true);
-            responseBody.put("message", "圖片刪除成功");
+            responseBody.put("message", "刪除所有圖片成功");
         } catch (Exception e) {
             responseBody.put("success", false);
-            responseBody.put("message", "圖片刪除失敗: " + e.getMessage());
+            responseBody.put("message", "刪除所有圖片失敗: " + e.getMessage());
         }
         return responseBody.toString();
     }

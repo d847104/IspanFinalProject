@@ -72,11 +72,11 @@ public class ProductImgService {
     public List<ProductImg> getAllProductImgs() {
         return productImgRepository.findAll();
     }
-
-    public void deleteProductImgImage(int id) throws Exception {
-        ProductImg productImg = productImgRepository.findById(id)
-                .orElseThrow(() -> new Exception("圖片未找到"));
-        productImg.setImg(null);
-        productImgRepository.save(productImg);
+    public void deleteAllProductImgsByProductId(int productId) throws Exception {
+        List<ProductImg> productImgs = productImgRepository.findByProduct_ProductID(productId);
+        if (productImgs.isEmpty()) {
+            throw new Exception("沒有找到該商品的圖片");
+        }
+        productImgRepository.deleteAll(productImgs);
     }
 }

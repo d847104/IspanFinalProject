@@ -33,28 +33,15 @@ public class CategoryController {
     @Autowired
     private ProductService productService;
 
-    @PostMapping("/recommended")
-    public String getRecommendedProducts(@RequestBody JSONObject request) throws JSONException, JsonProcessingException {
-        JSONArray categoryIdsArray = request.getJSONArray("categoryIds");
-        List<Integer> categoryIds = new ArrayList<>();
-        for (int i = 0; i < categoryIdsArray.length(); i++) {
-            categoryIds.add(categoryIdsArray.getInt(i));
-        }
-
-        List<SubCategory> categories = categoryService.getSubCategoriesByIds(categoryIds);
-        Pageable pageable = createPageRequest(request);
-        List<Products> products = productService.getRecommendedProducts(categories, pageable);
-        return createResponse(products);
-    }
-
-    @GetMapping("/category/{id}")
-    public String getProductsByCategory(@PathVariable int id, @RequestBody String request) throws JSONException, JsonProcessingException {
-    	SubCategory subCategory = categoryService.getSubCategoryById(id);
-        Pageable pageable = createPageRequest(new JSONObject(request));
-        List<Products> products = productService.getProductsBySubCategory(subCategory, pageable);
-        return createResponse(products);
-    }
-
+//	  下面這功能ProductController有一樣的,我就不重覆放一樣的功能了,後續有特別需要Category做的事情再更新
+//    @GetMapping("/category/{id}")
+//    public String getProductsByCategory(@PathVariable int id, @RequestBody String request) throws JSONException, JsonProcessingException {
+//    	SubCategory subCategory = categoryService.getSubCategoryById(id);
+//        Pageable pageable = createPageRequest(new JSONObject(request));
+//        List<Products> products = productService.getProductsBySubCategory(subCategory, pageable);
+//        return createResponse(products);
+//    }
+//
     private Pageable createPageRequest(JSONObject request) throws JSONException {
         int start = request.optInt("start", 0);
         int max = request.optInt("max", 30);

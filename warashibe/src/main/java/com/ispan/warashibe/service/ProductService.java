@@ -57,6 +57,10 @@ public class ProductService {
         Products product = objectMapper.readValue(jsonProduct, Products.class);
         productRepository.save(product);
     }
+    
+    public List<Products> getProductsByName(String name, Pageable pageable) {
+        return productRepository.findByNameContaining(name, pageable);
+    }
 
     public void updateProductFromJson(int id, String jsonProduct) throws JsonProcessingException {
         Products existingProduct = getProductById(id);

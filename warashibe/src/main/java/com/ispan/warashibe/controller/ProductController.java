@@ -34,6 +34,15 @@ public class ProductController {
 
     @Autowired
     private CategoryService categoryService;
+    
+    @GetMapping("/search")
+    public String searchProductsByName(@RequestBody String request) throws JSONException, JsonProcessingException {
+        JSONObject jsonObject = new JSONObject(request);
+        String name = jsonObject.optString("name", ""); // 默認值為空字符串
+        Pageable pageable = createPageRequest(jsonObject);
+        List<Products> products = productService.getProductsByName(name, pageable);
+        return createResponse(products);
+    }
 
     @GetMapping("/random")
     public String getRandomProducts(@RequestBody String request) throws JSONException, JsonProcessingException {
