@@ -17,6 +17,7 @@ import com.ispan.warashibe.model.Products;
 import com.ispan.warashibe.model.Recepient;
 import com.ispan.warashibe.repository.FavoriteRepository;
 import com.ispan.warashibe.repository.MembersRepository;
+import com.ispan.warashibe.repository.ProductRepository;
 import com.ispan.warashibe.repository.RecepientRepository;
 
 @Service
@@ -25,7 +26,8 @@ public class FavoriteService {
 //	@Autowired
 //	private ObjectMapper objectMapper;
 	
-	
+	@Autowired
+	private ProductRepository productRepo;
 	@Autowired
 	private MembersRepository membersRepo;
 	@Autowired
@@ -79,17 +81,14 @@ public class FavoriteService {
 		Integer productID = obj.isNull("productID") ? null : obj.getInt("productID");
 		Integer sellerID = obj.isNull("sellerID") ? null : obj.getInt("sellerID");
 
-        
         Optional<Members> member = membersRepo.findById(memberID);
         Optional<Members> seller = membersRepo.findById(sellerID);
-        // =======待修改
-        Products product = new Products();
-        product.setProductID(12);
-        
+        Optional<Products> product = productRepo.findById(productID);
+
         if(favID == null) {
         	Favorite favorite = new Favorite();
         	favorite.setMember(member.get());
-        	favorite.setProduct(product);
+        	favorite.setProduct(product.get());
         	favorite.setSeller(seller.get());
 
         	return favoriteRepo.save(favorite);
