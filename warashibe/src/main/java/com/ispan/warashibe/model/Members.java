@@ -31,7 +31,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "memberID")	// 處理JACKSON循環引用
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "memberID") // 處理JACKSON循環引用
 @Getter
 @Setter
 @NoArgsConstructor
@@ -82,15 +82,16 @@ public class Members {
         if (createTime == null) {
             createTime = new java.util.Date();
         }
-        if(lastLogin == null) {
-        	lastLogin = new Date();
+        if (lastLogin == null) {
+            lastLogin = new Date();
         }
     }
+
     @PreUpdate
     protected void onUpdate() {
         lastLogin = new Date();
     }
-   
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "memberID")
     @JsonIdentityReference(alwaysAsId = true)
     private List<Recepient> byRecepioent;
@@ -111,19 +112,19 @@ public class Members {
     @JoinTable(name = "Favorite", joinColumns = {
             @JoinColumn(name = "memberID") }, inverseJoinColumns = @JoinColumn(name = "productID"))
     private List<Products> Products;
-    
+
     // mappedBy是對應屬性名稱
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "member")
     @JsonIdentityReference(alwaysAsId = true)
     private List<Favorite> favoritesToBuyer;
-    
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "seller")
     @JsonIdentityReference(alwaysAsId = true)
     private List<Favorite> favoritesToSeller;
-    
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyer")
     private List<Orders> buyerOrders = new ArrayList<>();
-    
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "seller")
     private List<Orders> sellerOrders = new ArrayList<>();
 }
