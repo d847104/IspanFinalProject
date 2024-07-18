@@ -5,7 +5,10 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,15 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ispan.warashibe.model.Members;
+import com.ispan.warashibe.model.PageRequestDTO;
 import com.ispan.warashibe.service.MemberService;
-import com.ispan.warashibe.util.JsonWebTokenUtility;
 
-import jakarta.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 
 
@@ -162,6 +163,34 @@ public class MembersController {
         }
         return responseBody.toString();
     }
+    
+    @PostMapping("/members/paged")
+	public Page<Members> findByPage(@RequestBody PageRequestDTO pageRequestDTO) {
+        // 預設排序方向為 DESC
+        Sort.Direction direction = Sort.Direction.DESC;
+        if ("ASC".equalsIgnoreCase(pageRequestDTO.getSortDirection())) {
+            direction = Sort.Direction.ASC;
+        }
+        // 根據排序屬性和升降冪
+        Pageable pgb;
+        
+        if (pageRequestDTO.getSortBy() != null && !pageRequestDTO.getSortBy().isEmpty()) {
+        	pgb = PageRequest.of(pageRequestDTO.getPage()-1, pageRequestDTO.getSize(), direction, pageRequestDTO.getSortBy());
+        } else {
+        	pgb = PageRequest.of(pageRequestDTO.getPage()-1, pageRequestDTO.getSize());
+        	
+        }
+        Page<Members> byPage = memberService.findByPage(pgb);
+
+        // 總筆數
+        long totalElements = byPage.getTotalElements(); 
+        // 總頁數
+        long totalPages = byPage.getTotalPages();
+        
+		return byPage;
+	}
+    
+    
 	
 	
 }

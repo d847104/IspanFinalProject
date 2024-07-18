@@ -9,9 +9,10 @@ import org.springframework.stereotype.Service;
 
 import com.ispan.warashibe.model.Members;
 import com.ispan.warashibe.model.Notification;
-import com.ispan.warashibe.model.Recepient;
+import com.ispan.warashibe.model.Orders;
 import com.ispan.warashibe.repository.MembersRepository;
 import com.ispan.warashibe.repository.NotificationRepository;
+import com.ispan.warashibe.repository.OrdersRepository;
 import com.ispan.warashibe.util.DatetimeConverter;
 
 @Service
@@ -21,6 +22,8 @@ public class NotificationService {
 	private MembersRepository membersRepo;
 	@Autowired
 	private NotificationRepository notificationRepo;
+	@Autowired
+	private OrdersRepository ordersRepo;
 	
 	//查詢單筆
 	public Notification findById(Integer id) {
@@ -68,6 +71,7 @@ public class NotificationService {
         
         Optional<Members> receiver = membersRepo.findById(receiverID);
         Optional<Members> sender = membersRepo.findById(senderID);
+        Optional<Orders> order = ordersRepo.findById(orderID);
         
         
         if(notificationID == null) {
@@ -75,7 +79,7 @@ public class NotificationService {
         	notification.setNotificationID(notificationID);
         	notification.setReceiverID(receiver.get());
         	notification.setSenderID(sender.get());
-        	notification.setOrderID(null); //============================待修改
+        	notification.setOrderID(order.get());
         	notification.setContent(content);
         	notification.setNotifyDate(DatetimeConverter.parse(notifyDate, "yyyy-MM-dd"));
         	notification.setIsRead(isRead);

@@ -5,9 +5,10 @@ import java.util.Optional;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
 
 import com.ispan.warashibe.model.Members;
 import com.ispan.warashibe.repository.MembersRepository;
@@ -146,7 +147,10 @@ public class MemberService {
 		return null;
 	}
 	
-	
+	// 分頁功能
+	public Page<Members> findByPage(Pageable pageable) {
+		return membersRepo.findAll(pageable);
+	}
 	
 	// 刪除全部[選填]	
 	// 一鍵填入

@@ -99,7 +99,6 @@ public class JsonWebTokenUtility {
 
 			//取出JWT主體內容
 			String subject = claims.getSubject();
-			System.out.println("＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝這是："+subject);
 			return subject;
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -125,7 +124,6 @@ public class JsonWebTokenUtility {
 
 			//取出JWT主體內容
 			String subject = claims.getSubject();
-			System.out.println("＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝這是："+subject);
 			return subject;
 		} catch(Exception e) {
 			e.printStackTrace();
