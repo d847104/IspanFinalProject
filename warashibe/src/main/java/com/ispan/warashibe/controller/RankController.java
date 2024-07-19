@@ -3,6 +3,7 @@ package com.ispan.warashibe.controller;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -32,7 +33,7 @@ public class RankController {
     private RankService rankService;
 
     @PostMapping("/search")
-    public String searchRanks(@RequestBody String request) throws JSONException, JsonProcessingException {
+    public String searchRanks(@RequestBody String request) throws JSONException, JsonProcessingException, ParseException {
         JSONObject jsonObject = new JSONObject(request);
         Integer ranking = jsonObject.optInt("ranking", -1); // 默認值為 -1
         if (ranking == -1) {
@@ -113,20 +114,25 @@ public class RankController {
         return PageRequest.of(start, max, Sort.by(direction, order));
     }
 
-    private String createResponse(List<Rank> ranks) throws JSONException, JsonProcessingException {
+    private String createResponse(List<Rank> ranks) throws JSONException, JsonProcessingException, ParseException {
         JSONObject responseBody = new JSONObject();
         responseBody.put("count", ranks.size());
 
         JSONArray rankList = new JSONArray();
         for (Rank rank : ranks) {
-        	System.out.println(rank);
-            // 将 Rank 对象转换为 JSONObject
-            JSONObject item = new JSONObject(JsonUtil.toJson(rank));
-            rankList.put(item);
+        	// 将 Rank 对象转换为 JSONObject
+        	String item = JsonUtil.toJson(rank);
+        	// 將 JSON 字符串轉換為 JSONObject
+            JSONObject jsonObject = JsonUtil.toJSONObject(item);
+            rankList.put(jsonObject);
         }
         
         responseBody.put("list", rankList);
-        return responseBody.toString(); // 取代反斜线
+        return responseBody.toString()
+        		.replace("\\", "")
+        		.replace("\"[\"", "[")
+        		.replace("}\",\"{", "},{")
+        		.replace("\"]\"", "]"); // 防呆
     }
 
 }
