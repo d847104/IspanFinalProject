@@ -20,16 +20,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Getter
 @Setter
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "productID")
@@ -41,11 +36,18 @@ public class Products {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "memberID")
-    @JsonIgnoreProperties("productSpecs") // 防止無限遞歸
+    @JsonIgnoreProperties("products") // 防止無限遞歸
     @JsonIdentityReference(alwaysAsId = true)
+    @JoinColumn(name = "memberID")
     private Members member;
 
+    @NotNull
+    @ManyToOne
+    @JsonIgnoreProperties("products") // 防止無限遞歸
+    @JsonIdentityReference(alwaysAsId = true)
+    @JoinColumn(name = "subCategoryID")
+    private SubCategory subCategory;
+    
     @NotNull
     @Size(max = 255)
     private String productName;
@@ -55,13 +57,6 @@ public class Products {
 
     @NotNull
     private int stock;
-
-    @NotNull
-    @ManyToOne
-    @JsonIgnoreProperties("products") // 防止無限遞歸
-    @JsonIdentityReference(alwaysAsId = true)
-    @JoinColumn(name = "subCategoryID")
-    private SubCategory subCategory;
 
     @Lob
     private String description;
@@ -89,9 +84,19 @@ public class Products {
     private List<ProductSpec> productSpecs;
 
     @JsonIgnoreProperties("products") // 防止無限遞歸
-    @OneToMany(mappedBy = "product")
     @JsonIdentityReference(alwaysAsId = true)
+    @OneToMany(mappedBy = "product")
     private List<ProductImg> productImgs;
+    
+    @JsonIgnoreProperties("products") // 防止無限遞歸
+    @JsonIdentityReference(alwaysAsId = true)
+    @OneToMany(mappedBy = "product")
+    private List<Rank> ranks;
+    
+    @JsonIgnoreProperties("products") // 防止無限遞歸
+    @JsonIdentityReference(alwaysAsId = true)
+    @OneToOne(mappedBy = "product")
+    private OrderProducts orderProducts;
     
     @JsonProperty("member")
     public void setMemberById(Integer memberID) {
