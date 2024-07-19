@@ -27,7 +27,8 @@ public class OrdersService {
 					&& newOrder.getBuyer()!=null
 					&& newOrder.getDelivery()!=null
 					&& newOrder.getDeliveryFee()!=null
-					&& newOrder.getPayMethod()!=null) {	// 檢查JSON資料是否符合NOT NULL
+					&& newOrder.getPayMethod()!=null
+					&& newOrder.getTotal()!=null) {	// 檢查JSON資料是否符合NOT NULL
 				if (newOrder.getOrderID()!=null) {	// 檢查JSON是否含ID資料
 					Optional<Orders> opt = ordersRepo.findById(newOrder.getOrderID());	// 若有ID則檢查DB是否已存在該ID
 					return opt.isEmpty() ? ordersRepo.save(newOrder) : null;	// ID不存在則新增一筆,否則回傳NULL
@@ -41,7 +42,9 @@ public class OrdersService {
 		try {
 			Orders newOrder = objMapper.readValue(json, Orders.class);
 			for(Method m : newOrder.getClass().getDeclaredMethods()) {	// 檢查JSON資料是否全部符合NOT NULL
-				if(m.getName().startsWith("get") || m.getName().startsWith("is")) {if(m.invoke(newOrder)==null) return null;}
+				if(m.getName().startsWith("get") || m.getName().startsWith("is")) {
+					System.out.println(m.getName()+":"+m.invoke(newOrder));
+					if(m.invoke(newOrder)==null) return null;}
 			}
 			Optional<Orders> opt = ordersRepo.findById(newOrder.getOrderID());	// 檢查DB是否已有該ID對應資料
 			return opt.isPresent() ? ordersRepo.save(newOrder) : null;	// 若該ID存在對應資料則修改資料,否則回傳NULL
@@ -67,10 +70,10 @@ public class OrdersService {
 	}
 
 	public List<Orders> findByBuyerId(Integer buyerID) {	// 以買家ID查詢多筆
-		return ordersRepo.findAll(OrdersRepository.buyerIdEqualTo(buyerID));
+		return ordersRepo.findByBuyerId(buyerID);
 	}
 
-	public List<Orders> findBySellerId(Integer buyerID) {	// 以賣家ID查詢多筆
-		return ordersRepo.findAll(OrdersRepository.sellerIdEqualTo(buyerID));
+	public List<Orders> findBySellerId(Integer sellerID) {	// 以賣家ID查詢多筆
+		return ordersRepo.findBySellerId(sellerID);
 	}
 }
