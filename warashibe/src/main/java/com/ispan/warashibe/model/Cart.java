@@ -12,7 +12,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,7 +39,7 @@ public class Cart {
 	@JsonIdentityReference(alwaysAsId = true)
 	private Products product;
 	
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "specID", nullable = true)
 	@JsonIdentityReference(alwaysAsId = true)
 	private ProductSpec productSpec;
@@ -53,16 +52,12 @@ public class Cart {
 	@Column(name = "quantity", nullable = false)
 	private Integer quantity;
 	
-	@JsonProperty("member")
-	public void setMemberById(Integer sellerId) {
-		this.member = new Members();
-		this.member.setMemberID(sellerId);
-	}
+	/////////// 以下用於反序列化JSON ///////////
 	
-	@JsonProperty("seller")
-	public void setSellerById(Integer sellerId) {
-		this.seller = new Members();
-		this.seller.setMemberID(sellerId);
+	@JsonProperty("member")
+	public void setMemberById(Integer buyerId) {
+		this.member = new Members();
+		this.member.setMemberID(buyerId);
 	}
 	
 	@JsonProperty("product")
@@ -75,7 +70,13 @@ public class Cart {
 	public void setSpecById(Object specId) {
 		this.productSpec = new ProductSpec();
 		if(specId!=null) {
-			this.productSpec.setSpecID((Integer)specId);			
-		} this.productSpec = null;
+			this.productSpec.setSpecID((Integer)specId);
+		} else {this.productSpec = null;}
+	}	
+	
+	@JsonProperty("seller")
+	public void setSellerById(Integer sellerId) {
+		this.seller = new Members();
+		this.seller.setMemberID(sellerId);
 	}
 }

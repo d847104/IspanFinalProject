@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import com.ispan.warashibe.model.Cart;
 
 public interface CartRepository extends JpaRepository<Cart, Integer>, JpaSpecificationExecutor<Cart> {
-	default List<Cart> findByBuyerId(Integer buyerId) {
-		return findAll((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("buyer").get("memberID"), buyerId));
+	default List<Cart> findByMemberId(Integer buyerId) {
+		return findAll((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("member").get("memberID"), buyerId));
 	}
 	
 	default List<Cart> findByProductId(Integer productId) {

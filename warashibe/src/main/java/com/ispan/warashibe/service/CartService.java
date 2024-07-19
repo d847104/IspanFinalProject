@@ -21,22 +21,29 @@ public class CartService {
 	
 	public Cart create(String json) {	// 新增一筆
 		try {
-			Cart product = objMapper.readValue(json, Cart.class);
-			if (product.getMember()!=null
-					&& product.getProduct()!=null
-					&& product.getSeller()!=null
-					&& product.getQuantity()!=null) {	// 檢查JSON資料是否符合NOT NULL
-				if (product.getCartID()!=null && cartRepo.findById(product.getCartID()).isPresent()) {return null;} // 購物車存在相同ID則回傳NULL
-//				if (cartRepo.findByBuyerId(product.getMember().getMemberID())) {}
-				if (cartRepo.countByProductId(product.getProduct().getProductID())!=0) {	// 若購物車中存在相同產品ID
-					if (cartRepo.countBySpecId(product.getProductSpec().getSpecID())!=0) {	// 若購物車中存在相同產品規格ID
-						// 設置新增product資料的ID為原購物車中已存在產品ID(視同Modify),並相加數量
-						product.setCartID(cartRepo.findBySpecId(product.getProductSpec().getSpecID()).get(0).getCartID());
-						product.setQuantity(product.getQuantity() + 
-								cartRepo.findBySpecId(product.getProductSpec().getSpecID()).get(0).getQuantity());
+			Cart item = objMapper.readValue(json, Cart.class);
+			if (item.getMember()!=null
+					&& item.getProduct()!=null
+					&& item.getSeller()!=null
+					&& item.getQuantity()!=null) {	// 檢查JSON資料是否符合NOT NULL
+				if (item.getCartID()!=null && cartRepo.findById(item.getCartID()).isPresent()) {return null;} // DB存在相同ID則回傳NULL
+				List<Cart> listSameMember = cartRepo.findByMemberId(item.getMember().getMemberID());
+				if(!listSameMember.isEmpty()) {	// 存在同會員Cart資料
+					for(Cart itemSameMember:listSameMember) {	// 若同會員Cart資料存在同產品及規格,視為修改原DB資料的數量
+						if(item.getProductSpec()!=null && itemSameMember.getProductSpec()!=null) {
+							if(item.getProductSpec().getSpecID() == itemSameMember.getProductSpec().getSpecID()) {
+								item.setCartID(itemSameMember.getCartID());
+								item.setQuantity(item.getQuantity() + itemSameMember.getQuantity());
+							}
+						}
+						if(itemSameMember.getProduct().getProductID() == item.getProduct().getProductID()
+								&& item.getProductSpec() == null 
+								&& itemSameMember.getProductSpec() == null) {	// 有(無規格的)同產品ID
+							item.setCartID(itemSameMember.getCartID());
+							item.setQuantity(item.getQuantity() + itemSameMember.getQuantity());
+						}
 					}
-				}
-				return cartRepo.save(product);
+				} return cartRepo.save(item);
 			}
 		} catch (Exception e) {e.printStackTrace();}
 		return null;
@@ -73,7 +80,7 @@ public class CartService {
 		} return false;
 	}
 
-	public List<Cart> findByBuyerId(Integer buyerID) {	// 以買家ID查詢多筆
-		return cartRepo.findByBuyerId(buyerID);
+	public List<Cart> findByMemberId(Integer buyerID) {	// 以買家ID查詢多筆
+		return cartRepo.findByMemberId(buyerID);
 	}
 }
