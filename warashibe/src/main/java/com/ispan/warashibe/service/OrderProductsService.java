@@ -71,6 +71,6 @@ public class OrderProductsService {
 	}
 	
 	public List<OrderProducts> findByOrderId(Integer id) {	// 以訂單ID查詢多筆產品
-		return orderProductsRepo.findAll(OrderProductsRepository.orderIdEqualTo(id));
+		return orderProductsRepo.findByOrderId(id);
 	}
 }

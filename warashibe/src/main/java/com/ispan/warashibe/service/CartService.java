@@ -26,16 +26,17 @@ public class CartService {
 					&& product.getProduct()!=null
 					&& product.getSeller()!=null
 					&& product.getQuantity()!=null) {	// 檢查JSON資料是否符合NOT NULL
-				if (cartRepo.countByProductId(product.getProduct().getProductID())!=0) {	// 若購物車中已存在相同產品ID
-					if (cartRepo.countBySpecId(product.getProductSpec().getSpecID())!=0) {	// 若購物車中已存在相同產品規格ID
-//						product.setCartID(cartRepo.);
+				if (product.getCartID()!=null && cartRepo.findById(product.getCartID()).isPresent()) {return null;} // 購物車存在相同ID則回傳NULL
+//				if (cartRepo.findByBuyerId(product.getMember().getMemberID())) {}
+				if (cartRepo.countByProductId(product.getProduct().getProductID())!=0) {	// 若購物車中存在相同產品ID
+					if (cartRepo.countBySpecId(product.getProductSpec().getSpecID())!=0) {	// 若購物車中存在相同產品規格ID
+						// 設置新增product資料的ID為原購物車中已存在產品ID(視同Modify),並相加數量
+						product.setCartID(cartRepo.findBySpecId(product.getProductSpec().getSpecID()).get(0).getCartID());
+						product.setQuantity(product.getQuantity() + 
+								cartRepo.findBySpecId(product.getProductSpec().getSpecID()).get(0).getQuantity());
 					}
 				}
-				if (product.getCartID()!=null) {	// 檢查JSON是否含ID資料
-					Optional<Cart> opt = cartRepo.findById(product.getCartID());	// 若有ID則檢查DB是否已存在該ID
-					return opt.isEmpty() ? cartRepo.save(product) : null;	// ID不存在則新增一筆,否則回傳NULL
-				}
-				return cartRepo.save(product);	// 若JSON未提供ID則視為自動產生ID新增一筆
+				return cartRepo.save(product);
 			}
 		} catch (Exception e) {e.printStackTrace();}
 		return null;
@@ -73,6 +74,6 @@ public class CartService {
 	}
 
 	public List<Cart> findByBuyerId(Integer buyerID) {	// 以買家ID查詢多筆
-		return cartRepo.findAll(CartRepository.buyerIdEqualTo(buyerID));
+		return cartRepo.findByBuyerId(buyerID);
 	}
 }

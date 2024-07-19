@@ -70,10 +70,10 @@ public class OrdersService {
 	}
 
 	public List<Orders> findByBuyerId(Integer buyerID) {	// 以買家ID查詢多筆
-		return ordersRepo.findAll(OrdersRepository.buyerIdEqualTo(buyerID));
+		return ordersRepo.findByBuyerId(buyerID);
 	}
 
-	public List<Orders> findBySellerId(Integer buyerID) {	// 以賣家ID查詢多筆
-		return ordersRepo.findAll(OrdersRepository.sellerIdEqualTo(buyerID));
+	public List<Orders> findBySellerId(Integer sellerID) {	// 以賣家ID查詢多筆
+		return ordersRepo.findBySellerId(sellerID);
 	}
 }
