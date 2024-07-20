@@ -20,41 +20,27 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Getter
 @Setter
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "productID")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "productID")
 @Entity
 public class Products {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer productID;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer productID;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "memberID")
-    @JsonIgnoreProperties("productSpecs") // 防止無限遞歸
+    @JsonIgnoreProperties("products") // 防止無限遞歸
     @JsonIdentityReference(alwaysAsId = true)
+    @JoinColumn(name = "memberID")
     private Members member;
-
-    @NotNull
-    @Size(max = 255)
-    private String productName;
-
-    @NotNull
-    private int price;
-
-    @NotNull
-    private int stock;
 
     @NotNull
     @ManyToOne
@@ -62,36 +48,56 @@ public class Products {
     @JsonIdentityReference(alwaysAsId = true)
     @JoinColumn(name = "subCategoryID")
     private SubCategory subCategory;
+    
+    @NotNull
+    @Size(max = 255)
+    private String productName;
+
+	@NotNull
+	private int price;
+
+	@NotNull
+	private int stock;
 
     @Lob
     private String description;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
-    @NotNull
-    private Date uploadDate;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
+	@NotNull
+	private Date uploadDate;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
-    @NotNull
-    private Date updateTime;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
+	@NotNull
+	private Date updateTime;
 
-    @NotNull
-    private boolean isSecondHand;
-    
-    @Column(name = "productStatus")
+	@NotNull
+	private boolean isSecondHand;
+
+	@Column(name = "productStatus")
 	private Boolean productStatus;
 
-    @Lob
-    private String wishItem;
+	@Lob
+	private String wishItem;
+
+	@JsonIgnoreProperties("products") // 防止無限遞歸
+	@JsonIdentityReference(alwaysAsId = true)
+	@OneToMany(mappedBy = "product")
+	private List<ProductSpec> productSpecs;
 
     @JsonIgnoreProperties("products") // 防止無限遞歸
     @JsonIdentityReference(alwaysAsId = true)
     @OneToMany(mappedBy = "product")
-    private List<ProductSpec> productSpecs;
-
-    @JsonIgnoreProperties("products") // 防止無限遞歸
-    @OneToMany(mappedBy = "product")
-    @JsonIdentityReference(alwaysAsId = true)
     private List<ProductImg> productImgs;
+    
+    @JsonIgnoreProperties("products") // 防止無限遞歸
+    @JsonIdentityReference(alwaysAsId = true)
+    @OneToMany(mappedBy = "product")
+    private List<Rank> ranks;
+    
+    @JsonIgnoreProperties("products") // 防止無限遞歸
+    @JsonIdentityReference(alwaysAsId = true)
+    @OneToOne(mappedBy = "product")
+    private OrderProducts orderProducts;
     
     @JsonProperty("member")
     public void setMemberById(Integer memberID) {
@@ -104,4 +110,8 @@ public class Products {
     	this.subCategory = new SubCategory();
     	this.subCategory.setSubCategoryID(subCategoryID);
     }
+
+    @OneToMany(mappedBy = "product")
+	@JsonIdentityReference(alwaysAsId = true)
+	private List<Cart> cart;
 }

@@ -1,5 +1,8 @@
 package com.ispan.warashibe.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,21 +19,45 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name="ProductDelivery")
+@Table(name = "ProductDelivery")
 public class ProductDelivery {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id")
+	@Column(name = "id")
 	private Integer id;
-	
-//	@Column(name="deliveryID")
+
 	@ManyToOne
 	@JoinColumn(name = "deliveryID")
-	private Members deliveryID;
-	
-//	@Column(name="productID")
+
+	@JsonIdentityReference(alwaysAsId = true)
+	private Delivery delivery;
+
 	@ManyToOne
 	@JoinColumn(name = "productID")
-	private Members productID;
+	@JsonIdentityReference(alwaysAsId = true)
+	private Products productID;
+
+	@JsonProperty("delivery")
+	public void setDeliveryID(Integer delivery) {
+		this.delivery = new Delivery();
+		this.delivery.setDeliveryID(delivery);
+	}
+
+	@JsonProperty("deliveryID")
+	public Integer getDeliveryID() {
+		return (this.delivery != null) ? this.delivery.getDeliveryID() : null;
+	}
+
+	@JsonProperty("productID")
+	public void setProductID(Integer productId) {
+		this.productID = new Products();
+		this.productID.setProductID(productId);
+	}
+
+	@JsonProperty("productID")
+	public Integer getProductID() {
+		return (this.productID != null) ? this.productID.getProductID() : null;
+	}
+
 }
