@@ -85,7 +85,7 @@ if (!user.value) {
 
 <style scoped>
 .navbar {
-padding: 15px 30px;
+padding: 5px 15px;
 background-color: #343a40;
 border-bottom: 1px solid #e7e7e7;
 font-size: 1.5rem;
