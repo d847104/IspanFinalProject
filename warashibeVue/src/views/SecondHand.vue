@@ -1,17 +1,20 @@
 <template>
-        <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
+        <div>
             <compCard v-for="product in products" :key="product.productID" :product="product"></compCard>
         </div>
+        <!-- <InfiniteLoading @infinite="load" /> -->
 </template>
 
 <script setup>
     import { ref, onMounted, onUpdated } from 'vue';
     import compCard from '@/components/compCard.vue'
     import callFind from '@/plugins/product_find';
+    import InfiniteLoading from 'v3-infinite-loading';
+    import 'v3-infinite-loading/lib/style.css';
 
     const products = ref([]);
     const start = ref(0);
-    const rows = ref(12);
+    const rows = ref(4);
     const currentPage = ref(0);
     const totalPages = ref(0);
     const total = ref(0);
@@ -21,31 +24,22 @@
         callFind(products,start,rows,currentPage,totalPages,total,lastPageRows);
     })
 
+    var viewHeight = 180;
     onUpdated(()=>{
         const cards = document.querySelectorAll(".card");
         var r;
         cards.forEach(card=>{
-            r = Math.floor(Math.random()*180);
+            r = Math.floor(Math.random()*viewHeight);
             card.style.margin = r + "px";
         })
     })
-
-    const loadMore = async () => {
-        if (busy.value || currentPage.value >= totalPages.value) return
-        busy.value = true
-
-        // 更新 start 和 currentPage 值
-        start.value = currentPage.value * rows.value
-        currentPage.value += 1
-
-        try {
-            // 加载更多数据
-            await callFind(products, start, rows, currentPage, totalPages, total, lastPageRows)
-        } catch (error) {
-            console.error(error)
-        } finally {
-            busy.value = false
-        }
+    console.log(products.length)
+    const load = async $state => {
+        console.log("loading...");
+        viewHeight += 180;
+        callFind(products,start,rows,currentPage,totalPages,total,lastPageRows,currentPage + 1);
+        if(products.value.length < rows.value) {$state.complete();}
+        else{$state.loaded();}
     }
 </script>
 
