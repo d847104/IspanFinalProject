@@ -1,15 +1,7 @@
-import { ref, onMounted } from "vue";
 import axiosapi from "@/plugins/axios.js";
 import Swal from "sweetalert2";
 
-const products = ref([]);
-const start = ref(0);
-const rows = ref(4);
-const currentPage = ref(0);
-const totalPages = ref(0);
-const lastPageRows = ref(0);
-
-function callFind(page) {
+async function callFind(products,start,rows,currentPage,totalPages,total,lastPageRows,page) {
         if(page){
                 start.value = (page-1) * rows.value;
                 currentPage.value = page;
