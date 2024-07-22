@@ -1,100 +1,66 @@
 <template>
-<nav class="navbar navbar-dark bg-dark fixed-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container-fluid">
     <!-- 網站LOGO -->
     <RouterLink class="navbar-brand" to="/">
-        <img src="@/assets/logo.png" alt="Logo" class="logo">
+        <img src="@/assets/logo.png" alt="Logo" class="logo navbar-brand">
     </RouterLink>
-    
-    <!-- 左側導航連結 -->
-    <ul class="navbar-nav inline-nav">
+    <!-- 漢堡選單按鈕 -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mb-2 mb-lg-0 w-100">
+        <!-- 左側導航連結 -->
         <li class="nav-item">
-        <RouterLink class="nav-link" to="/">Home</RouterLink>
+            <RouterLink class="nav-link" to="/">首頁</RouterLink>
         </li>
         <li class="nav-item">
-        <RouterLink class="nav-link" to="#">商品分類</RouterLink>
+            <RouterLink class="nav-link" to="#">商品分類</RouterLink>
         </li>
         <li class="nav-item">
-        <RouterLink class="nav-link" to="#">商城/二手</RouterLink>
+            <RouterLink class="nav-link" to="#">商城/二手</RouterLink>
         </li>
-        <li class="nav-item">
-        <RouterLink class="nav-link" to="#">
-            <font-awesome-icon icon="fa-solid fa-shopping-cart" />
-        </RouterLink>
-        </li>
-    </ul>
-    
-    <!-- 搜尋列 -->
-    <form class="d-flex search-form" role="search">
-        <input class="form-control me-2 search-bar" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success search-button" type="submit">
-        <font-awesome-icon icon="fa-solid fa-search" />
-        </button>
-    </form>
-
-    <ul class="navbar-nav inline-nav">
-        <!-- 聊天室 -->
-        <li class="nav-item">
-        <RouterLink class="nav-link" to="#">
+        <!-- 搜尋列 -->
+        <form class="d-flex search-form d-none d-lg-flex mx-auto" role="search">
+            <input class="form-control me-1 search-bar" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success search-button" type="submit">
+            <font-awesome-icon icon="fa-solid fa-search" />
+            </button>
+        </form>
+        <!-- 右側功能選單 -->
+        <li class="nav-item d-none d-lg-block">
+            <RouterLink class="nav-link" to="#">
             <font-awesome-icon icon="fa-solid fa-comments" />
-        </RouterLink>
+            </RouterLink>
         </li>
-        <!-- 小鈴鐺 -->
-        <li class="nav-item">
-        <RouterLink class="nav-link" to="#">
+        <li class="nav-item d-none d-lg-block">
+            <RouterLink class="nav-link" to="#">
             <font-awesome-icon icon="fa-solid fa-bell" />
-        </RouterLink>
+            </RouterLink>
         </li>
-        <!-- 登入 -->
-        <li class="nav-item" v-show="!user">
-            <RouterLink class="nav-link" to="/secure">登入</RouterLink>
+        <li class="nav-item">
+            <RouterLink class="nav-link" to="/secure/login">登入</RouterLink>
         </li>
-
-        <!-- 註冊 -->
-        <li class="nav-item" v-show="!user">
+        <li class="nav-item">
             <RouterLink class="nav-link" to="#">註冊</RouterLink>
         </li>
-        
-        <!-- 會員資訊 -->
-        <li class="nav-item" v-show="user">
-            <RouterLink class="nav-link" to="#">會員資訊</RouterLink>
-        </li>
-    </ul>
-    
-    <!-- 右側功能選單(漢堡選單) -->
-    <ul class="navbar-nav">
         <li class="nav-item">
-        <button class="btn nav-link" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
-            <font-awesome-icon icon="fa-solid fa-bars" />
-        </button>
+            <RouterLink class="nav-link" to="/secure/member">會員中心</RouterLink>
         </li>
-    </ul>
-    </div>
-
-    <!-- Offcanvas 菜單 -->
-    <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">會員相關</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    
-    <div class="offcanvas-body">
-        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">        
-            <li class="nav-item">
-                <RouterLink class="nav-link" to="#" @click="checkAuth('/profile')">會員基本資料</RouterLink>
-            </li>
-            <li class="nav-item">
-                <RouterLink class="nav-link" to="#" @click="checkAuth('/buyer-orders')">買家訂單管理</RouterLink>
-            </li>
-            <li class="nav-item">
-                <RouterLink class="nav-link" to="#" @click="checkAuth('/seller-orders')">賣家訂單管理</RouterLink>
-            </li>
-            <li class="nav-item">
-                <RouterLink class="nav-link" to="#" @click="checkAuth('/seller-products')">賣家商品管理</RouterLink>
-            </li>
-            <li class="nav-item">
-                <RouterLink class="nav-link" to="#" @click="checkAuth('/add-product')">上架商品頁面</RouterLink>
-            </li>
+        <!-- 會員相關 Dropdown List -->
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            會員相關
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+            <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/profile')">會員基本資料</RouterLink></li>
+            <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/buyer-orders')">買家訂單</RouterLink></li>
+            <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller-orders')">賣家訂單</RouterLink></li>
+            <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller-products')">賣家商品管理</RouterLink></li>
+            <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/add-product')">上架商品</RouterLink></li>
+            </ul>
+        </li>
         </ul>
     </div>
     </div>
@@ -119,55 +85,52 @@ if (!user.value) {
 
 <style scoped>
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-    background-color: #343a40;
-    border-bottom: 1px solid #e7e7e7;
-    font-size: 1.5rem;
-    position: fixed; /* 固定在顶部 */
-    top: 0; /* 从顶部开始 */
-    left: 0; /* 从左侧开始 */
-    right: 0; /* 从右侧开始 */
-    z-index: 1000; /* 确保在其他元素之上 */
+padding: 15px 30px;
+background-color: #343a40;
+border-bottom: 1px solid #e7e7e7;
+font-size: 1.5rem;
 }
 
 .logo {
-    width: 100px;
-    height: auto;
+width: 100px;
+height: auto;
 }
 
 .nav-item {
-    margin: 0 15px;
-    text-decoration: none;
-    color: #fff;
+margin: 0 15px;
+text-decoration: none;
+color: #fff;
 }
 
 .nav-link {
-    font-size: 1.5rem;
-}
-
-.inline-nav {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+font-size: 1.5rem;
 }
 
 .search-form {
-    width: 50%;
-    max-width: 800px;
-    margin: 0 auto;
+width: 30%; /* 調整搜尋框寬度 */
+max-width: 1000px;
 }
 
 .search-bar {
-    width: 100%;
-    padding: 10px;
-    font-size: 1.5rem;
+width: 100%;
+padding: 10px;
+font-size: 1.5rem;
 }
 
 .search-button {
-    padding: 10px 15px;
-    font-size: 1.5rem;
+padding: 10px 15px;
+font-size: 1.5rem;
+}
+
+.w-100 {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+@media (max-width: 992px) {
+.search-form {
+    display: none;
+}
 }
 </style>
