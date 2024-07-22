@@ -47,7 +47,7 @@
         </li>
         <!-- 登入 -->
         <li class="nav-item" v-show="!user">
-            <RouterLink class="nav-link" to="#">登入</RouterLink>
+            <RouterLink class="nav-link" to="/secure">登入</RouterLink>
         </li>
 
         <!-- 註冊 -->
@@ -74,7 +74,7 @@
     <!-- Offcanvas 菜單 -->
     <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Dark offcanvas</h5>
+        <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">會員相關</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     
@@ -119,50 +119,55 @@ if (!user.value) {
 
 <style scoped>
 .navbar {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 15px 30px; /* 放大 padding */
-background-color: #343a40;
-border-bottom: 1px solid #e7e7e7;
-font-size: 1.5rem; /* 放大整個導航列的字體 */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #343a40;
+    border-bottom: 1px solid #e7e7e7;
+    font-size: 1.5rem;
+    position: fixed; /* 固定在顶部 */
+    top: 0; /* 从顶部开始 */
+    left: 0; /* 从左侧开始 */
+    right: 0; /* 从右侧开始 */
+    z-index: 1000; /* 确保在其他元素之上 */
 }
 
 .logo {
-width: 100px; /* 放大 logo */
-height: auto;
+    width: 100px;
+    height: auto;
 }
 
 .nav-item {
-margin: 0 15px; /* 放大 margin */
-text-decoration: none;
-color: #fff;
+    margin: 0 15px;
+    text-decoration: none;
+    color: #fff;
 }
 
 .nav-link {
-font-size: 1.5rem; /* 放大導航連結的字體 */
+    font-size: 1.5rem;
 }
 
 .inline-nav {
-display: flex;
-flex-direction: row;
-align-items: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .search-form {
-width: 50%; /* 放大搜尋列的最大寬度 */
-max-width: 800px;
-margin: 0 auto; /* 置中顯示 */
+    width: 50%;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .search-bar {
-width: 100%;
-padding: 10px; /* 放大 padding */
-font-size: 1.5rem; /* 放大字體 */
+    width: 100%;
+    padding: 10px;
+    font-size: 1.5rem;
 }
 
 .search-button {
-padding: 10px 15px; /* 放大 padding */
-font-size: 1.5rem; /* 放大字體 */
+    padding: 10px 15px;
+    font-size: 1.5rem;
 }
 </style>

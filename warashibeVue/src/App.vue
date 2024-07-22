@@ -1,6 +1,8 @@
 <template>
-  <Navigation></Navigation>
-  <RouterView></RouterView>
+  <div class="app-container">
+    <Navigation></Navigation>
+    <RouterView></RouterView>
+  </div>
 </template>
   
 <script setup>
@@ -17,4 +19,8 @@
     })
 </script>
   
-<style></style>
+<style>
+  .app-container {
+    padding-top: 7%; /* Adjust this value based on Navbar height */
+  }
+</style>
