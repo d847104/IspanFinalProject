@@ -36,7 +36,6 @@ public class FavoriteController {
         JSONObject responseBody = new JSONObject();
         JSONArray array = new JSONArray();
         Favorite favorite = favoriteService.findById(id);
-		
         if(favorite != null) {
     			array = array.put(new JSONObject(objectMapper.writeValueAsString(favorite)));
         }
@@ -53,7 +52,6 @@ public class FavoriteController {
         if(allFavorite != null) {
         	for(Favorite favorite : allFavorite) {
         		JSONObject item = new JSONObject(objectMapper.writeValueAsString(favorite));
-     
         		array.put(item);
         	}
         }
