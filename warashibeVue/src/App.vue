@@ -13,7 +13,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import NavBar from './views/NavBar.vue'
 // import 'bootstrap-vue/dist/bootstrap-vue'
 // import Navigation from './views/Navigation.vue'
-
+import { RouterView } from 'vue-router';
 </script>
 
 <style></style>

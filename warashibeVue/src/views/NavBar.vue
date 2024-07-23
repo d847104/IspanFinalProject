@@ -1,10 +1,9 @@
 <template>
-
     <div class="">
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
                 <img src="/src/img/ss.png" href="#">
-                <a class="navbar-brand" href="#">物換心儀</a>
+                <RouterLink class="navbar-brand" :to="{ name: 'home-link' }">物換心儀</RouterLink>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -20,7 +19,7 @@
                             <input class="form-control me-2" type="search" placeholder="輸入搜尋條件" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Search</button>
                         </form>
-                        <li class="nav-item dropdown">
+                        <!-- <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                 aria-expanded="false">
                                 商品分類
@@ -33,6 +32,9 @@
                                 </li>
                                 <li><a class="dropdown-item" href="#">Something else here</a></li>
                             </ul>
+                        </li> -->
+                        <li class="nav-item">
+                            <RouterLink class="nav-link" :to="{ path: '/buyer/buyerorder' }">購物訂單管理</RouterLink>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">聊天室</a>
@@ -61,118 +63,14 @@
 
 
     </div>
-    <br><br>
 
-    <nav class="nav flex-column w-25 p-3">
-        <a class="nav-link" href="#">服飾</a>
-        <a class="nav-link" href="#">圖書</a>
-        <a class="nav-link" href="#">3C用品</a>
-        <a class="nav-link" href="#">生活用品</a>
-        <a class="nav-link" href="#">家電用品</a>
-        <a class="nav-link" href="#">運動用品</a>
-        <a class="nav-link" href="#">寵物用品</a>
-        <a class="nav-link active" aria-current="page" href="#">嬰幼兒用品</a>
-        <!-- <a class="nav-link disabled" aria-disabled="true">Disabled</a> -->
-    </nav>
-    <div class="container">
-        <div class="text-left">
-            <h4>熱門商品</h4>
-        </div>
-        <div class="card d-inline-flex p-2 mb-3 mx-2" style="max-width: 225px;">
-            <img src="/src/img/馬克杯8807.jpg" class="card-img-top" alt="...">
 
-            <div class="card-body">
-                <h5 class="card-title">【馬克杯】</h5>
-                <p class="card-text">「單色馬克杯」『單色馬克杯』【單色馬克杯】</p>
-                <a href="#" class="btn btn-secondary btn-sm mx-1">商品介紹</a>
-                <a href="#" class="btn btn-secondary btn-sm ">加入購物車</a>
-            </div>
-        </div>
-
-        <div class="card d-inline-flex p-2 mx-2" style="max-width: 225px;">
-            <img src="/src/img/馬克杯21569.jpg" class="card-img-top" alt="...">
-
-            <div class="card-body">
-                <h5 class="card-title">馬克杯</h5>
-                <p class="card-text">「單色馬克杯」『單色馬克杯』【單色馬克杯】</p>
-                <a href="#" class="btn btn-secondary btn-sm mx-1">商品介紹</a>
-                <a href="#" class="btn btn-secondary btn-sm ">加入購物車</a>
-            </div>
-        </div>
-        <div class="card d-inline-flex p-2 mx-2" style="max-width: 225px;">
-            <img src="/src/img/馬克杯36344.jpg" class="card-img-top" alt="...">
-
-            <div class="card-body">
-                <h5 class="card-title">馬克杯</h5>
-                <p class="card-text">「單色馬克杯」『單色馬克杯』【單色馬克杯】</p>
-                <a href="#" class="btn btn-secondary btn-sm mx-1">商品介紹</a>
-                <a href="#" class="btn btn-secondary btn-sm ">加入購物車</a>
-            </div>
-        </div>
-        <div class="card d-inline-flex p-2 mx-2" style="max-width: 225px;">
-            <img src="/src/img/馬克杯8807.jpg" class="card-img-top" alt="...">
-
-            <div class="card-body">
-                <h5 class="card-title">馬克杯</h5>
-                <p class="card-text">「單色馬克杯」『單色馬克杯』【單色馬克杯】</p>
-                <a href="#" class="btn btn-secondary btn-sm mx-1">商品介紹</a>
-                <a href="#" class="btn btn-secondary btn-sm ">加入購物車</a>
-            </div>
-        </div>
-        <div class="card d-inline-flex p-2 mx-2" style="max-width: 225px;">
-            <img src="/src/img/馬克杯21569.jpg" class="card-img-top" alt="...">
-
-            <div class="card-body">
-                <h5 class="card-title">馬克杯</h5>
-                <p class="card-text">「單色馬克杯」『單色馬克杯』【單色馬克杯】</p>
-                <a href="#" class="btn btn-secondary btn-sm mx-1">商品介紹</a>
-                <a href="#" class="btn btn-secondary btn-sm ">加入購物車</a>
-            </div>
-        </div>
-    </div>
-    <br>
-    <div class="container">
-        <div class="text-left">
-            <h4>推薦給您</h4>
-        </div>
-        <div class="card d-inline-flex p-2 mb-3 mx-2" style="max-width: 225px;">
-            <img src="/src/img/馬克杯84089.jpg" class="card-img-top" alt="...">
-
-            <div class="card-body">
-                <h5 class="card-title">馬克杯</h5>
-                <p class="card-text">「單色馬克杯」『單色馬克杯』【單色馬克杯】</p>
-                <a href="#" class="btn btn-secondary btn-sm mx-1">商品介紹</a>
-                <a href="#" class="btn btn-secondary btn-sm ">加入購物車</a>
-            </div>
-        </div>
-
-        <div class="card d-inline-flex p-2 mx-2" style="max-width: 225px;">
-            <img src="/src/img/馬克杯88795.jpg" class="card-img-top" alt="...">
-
-            <div class="card-body">
-                <h5 class="card-title">馬克杯</h5>
-                <p class="card-text">「單色馬克杯」『單色馬克杯』【單色馬克杯】</p>
-                <a href="#" class="btn btn-secondary btn-sm mx-1">商品介紹</a>
-                <a href="#" class="btn btn-secondary btn-sm ">加入購物車</a>
-            </div>
-        </div>
-        <div class="card d-inline-flex p-2 mx-2" style="max-width: 225px;">
-            <img src="/src/img/馬克杯27117.jpg" class="card-img-top" alt="...">
-
-            <div class="card-body">
-                <h5 class="card-title">馬克杯</h5>
-                <p class="card-text">「單色馬克杯」『單色馬克杯』【單色馬克杯】</p>
-                <a href="#" class="btn btn-secondary btn-sm mx-1">商品介紹</a>
-                <a href="#" class="btn btn-secondary btn-sm ">加入購物車</a>
-            </div>
-        </div>
-    </div>
 </template>
 
 <script setup>
-//     .card{
-//     margin-right:20px;
-// }
+import { RouterLink } from 'vue-router';
+
+
 
 </script>
 
