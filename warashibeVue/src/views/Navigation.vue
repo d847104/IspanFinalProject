@@ -16,7 +16,7 @@
             <RouterLink class="nav-link" to="/">首頁</RouterLink>
         </li>
         <li class="nav-item">
-            <RouterLink class="nav-link" to="#">商品分類</RouterLink>
+            <RouterLink class="nav-link" to="/pages/productpage">商品分類</RouterLink>
         </li>
         <li class="nav-item">
             <RouterLink class="nav-link" to="#">商城/二手</RouterLink>
@@ -46,7 +46,7 @@
             <RouterLink class="nav-link" to="#">註冊</RouterLink>
         </li>
         <li class="nav-item">
-            <RouterLink class="nav-link" to="/secure/member">會員中心</RouterLink>
+            <RouterLink class="nav-link" :to="{path:'/secure/member'}">會員中心</RouterLink>
         </li>
         <!-- 會員相關 Dropdown List -->
         <li class="nav-item dropdown">
@@ -65,6 +65,7 @@
     </div>
     </div>
 </nav>
+
 </template>
 
 <script setup>
