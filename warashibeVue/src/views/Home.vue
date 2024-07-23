@@ -1,6 +1,5 @@
 <template>
     <div>
-        <Navbar />
         <div class="homepage-content">
         <div class="sidebar">
             <h3>商品分類</h3>

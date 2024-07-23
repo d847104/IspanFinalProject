@@ -1,7 +1,6 @@
 <!-- src/views/Login.vue -->
 <template>
     <div>
-        <Navbar />
         <div class="login-form">
             <h2>登入會員</h2>
             <input type="text" placeholder="請輸入帳號">
@@ -14,7 +13,6 @@
 </template>
 
 <script>
-    import Navbar from '../Navigation.vue';
 </script>
 
 <style scoped>

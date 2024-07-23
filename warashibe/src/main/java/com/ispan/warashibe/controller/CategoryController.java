@@ -1,6 +1,5 @@
 package com.ispan.warashibe.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,11 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ispan.warashibe.model.MainCategory;
 import com.ispan.warashibe.model.Products;
 import com.ispan.warashibe.model.SubCategory;
 import com.ispan.warashibe.service.CategoryService;
 import com.ispan.warashibe.service.ProductService;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/categories")
 public class CategoryController {
@@ -32,6 +34,9 @@ public class CategoryController {
 
     @Autowired
     private ProductService productService;
+    
+    @Autowired
+    private ObjectMapper objMapper;
 
 //	  下面這功能ProductController有一樣的,我就不重覆放一樣的功能了,後續有特別需要Category做的事情再更新
 //    @GetMapping("/category/{id}")
@@ -42,6 +47,58 @@ public class CategoryController {
 //        return createResponse(products);
 //    }
 //
+    @GetMapping("/mainCategory/all")
+    public String getMainCategory() {
+    	JSONObject responseBody = new JSONObject();
+    	List<MainCategory> mainCategories = categoryService.getAllMainCategories();
+    	try {responseBody.put("list", new JSONArray(objMapper.writeValueAsString(mainCategories)));}
+    	catch (Exception e) {e.printStackTrace();}
+        return responseBody.toString();
+    }
+    
+    @GetMapping("/subCategory/all")
+    public String getSubCategory() {
+    	JSONObject responseBody = new JSONObject();
+    	List<SubCategory> subCategories = categoryService.getAllSubCategories();
+    	try {responseBody.put("list", new JSONArray(objMapper.writeValueAsString(subCategories)));}
+    	catch (Exception e) {e.printStackTrace();}
+        return responseBody.toString();
+    }
+    
+    
+    @GetMapping("/mainCategory/{id}")
+    public String getSubCategoryByMain(@PathVariable Integer id) {
+    	JSONObject responseBody = new JSONObject();
+    	JSONArray array = new JSONArray();
+    	List<SubCategory> subCategories = categoryService.getSubCategoriesByMain(id);
+    	for(SubCategory category : subCategories) {
+    		if(category!=null) {
+    			try {array.put(new JSONObject(objMapper.writeValueAsString(category)));}
+    			catch (Exception e) {e.printStackTrace();}
+    		}
+    	}
+    	try {responseBody.put("list", array);} catch (Exception e) {e.printStackTrace();}
+        return responseBody.toString();
+    }
+    
+    @PostMapping("/mainCategory/create")
+    public String createMainCategory(@RequestBody String body) throws JSONException {
+    	JSONObject responseBody = new JSONObject();
+		MainCategory mainCategory = categoryService.createMainCategory(body);
+		return mainCategory!=null ?
+				responseBody.put("success", true).put("message", "新增成功").toString() :
+					responseBody.put("success", false).put("message", "新增失敗").toString();
+	}
+    
+    @PostMapping("/subCategory/create")
+    public String subMainCategory(@RequestBody String body) throws JSONException {
+    	JSONObject responseBody = new JSONObject();
+		SubCategory subCategory = categoryService.createSubCategory(body);
+		return subCategory!=null ?
+				responseBody.put("success", true).put("message", "新增成功").toString() :
+					responseBody.put("success", false).put("message", "新增失敗").toString();
+	}
+    
     private Pageable createPageRequest(JSONObject request) throws JSONException {
         int start = request.optInt("start", 0);
         int max = request.optInt("max", 30);

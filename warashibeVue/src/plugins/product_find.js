@@ -18,7 +18,7 @@ function callFind(products,start,rows,currentPage,totalPages,total,lastPageRows,
         }
         axiosapi.post("/api/products/search",request)
         .then(function(response){
-                products.value = products.value.concat(response.data.list);
+                products.value = response.data.list;
                 total.value = response.data.count;
                 totalPages.value = Math.ceil(total.value/rows.value);
                 lastPageRows.value = total.value % rows.value;

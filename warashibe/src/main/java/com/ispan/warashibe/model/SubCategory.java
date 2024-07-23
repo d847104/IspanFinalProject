@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Entity;
@@ -26,7 +26,7 @@ import lombok.Setter;
 public class SubCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int subCategoryID;
+    private Integer subCategoryID;
 
     @NotNull
     @Size(max = 255)
@@ -34,12 +34,17 @@ public class SubCategory {
 
     @NotNull
     @ManyToOne
-    
     @JoinColumn(name = "mainCategoryID")
-    @JsonIgnoreProperties("subCategories") // 防止無限遞歸
+    @JsonIdentityReference(alwaysAsId = true)
     private MainCategory mainCategory;
 
-    @JsonIgnoreProperties("subCategory") // 防止無限遞歸
     @OneToMany(mappedBy = "subCategory")
+    @JsonIdentityReference(alwaysAsId = true)
     private List<Products> products;
+    
+    @JsonProperty("mainCategory")
+    public void setMainCategoryById(Integer mainCategoryId) {
+    	this.mainCategory = new MainCategory();
+    	this.mainCategory.setMainCategoryID(mainCategoryId);
+    }
 }

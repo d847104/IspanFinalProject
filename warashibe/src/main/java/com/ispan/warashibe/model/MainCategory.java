@@ -2,7 +2,9 @@ package com.ispan.warashibe.model;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,17 +19,17 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "mainCategoryID")
 public class MainCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int mainCategoryID;
+    private Integer mainCategoryID;
 
     @NotNull
     @Size(max = 255)
     private String mainCategory;
 
     @OneToMany(mappedBy = "mainCategory")
-    @JsonIgnoreProperties("mainCategory") // 防止無限遞歸
+    @JsonIdentityReference(alwaysAsId = true)
     private List<SubCategory> subCategories;
-
 }
