@@ -1,13 +1,15 @@
 // src/router.js
 import { createRouter, createWebHistory } from 'vue-router';
-import Login from '../views/secure/Login.vue';
-import Member from '../views/secure/Member.vue';
-import Home from '../views/Home.vue';
+import Home from '@/views/Home.vue';
+import NotFound from '@/views/NotFound.vue';
+import routerPages from '@/views/pages/router-pages';
+import routerSecure from '@/views/secure/router-secure';
 
 const routes = [
     { name: "home", path: '/', component: Home },
-    { name: "login", path: '/secure/login', component: Login },
-    { name: "member", path: '/secure/member', component: Member },
+    { name: "notfound-link", path: "/:pathMatch(.*)*", component: NotFound },
+    ...routerSecure,
+    ...routerPages
 ];
 
 const router = createRouter({
