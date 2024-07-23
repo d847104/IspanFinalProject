@@ -1,24 +1,6 @@
-<!-- <template>
-    <nav>
-        <div class="navbar">
-        <div class="navbar-left">
-            <a href="#" class="logo"><img src="" alt="Logo"></a>
-            <a href="#" class="nav-item">商城/二手</a>
-            <RouterLink class="navbar-brand" to="/productList">productList</RouterLink> 
-        </div>
-        <div class="navbar-center">
-            <input type="text" class="search-bar" placeholder="Search...">
-            <button class="search-button"><i class="fa fa-search"></i></button>
-        </div>
-        <div class="navbar-right">
-            <a href="#" class="nav-item">登入</a>
-            <a href="#" class="nav-item">註冊</a>
-            <a href="#" class="nav-item"><i class="fa fa-shopping-cart"></i></a>
-            <a href="#" class="nav-item"><i class="fa fa-bars"></i></a>
-        </div>
-        </div>
-    </nav>
-</template> -->
+
+
+<!-- ====================================================================================== -->
 
 <template>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">

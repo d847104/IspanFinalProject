@@ -24,7 +24,7 @@
                         </div>
                     </div>
                     <div class="col-xl-6 col-md-5 col-sm-7">
-                        <h5>Rucksack Backpack Jeans</h5>
+                        <h5>真無線藍芽耳機</h5>
                         <div class="d-flex flex-row">
                         <div class="text-warning mb-1 me-2">
                             <font-awesome-icon icon="fa fa-star"></font-awesome-icon>
@@ -40,18 +40,19 @@
                         </div>
 
                         <p class="text mb-4 mb-md-0">
-                        Short description about the product goes here, for ex its features. Lorem ipsum dolor sit amet with hapti you enter into any new area of science, you almost lorem ipsum is great text
-                        consectetur adipisicing
+                            繽紛六色｜為每次的運動打造各種時尚風格
+                            長效續航｜單次電力8H+，搭充電盒32H+
+                            防水防塵｜IP55防水抗汙、無懼風雨阻擋
                         </p>
                     </div>
                     <div class="col-xl-3 col-md-3 col-sm-5">
                         <div class="d-flex flex-row align-items-center mb-1">
-                        <h4 class="mb-1 me-1">$34,50</h4>
-                        <span class="text-danger"><s>$49.99</s></span>
+                        <h4 class="mb-1 me-1">NT$1,180</h4>
+                        <span class="text-danger"><s>NT$1,500</s></span>
                         </div>
                         <h6 class="text-success">Free shipping</h6>
                         <div class="mt-4">
-                        <button class="btn btn-primary shadow-0" type="button">Buy this</button>
+                        <button class="btn btn-primary shadow-0" type="button">直接購買</button>
                         <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover">
                             <font-awesome-icon icon="fas fa-heart fa-lg px-1"></font-awesome-icon>
                         </a>

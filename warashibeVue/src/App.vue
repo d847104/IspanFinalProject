@@ -6,6 +6,7 @@
 <script setup>
     import 'bootstrap/dist/css/bootstrap.min.css'
     import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+
     import { provide, ref } from 'vue';
     import Navigation from './views/Navigation.vue'
     import { RouterView } from 'vue-router';
@@ -17,4 +18,6 @@
     })
 </script>
   
-<style></style>
+<style>
+
+</style>

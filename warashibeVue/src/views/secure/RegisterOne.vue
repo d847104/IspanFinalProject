@@ -1,7 +1,7 @@
 <template>
 
     <section class="vh-100">
-    <div class="container-fluid">   
+    <div class="container-fluid">
         <div class="row">
         <div class="col-sm-6 text-black">
 
@@ -9,25 +9,23 @@
 
                 <form style="width: 23rem;">
 
-                    <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">登入</h3>
+                    <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">註冊會員</h3>
 
                     <div class="form-floating mb-3">
                         <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                        <label for="floatingInput">電子郵件帳號</label>
+                        <label for="floatingInput">請輸入電子郵件</label>
+                    </div>
+                    <div class="form-floating mb-3" >
+                        <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                        <label for="floatingPassword">請輸入密碼</label>
                     </div>
                     <div class="form-floating">
                         <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
-                        <label for="floatingPassword">密碼</label>
+                        <label for="floatingPassword">請確認密碼</label>
                     </div>
-
 
                     <div class="pt-3 mb-4">
-                        <button data-mdb-button-init data-mdb-ripple-init class="btn btn-info btn-lg btn-block" type="button">登入</button>
-                    </div>
-
-                    <div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-end">
-                        <RouterLink :to="{name: 'register-one-link'}" class="link-secondary text-decoration-none">建立新帳號</RouterLink>
-                        <a href="#!" class="link-secondary text-decoration-none">忘記密碼</a>
+                        <RouterLink :to="{name: 'register-two-link'}" class="btn btn-info btn-lg btn-block" type="button">下一步</RouterLink>
                     </div>
 
                     <hr class="my-4">
