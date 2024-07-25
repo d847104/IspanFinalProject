@@ -24,7 +24,7 @@ return props.product.productImgs && props.product.productImgs.length
 });
 
 const viewProductDetail = () => {
-router.push(`/products/${props.product.productID}`);
+router.push(`/pages/productpage?productID=${props.product.productID}`);
 };
 </script>
 
