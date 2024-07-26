@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
@@ -25,6 +26,13 @@
     "vue-upload-component": "^2.8.23",
     "vue.js": "^0.3.2",
     "vuejs-paginate-next": "^1.0.2"
+=======
+    "axios": "^1.7.2",
+    "bootstrap": "^5.3.3",
+    "sweetalert2": "^11.12.2",
+    "vue": "^3.4.29",
+    "vue-router": "^4.4.0"
+>>>>>>> 70d7daeb8bacde975e1d56d48957ab6d90e9bb52
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.5",

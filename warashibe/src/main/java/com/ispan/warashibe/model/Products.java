@@ -25,14 +25,15 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+
 @Getter
 @Setter
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "productID")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "productID")
 @Entity
 public class Products {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer productID;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer productID;
 
     @NotNull
     @ManyToOne
@@ -52,36 +53,36 @@ public class Products {
     @Size(max = 255)
     private String productName;
 
-    @NotNull
-    private int price;
+	@NotNull
+	private int price;
 
-    @NotNull
-    private int stock;
+	@NotNull
+	private int stock;
 
     @Lob
     private String description;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
-    @NotNull
-    private Date uploadDate;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
+	@NotNull
+	private Date uploadDate;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
-    @NotNull
-    private Date updateTime;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
+	@NotNull
+	private Date updateTime;
 
-    @NotNull
-    private boolean isSecondHand;
-    
-    @Column(name = "productStatus")
+	@NotNull
+	private boolean isSecondHand;
+
+	@Column(name = "productStatus")
 	private Boolean productStatus;
 
-    @Lob
-    private String wishItem;
+	@Lob
+	private String wishItem;
 
-    @JsonIgnoreProperties("products") // 防止無限遞歸
-    @JsonIdentityReference(alwaysAsId = true)
-    @OneToMany(mappedBy = "product")
-    private List<ProductSpec> productSpecs;
+	@JsonIgnoreProperties("products") // 防止無限遞歸
+	@JsonIdentityReference(alwaysAsId = true)
+	@OneToMany(mappedBy = "product")
+	private List<ProductSpec> productSpecs;
 
     @JsonIgnoreProperties("products") // 防止無限遞歸
     @JsonIdentityReference(alwaysAsId = true)
@@ -109,4 +110,8 @@ public class Products {
     	this.subCategory = new SubCategory();
     	this.subCategory.setSubCategoryID(subCategoryID);
     }
+
+    @OneToMany(mappedBy = "product")
+	@JsonIdentityReference(alwaysAsId = true)
+	private List<Cart> cart;
 }

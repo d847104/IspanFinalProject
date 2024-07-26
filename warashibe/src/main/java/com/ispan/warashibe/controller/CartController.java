@@ -67,11 +67,11 @@ public class CartController {
 		} return responseBody.put("success", false).put("message", "刪除失敗").toString();
 	}
 	
-	@GetMapping("/cart/buyer/{id}")	// 以買家ID查詢多筆
+	@GetMapping("/cart/member/{id}")	// 以買家ID查詢多筆
 	public String findByBuyerId(@PathVariable Integer id) {
 		JSONObject responseBody = new JSONObject();
 		JSONArray array = new JSONArray();
-		List<Cart> result = cartServ.findByBuyerId(id);
+		List<Cart> result = cartServ.findByMemberId(id);
 		for(Cart product : result) {
 			if(product!=null) {
 				try {array.put(new JSONObject(objMapper.writeValueAsString(product)));

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 //0. 引用Vue Router
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -34,3 +35,21 @@ const router = createRouter({
 
 // 4. 導出路由物件以利其他元件導入
 export default router
+=======
+// src/router.js
+import { createRouter, createWebHistory } from 'vue-router';
+import Login from '../views/secure/Login.vue';
+import Home from '../views/Home.vue';
+
+const routes = [
+    { path: '/', component: Home },
+    { path: '/login', component: Login },
+];
+
+const router = createRouter({
+    history: createWebHistory(),
+    routes,
+});
+
+export default router;
+>>>>>>> 70d7daeb8bacde975e1d56d48957ab6d90e9bb52
