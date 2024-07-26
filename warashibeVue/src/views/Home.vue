@@ -1,14 +1,16 @@
 <template>
-        <h5>熱門商品</h5>
-        <div class="row">
-                <compCard v-for="product in productsPopular" :key="product.productID" :product="product"></compCard>
-        </div>
+        <div class="container">
+                <h5>熱門商品</h5>
+                <div class="row">
+                        <compCard v-for="product in productsPopular" :key="product.productID" :product="product"></compCard>
+                </div>
+                
+                <h5>隨機精選</h5>
         
-        <h5>隨機精選</h5>
-
-        <h5>物換心儀</h5>
-        <div class="row">
-                <compCard v-for="product in productsSecHand" :key="product.productID" :product="product"></compCard>
+                <h5>物換心儀</h5>
+                <div class="row">
+                        <compCard v-for="product in productsSecHand" :key="product.productID" :product="product"></compCard>
+                </div>
         </div>
 </template>
 
