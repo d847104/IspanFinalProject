@@ -14,10 +14,11 @@ import lombok.Setter;
 @Setter
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "imgID")
 @Entity
+@Table
 public class ProductImg {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int imgID;
+    private Integer imgID;
 
     @NotNull
     @JsonIgnoreProperties("productImgs")

@@ -15,8 +15,4 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer>, JpaSpe
 	default List<Orders> findBySellerId(Integer sellerId) {
 		return findAll((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("seller").get("memberID"), sellerId));
 	}
-	
-//	public static Specification<Orders> find(JSONObject obj) {
-//		return (root, query, criteriaBuilder) -> criteriaBuilder.
-//	}
 }

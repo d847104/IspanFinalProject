@@ -1,7 +1,7 @@
 // src/router.js
 import { createRouter, createWebHistory } from 'vue-router';
 import Login from '../views/secure/Login.vue';
-import Home from '../views/home.vue';
+import Home from '../views/Home.vue';
 import SecondHand from '@/views/SecondHand.vue';
 import infiniteTest from '@/views/infiniteTest.vue';
 

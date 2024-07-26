@@ -6,7 +6,6 @@
         
         <h5>隨機精選</h5>
 
-
         <h5>物換心儀</h5>
         <div class="row">
                 <compCard v-for="product in productsSecHand" :key="product.productID" :product="product"></compCard>

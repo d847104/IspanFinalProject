@@ -1,6 +1,7 @@
 package com.ispan.warashibe.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -58,21 +59,29 @@ public class ProductImgService {
         productImgRepository.save(existingProductImg);
     }
 
-    public void deleteProductImg(int id) throws Exception {
+    public void deleteProductImg(Integer id) throws Exception {
         ProductImg productImg = productImgRepository.findById(id)
                 .orElseThrow(() -> new Exception("圖片未找到"));
         productImgRepository.delete(productImg);
     }
 
-    public ProductImg getProductImgById(int id) throws Exception {
-        return productImgRepository.findById(id)
-                .orElseThrow(() -> new Exception("圖片未找到"));
+    public ProductImg getProductImgById(Integer id) throws Exception {
+    	Optional<ProductImg> optional = productImgRepository.findById(id);
+    	if(optional.isPresent()) {
+    		return productImgRepository.findById(id)
+    				.orElseThrow(() -> new Exception("圖片未找到"));
+    	} return null;
     }
 
     public List<ProductImg> getAllProductImgs() {
         return productImgRepository.findAll();
     }
-    public void deleteAllProductImgsByProductId(int productId) throws Exception {
+    
+    public List<ProductImg> getProductImgByProductId(Integer id) {
+    	return productImgRepository.findByProductId(id);
+    }
+    
+    public void deleteAllProductImgsByProductId(Integer productId) throws Exception {
         List<ProductImg> productImgs = productImgRepository.findByProduct_ProductID(productId);
         if (productImgs.isEmpty()) {
             throw new Exception("沒有找到該商品的圖片");
