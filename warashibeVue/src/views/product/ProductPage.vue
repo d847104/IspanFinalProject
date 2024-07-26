@@ -2,7 +2,7 @@
 <div class="product-page">
     <div class="container">
     <div class="row">
-        <!-- 左側商品圖片區域 -->
+        <!-- 左侧商品图片区域 -->
         <div class="col-md-7">
             <div class="product-image">
             <img :src="currentImage" class="main-image" alt="Product Image" />
@@ -13,7 +13,7 @@
                     <div class="thumbnails">
                         <img
                             v-for="(img, index) in displayedImages"
-                            :key="img.imgID || img.specID"
+                            :key="`${img.type}-${img.imgID || img.specID}`"
                             :src="img.img || img.specImg"
                             class="thumbnail"
                             @mouseover="currentImage = img.img || img.specImg"
@@ -26,7 +26,7 @@
                 </div>
             </div>
         </div>
-        <!-- 右側商品資訊區域 -->
+        <!-- 右侧商品信息区域 -->
         <div class="col-md-5">
         <h1>{{ product.productName }}</h1>
         <p class="price">NT$ {{ product.price }}</p>
@@ -35,10 +35,20 @@
             <div v-for="(specs, specName) in groupedSpecs" :key="specName" class="spec">
                 <h5 style="margin-top:15px;">{{ specName }}</h5>
                 <div v-for="spec in specs" :key="spec.specOne || spec.specTwo" style="display:inline-block; margin-right: 10px;">
-                    <button v-if="spec.specOne" class="btn btn-outline-secondary" @click="selectSpecOne(spec.specOne)">
+                    <button 
+                        v-if="spec.specOne" 
+                        class="btn btn-outline-secondary" 
+                        @click="selectSpecOne(spec.specOne, spec.specImg)"
+                        @mouseover="updateCurrentImage(spec.specImg)"
+                    >
                         {{ spec.specOne }}
                     </button>
-                    <button v-if="spec.specTwo" class="btn btn-outline-secondary" @click="selectSpecTwo(spec.specTwo)">
+                    <button 
+                        v-if="spec.specTwo" 
+                        class="btn btn-outline-secondary" 
+                        @click="selectSpecTwo(spec.specTwo, spec.specImg)"
+                        @mouseover="updateCurrentImage(spec.specImg)"
+                    >
                         {{ spec.specTwo }}
                     </button>
                 </div>
@@ -88,6 +98,7 @@ const groupedSpecs = ref({});
 const quantity = ref(1);
 const selectedSpecOne = ref('');
 const selectedSpecTwo = ref('');
+const selectedSpecImage = ref('');
 const relatedProducts = ref([]);
 const total = ref(0);
 const pages = ref(0);
@@ -95,7 +106,7 @@ const current = ref(1);
 const rows = ref(4);
 
 const fetchProduct = async () => {
-    // 清空与图片相关的数组
+    // 清空与图片相关的变量
     productImages.value = [];
     specImages.value = [];
     combinedImages.value = [];
@@ -141,7 +152,7 @@ const fetchProductImages = async (imageIDs) => {
         const { data } = await axiosapi.get(`/api/productImg/${imgID}`);
         images.push({ imgID, img: `data:image/jpeg;base64,${data.list.img}` });
     }
-    productImages.value = images;
+    productImages.value = images; // 确保是新的图像集
 };
 
 const fetchProductSpecs = async (specIDs) => {
@@ -153,31 +164,59 @@ const fetchProductSpecs = async (specIDs) => {
             specImages.value.push({ specID, specImg: `data:image/jpeg;base64,${data.list.specImg}` });
         }
     }
-    productSpecs.value = specs;
+    productSpecs.value = specs; // 确保是新的规格数据
     groupSpecs();
 };
 
 const groupSpecs = () => {
     const grouped = {};
+    const specOneSet = new Set(); // 用于追踪已添加的 specOne 值
+    const specTwoSet = new Set(); // 用于追踪已添加的 specTwo 值
+
     productSpecs.value.forEach(spec => {
+        // 处理 specOne
         if (spec.specOneName) {
             if (!grouped[spec.specOneName]) {
                 grouped[spec.specOneName] = [];
             }
-            grouped[spec.specOneName].push({ specOne: spec.specOne });
+            if (!specOneSet.has(spec.specOne)) {
+                specOneSet.add(spec.specOne);
+                grouped[spec.specOneName].push({ 
+                    specOne: spec.specOne,
+                    specImg: spec.specImg // 添加 specImg 属性存储图片
+                });
+            }
         }
+
+        // 处理 specTwo
         if (spec.specTwoName) {
             if (!grouped[spec.specTwoName]) {
                 grouped[spec.specTwoName] = [];
             }
-            grouped[spec.specTwoName].push({ specTwo: spec.specTwo });
+            if (!specTwoSet.has(spec.specTwo)) {
+                specTwoSet.add(spec.specTwo);
+                grouped[spec.specTwoName].push({ 
+                    specTwo: spec.specTwo,
+                    specImg: spec.specImg // 添加 specImg 属性存储图片
+                });
+            }
         }
     });
+
     groupedSpecs.value = grouped;
 };
 
 const combineImages = () => {
-    combinedImages.value = [...productImages.value, ...specImages.value];
+    combinedImages.value = [];
+
+    productImages.value.forEach(img => {
+        combinedImages.value.push({ ...img, type: 'product' }); // 标记为产品图片
+    });
+
+    specImages.value.forEach(img => {
+        combinedImages.value.push({ ...img, type: 'spec' }); // 标记为规格图片
+    });
+
     if (combinedImages.value.length > 0) {
         currentImage.value = combinedImages.value[0].img || combinedImages.value[0].specImg;
         updateDisplayedImages();
@@ -202,20 +241,32 @@ const nextImages = () => {
     }
 };
 
+const updateCurrentImage = (image) => {
+    if (image) {
+        currentImage.value = `data:image/jpeg;base64,${image}`;
+    }
+};
+
+const selectSpecOne = (spec, image) => {
+    selectedSpecOne.value = spec;
+    selectedSpecImage.value = image || ''; // 保存选择的规格图片
+    console.log(selectedSpecOne.value);
+    console.log(selectedSpecImage.value);
+};
+
+const selectSpecTwo = (spec, image) => {
+    selectedSpecTwo.value = spec;
+    selectedSpecImage.value = image || ''; // 保存选择的规格图片
+    console.log(selectedSpecTwo.value);
+    console.log(selectedSpecImage.value);
+};
+
 const decreaseQuantity = () => {
     if (quantity.value > 1) quantity.value -= 1;
 };
 
 const increaseQuantity = () => {
     quantity.value += 1;
-};
-
-const selectSpecOne = (spec) => {
-    selectedSpecOne.value = spec;
-};
-
-const selectSpecTwo = (spec) => {
-    selectedSpecTwo.value = spec;
 };
 
 const addToCart = () => {

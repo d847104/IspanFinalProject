@@ -55,7 +55,7 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
             <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/profile')">會員基本資料</RouterLink></li>
-            <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/buyer-orders')">買家訂單</RouterLink></li>
+            <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/buyer/buyerorder')">買家訂單</RouterLink></li>
             <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller-orders')">賣家訂單</RouterLink></li>
             <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller-products')">賣家商品管理</RouterLink></li>
             <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/add-product')">上架商品</RouterLink></li>
@@ -76,11 +76,12 @@ const user = ref(null) // 模擬登入狀態，後續可以替換為實際邏輯
 const router = useRouter()
 
 const checkAuth = (path) => {
-if (!user.value) {
-    router.push('/login')
-} else {
-    router.push(path)
-}
+    //if (!user.value) <-實際是這個,測試先不開這個功能
+    if (user.value) {
+        router.push('/login')
+    } else {
+        router.push(path)
+    }
 }
 </script>
 
