@@ -35,7 +35,7 @@
             </RouterLink>
         </li>
         <li class="nav-item d-none d-lg-block">
-            <RouterLink class="nav-link" to="#">
+            <RouterLink class="nav-link" :to="{path:'/other/notification'}">
             <font-awesome-icon icon="fa-solid fa-bell" />
             </RouterLink>
         </li>
@@ -57,7 +57,7 @@
             <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/profile')">會員基本資料</RouterLink></li>
             <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/buyer/buyerorder')">買家訂單</RouterLink></li>
             <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller-orders')">賣家訂單</RouterLink></li>
-            <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller-products')">賣家商品管理</RouterLink></li>
+            <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller/sellermanageproduct')">賣家商品管理</RouterLink></li>
             <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/add-product')">上架商品</RouterLink></li>
             </ul>
         </li>
