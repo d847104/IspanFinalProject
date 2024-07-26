@@ -1,61 +1,46 @@
 <template>
-    <div>
-        <div class="homepage-content">
-        <div class="sidebar">
-            <h3>商品分類</h3>
-            <ul>
-            <li>分類 1</li>
-            <li>分類 2</li>
-            <li>分類 3</li>
-            </ul>
+        <h5>熱門商品</h5>
+        <div class="row">
+                <compCard v-for="product in productsPopular" :key="product.productID" :product="product"></compCard>
         </div>
-        <div class="main-content">
-            <h2>熱門商品</h2>
-            <div class="products">
-            <div class="product-card">商品圖 金額</div>
-            <div class="product-card">商品圖 金額</div>
-            </div>
-            <h2>推薦商品</h2>
-            <div class="products">
-            <div class="product-card">商品圖 金額</div>
-            <div class="product-card">商品圖 金額</div>
-            </div>
+        
+        <h5>隨機精選</h5>
+
+
+        <h5>物換心儀</h5>
+        <div class="row">
+                <compCard v-for="product in productsSecHand" :key="product.productID" :product="product"></compCard>
         </div>
-        </div>
-    </div>
 </template>
-    
+
 <script setup>
+        import { ref, onMounted } from 'vue';
+        import compCard from '@/components/compCard.vue';
+        import callPopular from '@/plugins/product_popular.js';
+        import callSecondHand from '@/plugins/product_secondhand.js';
 
+        const productsPopular = ref([]);
+        const startPopular = ref(0);
+        const rowsPopular = ref(8);
+        const currentPagePopular = ref(0);
+        const totalPagesPopular = ref(0);
+        const totalPopular = ref(0);
+        const lastPageRowsPopular = ref(0);
+
+        const productsSecHand = ref([]);
+        const startSecHand = ref(0);
+        const rowsSecHand = ref(8);
+        const currentPageSecHand = ref(0);
+        const totalPagesSecHand = ref(0);
+        const totalSecHand = ref(0);
+        const lastPageRowsSecHand = ref(0);
+        
+        onMounted(function() {
+                callPopular(productsPopular,startPopular,rowsPopular,currentPagePopular,totalPagesPopular,totalPopular,lastPageRowsPopular);
+                callSecondHand(productsSecHand,startSecHand,rowsSecHand,currentPageSecHand,totalPagesSecHand,totalSecHand,lastPageRowsSecHand);
+        })
 </script>
-    
-<style scoped>
-    .homepage-content {
-    display: flex;
-    }
 
-    .sidebar {
-    width: 20%;
-    background-color: #f0f0f0;
-    padding: 20px;
-    }
+<style>
 
-    .main-content {
-    width: 80%;
-    padding: 20px;
-    }
-
-    .products {
-    display: flex;
-    }
-
-    .product-card {
-    width: 150px;
-    height: 150px;
-    border: 1px solid #ddd;
-    margin: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    }
 </style>

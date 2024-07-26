@@ -1,5 +1,5 @@
 <template>
-        <navBar></navBar>
+        <categoryBar></categoryBar>
         <RouterView></RouterView>
 </template>
 
@@ -8,7 +8,7 @@
         import 'bootstrap/dist/js/bootstrap.bundle.min.js'
         import { provide, ref } from 'vue';
         import { RouterView } from 'vue-router';
-        import navBar from '@/layout/navBar.vue';
+        import categoryBar from '@/layout/categoryBar.vue';
         const user = ref(null);
 
         provide('user',user)

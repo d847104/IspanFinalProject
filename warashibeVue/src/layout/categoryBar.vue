@@ -3,14 +3,21 @@
                 <div class="container-fluid">
                         <div class="collapse navbar-collapse" id="navbarNavDropdown">
                                 <ul class="navbar-nav">
-                                        <li class="nav-item dropdown" v-for="mainCategory in mainCategories">
-                                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{mainCategory.mainCategory}}</a>
-                                                <template v-for="subCategory in subCategories">
-                                                        <ul class="dropdown-menu" v-if="subCategory.mainCategory == mainCategory.mainCategoryID">
-                                                                <li><a class="dropdown-item" href="#">{{subCategory.subCategory}}</a></li>
-                                                        </ul>
-                                                </template>
-                                        </li>
+                                        <template v-for="mainCategory in mainCategories">
+                                                <li class="nav-item" v-if="mainCategory.subCategories.length==0">
+                                                        <a class="nav-link" href="#">{{mainCategory.mainCategory}}</a>
+                                                </li>
+                                                <li class="nav-item dropdown" v-if="mainCategory.subCategories.length!==0">
+                                                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{mainCategory.mainCategory}}</a>
+                                                                <ul class="dropdown-menu">
+                                                                        <template v-for="subCategory in subCategories">
+                                                                                <li v-if="subCategory.mainCategory == mainCategory.mainCategoryID">
+                                                                                        <a class="dropdown-item" href="#">{{subCategory.subCategory}}</a>
+                                                                                </li>
+                                                                        </template>
+                                                                </ul>
+                                                </li>
+                                        </template>
                                 </ul>
                         </div>
                 </div>

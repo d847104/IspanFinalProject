@@ -14,7 +14,7 @@
 
     const products = ref([]);
     const start = ref(0);
-    const rows = ref(4);
+    const rows = ref(8);
     const currentPage = ref(0);
     const totalPages = ref(0);
     const total = ref(0);
