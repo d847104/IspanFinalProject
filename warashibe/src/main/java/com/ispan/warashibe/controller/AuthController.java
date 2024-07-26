@@ -3,6 +3,7 @@ package com.ispan.warashibe.controller;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -24,6 +25,7 @@ import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin
 public class AuthController {
 	@Autowired
 	private MemberService memberService;
@@ -77,6 +79,29 @@ public class AuthController {
         return responseJson.toString();
         
 	}
+	
+	//新增會員(註冊)
+	@PostMapping("/insert")
+	public String insert(@RequestBody String body) {
+        JSONObject responseBody = new JSONObject();
+        JSONObject obj = new JSONObject(body);
+        Integer id = obj.isNull("id") ? null : obj.getInt("id");
+
+        if (memberService.exists(id)) {
+            responseBody.put("success", false);
+            responseBody.put("message", "Id已存在");
+        } else {
+            Members newMember = memberService.insert(body);
+            if (newMember == null) {
+                responseBody.put("success", false);
+                responseBody.put("message", "新增失敗");
+            } else {
+                responseBody.put("success", true);
+                responseBody.put("message", "新增成功");
+            }
+        }
+        return responseBody.toString();
+	} // end of insert
 	
 //	@PostMapping("/logout")
 //	public ResponseEntity<?> logout(@RequestHeader("Authorization") String tokenHeader) {

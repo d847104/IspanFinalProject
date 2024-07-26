@@ -12,17 +12,17 @@
                     <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">登入</h3>
 
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                        <input v-model="account" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
                         <label for="floatingInput">電子郵件帳號</label>
                     </div>
                     <div class="form-floating">
-                        <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                        <input v-model="password" type="password" class="form-control" id="floatingPassword" placeholder="Password">
                         <label for="floatingPassword">密碼</label>
                     </div>
 
 
                     <div class="pt-3 mb-4">
-                        <button data-mdb-button-init data-mdb-ripple-init class="btn btn-info btn-lg btn-block" type="button">登入</button>
+                        <button @click="login" data-mdb-button-init data-mdb-ripple-init class="btn btn-info btn-lg btn-block" type="button">登入</button>
                     </div>
 
                     <div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-end">
@@ -52,7 +52,62 @@
     </section>
 </template>
 
-<script>
+<script setup>
+import swal from 'sweetalert2';
+import axiosapi from '@/plugins/axios';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const account = ref("");
+const password = ref("");
+const router = useRouter();
+
+function login() {
+    axiosapi.defaults.headers.authorization="";
+    sessionStorage.removeItem("memberID");
+    
+    if(account.value == ""){
+        account.value == null;
+    }
+
+    if(password.value == ""){
+        password.value == null;
+    }
+
+    let request = {
+        "account": account.value,
+        "password": password.value,
+    }
+    
+    axiosapi.post("/auth/login" , request).then(function(response) {
+        console.log("request", request);
+        console.log("response", response);
+        if(response.data.success) {
+            swal.fire({
+                icon: "success",
+                text: response.data.message,
+            }).then(function(result) {
+                axiosapi.defaults.headers.authorization=`Bearer ${response.data.token}`;
+                sessionStorage.setItem("memberID",response.data.memberID);
+                router.push("/");
+                console.log("登入成功");
+            });
+        } else {
+            swal.fire({
+                icon: "warning",
+                text: response.data.message,
+            })
+        }
+    }).catch(function(error) {
+        console.log("error", error);
+        swal.fire({
+                icon: "error",
+                text: "登入失敗: " + error.message,
+            });
+    });
+
+}
+
 
 
 </script>

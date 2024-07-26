@@ -89,28 +89,7 @@ public class MembersController {
         return responseBody.toString();
 	} // end of findAll
 	
-	//新增會員(註冊)
-	@PostMapping("/members/insert")
-	public String insert(@RequestBody String body) {
-        JSONObject responseBody = new JSONObject();
-        JSONObject obj = new JSONObject(body);
-        Integer id = obj.isNull("id") ? null : obj.getInt("id");
 
-        if (memberService.exists(id)) {
-            responseBody.put("success", false);
-            responseBody.put("message", "Id已存在");
-        } else {
-            Members newMember = memberService.insert(body);
-            if (newMember == null) {
-                responseBody.put("success", false);
-                responseBody.put("message", "新增失敗");
-            } else {
-                responseBody.put("success", true);
-                responseBody.put("message", "新增成功");
-            }
-        }
-        return responseBody.toString();
-	} // end of insert
 	
 	
 	//修改單筆會員資料 

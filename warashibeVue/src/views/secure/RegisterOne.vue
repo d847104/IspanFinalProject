@@ -20,8 +20,8 @@
                         <label for="floatingPassword">請輸入密碼</label>
                     </div>
                     <div class="form-floating">
-                        <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
-                        <label for="floatingPassword">請確認密碼</label>
+                        <input type="password" class="form-control" id="checkPassword" placeholder="Password">
+                        <label for="checkPassword">請確認密碼</label>
                     </div>
 
                     <div class="pt-3 mb-4">
