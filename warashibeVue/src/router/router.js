@@ -18,6 +18,7 @@ const routes = [
     { path: "/", name: "home-link", component: Home },
     // { path: "/:pathMatch(.*)*", name: "notfound-link", component: NotFound },
     ...routerBuyer,
+    ...routerMembers,
     // ...routerCore2,
     // ...routerComp,
     // ...routerImpl,
