@@ -6,7 +6,7 @@ import Home from "../views/Home.vue";
 // import NotFound from "../views/NotFound.vue";
 // import routerBuyer from '../views/buyer/router-buyer.js';
 import routerBuyer from '../views/buyer/router-buyer.js';
-// import routerCore1 from '../views/03-core1/router-core.js';
+import routerMembers from '../views/members/router-members.js';
 // import routerCore2 from '../views/03-core2/router-core.js';
 // import routerComp from '../views/04-comp/router-comp.js';
 // import routerImpl from '../views/05-impl/router-impl.js';
@@ -18,7 +18,6 @@ const routes = [
     { path: "/", name: "home-link", component: Home },
     // { path: "/:pathMatch(.*)*", name: "notfound-link", component: NotFound },
     ...routerBuyer,
-    // ...routerCore1,
     // ...routerCore2,
     // ...routerComp,
     // ...routerImpl,
@@ -34,19 +33,3 @@ const router = createRouter({
 
 // 4. 導出路由物件以利其他元件導入
 export default router
-// src/router.js
-import { createRouter, createWebHistory } from 'vue-router';
-import Login from '../views/secure/Login.vue';
-import Home from '../views/Home.vue';
-
-const routes = [
-    { path: '/', component: Home },
-    { path: '/login', component: Login },
-];
-
-const router = createRouter({
-    history: createWebHistory(),
-    routes,
-});
-
-export default router;
