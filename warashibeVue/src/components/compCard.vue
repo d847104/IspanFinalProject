@@ -5,6 +5,10 @@
                         <div class="card-body">
                                 <h5 class="card-title">{{product.productName}}</h5>
                                 <div class="card-text text-danger text-end">NT$ {{product.price}}</div>
+                                <div class="text-end">
+                                        <a href="#" class="btn btn-outline-primary btn-sm">收藏</a>
+                                        <a href="#" class="btn btn-outline-primary btn-sm">購物車</a>
+                                </div>
                         </div>
                 </div>
         </div>
