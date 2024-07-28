@@ -26,7 +26,7 @@ function callSecondHand(products,start,rows,currentPage,totalPages,total,lastPag
                 console.log("error",error)
                 Swal.fire({
                         icon: "error",
-                        text: "錯誤"+error.message,
+                        text: "錯誤:"+error.message,
                         allowOutsideClick: false,
                 })
         });

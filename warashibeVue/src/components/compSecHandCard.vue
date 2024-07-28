@@ -4,7 +4,7 @@
                         <img class="card-img-top" :alt="product.productName" :src="path">
                         <div class="card-body">
                                 <h6 class="card-title">{{product.productName}}</h6>
-                                <div class="card-text text-danger text-end">NT$ {{product.price}}</div>
+                                <div class="card-text text-success text-end">想交換 {{product.wishItem}}</div>
                                 <div class="text-end">
                                         <a href="#" class="btn btn-outline-primary btn-sm">收藏</a>
                                         <a href="#" class="btn btn-outline-primary btn-sm">購物車</a>

@@ -20,7 +20,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -96,8 +95,8 @@ public class Products {
     
     @JsonIgnoreProperties("products") // 防止無限遞歸
     @JsonIdentityReference(alwaysAsId = true)
-    @OneToOne(mappedBy = "product")
-    private OrderProducts orderProducts;
+    @OneToMany(mappedBy = "product")
+    private List<OrderProducts> orderProducts;
     
     @JsonProperty("member")
     public void setMemberById(Integer memberID) {

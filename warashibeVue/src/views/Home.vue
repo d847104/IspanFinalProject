@@ -9,7 +9,7 @@
         
                 <h5>物換心儀</h5>
                 <div class="row">
-                        <compCard v-for="product in productsSecHand" :key="product.productID" :product="product"></compCard>
+                        <compSecHandCard v-for="product in productsSecHand" :key="product.productID" :product="product"></compSecHandCard>
                 </div>
         </div>
 </template>
@@ -17,6 +17,7 @@
 <script setup>
         import { ref, onMounted } from 'vue';
         import compCard from '@/components/compCard.vue';
+        import compSecHandCard from '@/components/compSecHandCard.vue';
         import callPopular from '@/plugins/product_popular.js';
         import callSecondHand from '@/plugins/product_secondhand.js';
 
