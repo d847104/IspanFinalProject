@@ -139,24 +139,9 @@ public class ProductPayMethodService {
 		}
 		return 0;
 	}
-//	public ProductPayMethod insertOrUpdateProductPayMethod(ProductPayMethod prpm) {
-//		return productPayMethodRepo.save(prpm);
-//	}
-//	
-//	public void deleteProductPayMethod(Integer id) {
-//		productPayMethodRepo.deleteById(id);
-//	}
-//	
-//	public List<ProductPayMethod> findAllProductPayMethod(){
-//		return productPayMethodRepo.findAll();
-//	}
-//	
-//	public ProductPayMethod findProductPayMethodByID(Integer id) {
-//		Optional<ProductPayMethod> optional = productPayMethodRepo.findById(id);
-//		if(optional.isPresent()) {
-//			return optional.get();
-//		}
-//		return null;
-//	}
+	
+	public ProductPayMethod findById(Integer id) {
+		return productPayMethodRepo.findById(id).orElse(null);
+	}
 
 }

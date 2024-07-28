@@ -32,7 +32,7 @@ public class PayMethodDAOImpl implements PayMethodDAO {
 		String payMethod = obj.isNull("payMethod") ? null : obj.getString("payMethod");
 
 		int start = obj.isNull("start") ? 0 : obj.getInt("start");
-		int max = obj.isNull("max") ? 5 : obj.getInt("max");
+		int max = obj.isNull("max") ? 100 : obj.getInt("max");
 		boolean dir = obj.isNull("dir") ? false : obj.getBoolean("dir");
 		String payMethod1 = obj.isNull("payMethod") ? "payMethod" : obj.getString("payMethod");
 

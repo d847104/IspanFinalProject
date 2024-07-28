@@ -31,7 +31,7 @@ public class ProductDeliveryDAOImpl implements ProductDeliveryDAO{
 		Integer productID = obj.isNull("productID") ? null : obj.getInt("productID");
 
 		int start = obj.isNull("start") ? 0 : obj.getInt("start");
-		int max = obj.isNull("max") ? 5 : obj.getInt("max");
+		int max = obj.isNull("max") ? 100 : obj.getInt("max");
 		boolean dir = obj.isNull("dir") ? false : obj.getBoolean("dir");
 		String productDelivery1 = obj.isNull("delivery") ? "delivery" : obj.getString("delivery");
 		

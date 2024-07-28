@@ -8,6 +8,7 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -114,5 +115,21 @@ public class PayMethodController {
 		responseBody.put("list", array);
 
 		return responseBody.toString();
+	}
+	
+	@GetMapping("/payMethod/{payMethodID}")
+	public String findById(@PathVariable Integer payMethodID) throws JSONException {
+	    JSONObject responseBody = new JSONObject();
+	    PayMethod payMethod = payMethodService.findById(payMethodID);
+
+	    if (payMethod != null) {
+	        JSONObject item = new JSONObject()
+	                .put("payMethodID", payMethod.getPayMethodID())
+	                .put("payMethod", payMethod.getPayMethod());
+	        responseBody.put("payMethod", item);
+	    } else {
+	        responseBody.put("error", "PayMethod not found");
+	    }
+	    return responseBody.toString();
 	}
 }

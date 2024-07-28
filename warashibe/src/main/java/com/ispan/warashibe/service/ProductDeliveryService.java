@@ -141,5 +141,7 @@ public class ProductDeliveryService {
 		return 0;
 	}
 	
-
+	public ProductDelivery findById(Integer id) {
+		return productDeliveryRepo.findById(id).orElse(null);
+	}
 }
