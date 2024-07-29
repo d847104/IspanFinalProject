@@ -1,9 +1,5 @@
-
-
-<!-- ====================================================================================== -->
-
 <template>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container px-4 px-lg-5">
             <a class="navbar-brand" href="#!">Start Bootstrap</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
@@ -30,26 +26,21 @@
                 </form>
             </div>
         </div>
-    </nav>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    </nav> -->
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top container">
     <div class="container-fluid">
-    <!-- 網站LOGO -->
-    <RouterLink class="navbar-brand" to="/">
-        <img src="@/assets/logo.png" alt="Logo" class="logo navbar-brand">
-    </RouterLink>
+        <!-- 網站LOGO -->
+        <RouterLink class="navbar-brand" to="/">
+            <img src="@/assets/logo.png" alt="Logo" class="logo navbar-brand">
+        </RouterLink>
+
     <!-- 漢堡選單按鈕 -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mb-2 mb-lg-0 w-100">
-        <!-- 左側導航連結 -->
-        <li class="nav-item">
-            <RouterLink class="nav-link" to="/">首頁</RouterLink>
-        </li>
-        <li class="nav-item">
-            <RouterLink class="nav-link" to="/pages/productpage">商品分類</RouterLink>
-        </li>
         <li class="nav-item">
             <RouterLink class="nav-link" to="#">商城/二手</RouterLink>
         </li>
@@ -63,19 +54,21 @@
         <!-- 右側功能選單 -->
         <li class="nav-item d-none d-lg-block">
             <RouterLink class="nav-link" to="#">
-            <font-awesome-icon icon="fa-solid fa-comments" />
+                <font-awesome-icon :icon="['fas', 'cart-shopping']" size="2x" />
+            </RouterLink>
+        </li>
+        <li class="nav-item d-none d-lg-block">
+            <RouterLink class="nav-link" to="#">
+            <font-awesome-icon icon="fa-solid fa-comments" size="2x" />
             </RouterLink>
         </li>
         <li class="nav-item d-none d-lg-block">
             <RouterLink class="nav-link" :to="{path:'/other/notification'}">
-            <font-awesome-icon icon="fa-solid fa-bell" />
+            <font-awesome-icon icon="fa-solid fa-bell" size="2x" />
             </RouterLink>
         </li>
         <li class="nav-item">
-            <RouterLink class="nav-link" to="/secure/login">登入</RouterLink>
-        </li>
-        <li class="nav-item">
-            <RouterLink class="nav-link" to="#">註冊</RouterLink>
+            <RouterLink class="nav-link" to="/secure/login">登入/註冊</RouterLink>
         </li>
         <li class="nav-item">
             <RouterLink class="nav-link" :to="{path:'/secure/member'}">會員中心</RouterLink>
