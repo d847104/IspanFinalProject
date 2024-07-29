@@ -1,14 +1,7 @@
 <template>
-  <!-- <div id="app" class="background">
-      <div class="container">
-        <NavBar></NavBar>
-      </div>
-  </div> -->
-  <div class="app-container">
-    <Navigation></Navigation>
-    <categoryBar></categoryBar>
-    <RouterView></RouterView>
-  </div>
+  <Navigation></Navigation>
+  <categoryBar></categoryBar>
+  <RouterView></RouterView>
 </template>
   
 <script setup>
@@ -22,7 +15,6 @@
     import { RouterView } from 'vue-router';
     import { provide, ref } from 'vue';
     import Navigation from './views/Navigation.vue'
-    import NavBar from './views/NavBar.vue'
     import categoryBar from '@/layout/categoryBar.vue';
 
     const user = ref(null);
@@ -34,9 +26,6 @@
 </script>
 
 <style>
-.app-container {
-    padding-top: 7%; /* Adjust this value based on Navbar height */
-}
 .background {
   /* background-image: url('/src/img/bg01.jpg'); */
   background-size: cover;
