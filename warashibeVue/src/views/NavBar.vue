@@ -5,7 +5,7 @@
                    
 
                 <img src="/src/img/ss.png" href="#">
-                <RouterLink class="navbar-brand" :to="{ name: 'home-link' }" style="color:#3C3C3C;">物換心儀</RouterLink>
+                <RouterLink class="navbar-brand" :to="{ name: 'home' }" style="color:#3C3C3C;">物換心儀</RouterLink>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">

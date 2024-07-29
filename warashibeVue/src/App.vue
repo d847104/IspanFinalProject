@@ -1,13 +1,12 @@
 <template>
+  <!-- <div id="app" class="background">
+      <div class="container">
+        <NavBar></NavBar>
+      </div>
+  </div> -->
   <div class="app-container">
     <Navigation></Navigation>
     <RouterView></RouterView>
-  </div>
-  <div id="app" class="background">
-      <div class="container">
-      <NavBar></NavBar>
-      <RouterView></RouterView>
-      </div>
   </div>
 </template>
   
