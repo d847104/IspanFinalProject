@@ -4,6 +4,6 @@ import router from './router/router';
 import FontAwesomeIcon from './plugins/fontawesome.js';
 
 createApp(App)
-    .use(router)
     .component('font-awesome-icon', FontAwesomeIcon)
+    .use(router)
     .mount('#app');

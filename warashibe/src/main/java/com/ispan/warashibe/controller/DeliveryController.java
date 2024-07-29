@@ -8,6 +8,7 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ispan.warashibe.model.Delivery;
 import com.ispan.warashibe.service.DeliveryService;
+
+
 
 @RestController
 //@RequestMapping("/warashibe")
@@ -73,7 +76,24 @@ public class DeliveryController {
 		}
 		return responseBody.toString();
 	}
+	
+	@GetMapping("/delivery/{deliveryID}")
+	public String findById(@PathVariable Integer deliveryID) throws JSONException {
+	    JSONObject responseBody = new JSONObject();
+	    Delivery delivery = deliveryService.findById(deliveryID);
 
+	    if (delivery != null) {
+	        JSONObject item = new JSONObject()
+	                .put("deliveryID", delivery.getDeliveryID())
+	                .put("delivery", delivery.getDelivery())
+	                .put("deliveryFee", delivery.getDeliveryFee());
+	        responseBody.put("delivery", item);
+	    } else {
+	        responseBody.put("error", "Delivery not found");
+	    }
+	    return responseBody.toString();
+	}
+	
 	@PutMapping("/delivery/{deliveryID}")
 	public String modify(@PathVariable Integer deliveryID, @RequestBody String body) throws JSONException {
 		JSONObject responseBody = new JSONObject();

@@ -31,39 +31,140 @@
             </div>
         </div>
     </nav>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+    <!-- 網站LOGO -->
+    <RouterLink class="navbar-brand" to="/">
+        <img src="@/assets/logo.png" alt="Logo" class="logo navbar-brand">
+    </RouterLink>
+    <!-- 漢堡選單按鈕 -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mb-2 mb-lg-0 w-100">
+        <!-- 左側導航連結 -->
+        <li class="nav-item">
+            <RouterLink class="nav-link" to="/">首頁</RouterLink>
+        </li>
+        <li class="nav-item">
+            <RouterLink class="nav-link" to="/pages/productpage">商品分類</RouterLink>
+        </li>
+        <li class="nav-item">
+            <RouterLink class="nav-link" to="#">商城/二手</RouterLink>
+        </li>
+        <!-- 搜尋列 -->
+        <form class="d-flex search-form d-none d-lg-flex mx-auto" role="search">
+            <input class="form-control me-1 search-bar" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success search-button" type="submit">
+            <font-awesome-icon icon="fa-solid fa-search" />
+            </button>
+        </form>
+        <!-- 右側功能選單 -->
+        <li class="nav-item d-none d-lg-block">
+            <RouterLink class="nav-link" to="#">
+            <font-awesome-icon icon="fa-solid fa-comments" />
+            </RouterLink>
+        </li>
+        <li class="nav-item d-none d-lg-block">
+            <RouterLink class="nav-link" :to="{path:'/other/notification'}">
+            <font-awesome-icon icon="fa-solid fa-bell" />
+            </RouterLink>
+        </li>
+        <li class="nav-item">
+            <RouterLink class="nav-link" to="/secure/login">登入</RouterLink>
+        </li>
+        <li class="nav-item">
+            <RouterLink class="nav-link" to="#">註冊</RouterLink>
+        </li>
+        <li class="nav-item">
+            <RouterLink class="nav-link" :to="{path:'/secure/member'}">會員中心</RouterLink>
+        </li>
+        <!-- 會員相關 Dropdown List -->
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            會員相關
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+            <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/profile')">會員基本資料</RouterLink></li>
+            <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/buyer/buyerorder')">買家訂單</RouterLink></li>
+            <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller-orders')">賣家訂單</RouterLink></li>
+            <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller/sellermanageproduct')">賣家商品管理</RouterLink></li>
+            <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/add-product')">上架商品</RouterLink></li>
+            </ul>
+        </li>
+        </ul>
+    </div>
+    </div>
+</nav>
+
 </template>
-    
+
 <script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+const user = ref(null) // 模擬登入狀態，後續可以替換為實際邏輯
+const router = useRouter()
+
+const checkAuth = (path) => {
+    //if (!user.value) <-實際是這個,測試先不開這個功能
+    if (user.value) {
+        router.push('/login')
+    } else {
+        router.push(path)
+    }
+}
 </script>
-    
+
 <style scoped>
-    .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #f8f8f8;
-    border-bottom: 1px solid #e7e7e7;
-    }
+.navbar {
+padding: 5px 15px;
+background-color: #343a40;
+border-bottom: 1px solid #e7e7e7;
+font-size: 1.5rem;
+}
 
-    .navbar-left, .navbar-right {
-    display: flex;
-    align-items: center;
-    }
+.logo {
+width: 100px;
+height: auto;
+}
 
-    .nav-item {
-    margin: 0 10px;
-    text-decoration: none;
-    color: #333;
-    }
+.nav-item {
+margin: 0 15px;
+text-decoration: none;
+color: #fff;
+}
 
-    .search-bar {
-    width: 200px;
-    padding: 5px;
-    }
+.nav-link {
+font-size: 1.5rem;
+}
 
-    .search-button {
-    padding: 5px 10px;
-    }
+.search-form {
+width: 30%; /* 調整搜尋框寬度 */
+max-width: 1000px;
+}
+
+.search-bar {
+width: 100%;
+padding: 10px;
+font-size: 1.5rem;
+}
+
+.search-button {
+padding: 10px 15px;
+font-size: 1.5rem;
+}
+
+.w-100 {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+@media (max-width: 992px) {
+.search-form {
+    display: none;
+}
+}
 </style>

@@ -85,7 +85,7 @@ public class MessengerDAOImpl implements MessengerDAO {
 		String msgTime = obj.isNull("msgTime") ? null : obj.getString("msgTime");
 		
 		int start = obj.isNull("start") ? 0 : obj.getInt("start");
-		int max = obj.isNull("max") ? 5 : obj.getInt("max");
+		int max = obj.isNull("max") ? 100 : obj.getInt("max");
 		boolean dir = obj.isNull("dir") ? false : obj.getBoolean("dir");
 		String messenger1 = obj.isNull("receiverID") ? "receiverID" : obj.getString("receiverID");
 		
