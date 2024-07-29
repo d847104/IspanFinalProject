@@ -25,7 +25,6 @@ import com.ispan.warashibe.model.SubCategory;
 import com.ispan.warashibe.service.CategoryService;
 import com.ispan.warashibe.service.ProductService;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/categories")
 @CrossOrigin

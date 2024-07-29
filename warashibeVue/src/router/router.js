@@ -6,7 +6,6 @@ import SecondHand from '@/views/SecondHand.vue';
 import infiniteTest from '@/views/infiniteTest.vue';
 
 //1. 引用元件
-import Home from "../views/Home.vue";
 import NotFound from "../views/NotFound.vue";
 // import routerBuyer from '../views/buyer/router-buyer.js';
 import routerBuyer from '../views/buyer/router-buyer.js';
@@ -24,12 +23,11 @@ import routerPages from '@/views/pages/router-pages';
 
 // 2. 定義網頁路由
 const routes = [
-    { path: '/', component: Home },
+    { name: "home", path: '/', component: Home },
+    { name: "notfound-link", path: "/:pathMatch(.*)*", component: NotFound },
     { path: '/login', component: Login },
     { path: '/secondHand', component: SecondHand},
     { path: '/infiniteTest', component: infiniteTest},
-    { name: "home", path: '/', component: Home },
-    { name: "notfound-link", path: "/:pathMatch(.*)*", component: NotFound },
     ...routerSecure,
     ...routerPages,
     ...routerProduct,
