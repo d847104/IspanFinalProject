@@ -128,7 +128,7 @@
   
   <script setup>
   import { ref } from 'vue';
-  import VueUploadMultipleImage from 'vue-upload-multiple-image';
+//   import VueUploadMultipleImage from 'vue-upload-multiple-image'; // Merge 後此行出錯故先註解掉
   
   const uploadedImages = ref([]);
   

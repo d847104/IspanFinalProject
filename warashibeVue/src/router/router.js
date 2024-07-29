@@ -11,6 +11,7 @@ import routerSecure from '@/views/secure/router-secure.js';
 import routerProduct from '@/views/product/router-product';
 import routerSeller from '@/views/seller/router-seller';
 import routerOther from '@/views/other/router-other';
+import routerPages from '@/views/pages/router-pages';
 // import routerCore2 from '../views/03-core2/router-core.js';
 // import routerComp from '../views/04-comp/router-comp.js';
 // import routerImpl from '../views/05-impl/router-impl.js';
