@@ -1,9 +1,10 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="background"></div>
+    <nav class="navbar navbar-expand-lg fixed-top ">
         <div class="container-fluid">
             <!-- 網站LOGO -->
             <RouterLink class="navbar-brand" to="/">
-                <img src="@/assets/logo.png" alt="Logo" class="logo navbar-brand">
+                <img src="/src/img/logoBSS.png" alt="Logo" class="logo navbar-brand">
             </RouterLink>
 
             <!-- 漢堡選單按鈕 -->
@@ -21,7 +22,7 @@
                     <form class="d-flex search-form d-none d-lg-flex mx-auto" role="search">
                         <input class="form-control me-1 search-bar" type="search" placeholder="Search"
                             aria-label="Search">
-                        <button class="btn btn-outline-success search-button" type="submit">
+                        <button class="btn btn-outline-secondary " type="submit">
                             <font-awesome-icon icon="fa-solid fa-search" />
                         </button>
                     </form>
@@ -59,7 +60,8 @@
                                 </RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/buyer/buyerorder')">買家訂單
+                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/buyer/buyerorder')">
+                                    買家訂單
                                 </RouterLink>
                             </li>
                             <li>
@@ -80,6 +82,30 @@
             </div>
         </div>
     </nav>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary container custom-navbar">
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav w-100 justify-content-evenly">
+                <template v-for="mainCategory in mainCategories">
+                    <li class="nav-item" v-if="mainCategory.subCategories.length == 0">
+                        <a class="nav-link fs-5" href="#">{{ mainCategory.mainCategory }}</a>
+                    </li>
+                    <li class="nav-item dropdown" v-if="mainCategory.subCategories.length !== 0">
+                        <a class="nav-link dropdown-toggle fs-5 fw-bold" href="#" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">{{
+                                mainCategory.mainCategory }}</a>
+                        <ul class="dropdown-menu">
+                            <template v-for="subCategory in subCategories">
+                                <li v-if="subCategory.mainCategory == mainCategory.mainCategoryID">
+                                    <a class="dropdown-item fs-5 fw-bold" href="#">{{ subCategory.subCategory
+                                        }}</a>
+                                </li>
+                            </template>
+                        </ul>
+                    </li>
+                </template>
+            </ul>
+        </div>
+    </nav>
     <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active" data-bs-interval="2000">
@@ -93,6 +119,7 @@
             </div>
         </div>
     </div>
+
 </template>
 
 <script setup>
@@ -110,20 +137,53 @@ const checkAuth = (path) => {
         router.push(path)
     }
 }
+
+import axiosapi from '@/plugins/axios';
+import Swal from 'sweetalert2';
+
+const mainCategories = ref([]);
+const subCategories = ref([]);
+
+axiosapi.get("/api/categories/mainCategory/all")
+    .then(function (response) {
+        mainCategories.value = response.data.list;
+    }).catch(function (error) {
+        console.log("navBar.vue: getMainCategory", error);
+        Swal.fire({
+            icon: "error",
+            text: "navBar.vue: getMainCategory() 錯誤" + error.message,
+            allowOutsideClick: false,
+        })
+    });
+
+axiosapi.get("/api/categories/subCategory/all")
+    .then(function (response) {
+        subCategories.value = response.data.list;
+    }).catch(function (error) {
+        console.log("navBar.vue: getSubCategory", error);
+        Swal.fire({
+            icon: "error",
+            text: "navBar.vue: getSubCategory() 錯誤" + error.message,
+            allowOutsideClick: false,
+        })
+    });
 </script>
 
 <style scoped>
 .navbar {
     padding: 5px 15px;
-    background-color: #343a40;
-    /* 背景顏色透明度設為 0，表示完全透明 */
-    border-bottom: 1px solid rgba(231, 231, 231, 0.5);
-    /* 設置邊框顏色的透明度 */
-    font-size: 1.5rem;
-    z-index: 1000;
+    width: 95%;
+    background: transparent;
+    font-size: 1rem;
+    /* z-index: 1000; */
     /* 確保 navbar 顯示在輪播上方 */
     line-height: calc(50px * 0.8);
     /* 調整行高以保持內容居中 */
+}
+
+.custom-navbar {
+    padding: 10px 15px;
+    /* 調整padding使其高度為原來的兩倍 */
 }
 
 .logo {
@@ -132,13 +192,13 @@ const checkAuth = (path) => {
 }
 
 .nav-item {
-    margin: 0 15px;
+    margin: 0 5px;
     text-decoration: none;
     color: #fff;
 }
 
 .nav-link {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
 }
 
 .search-form {
@@ -150,12 +210,12 @@ const checkAuth = (path) => {
 .search-bar {
     width: 100%;
     padding: 10px;
-    font-size: 1.5rem;
+    font-size: 1rem;
 }
 
 .search-button {
     padding: 10px 15px;
-    font-size: 1.5rem;
+    font-size: 1rem;
 }
 
 .w-100 {
@@ -189,7 +249,6 @@ const checkAuth = (path) => {
     height: 100%;
 }
 
-
 .carousel-item img {
     max-width: 100%;
     max-height: 100%;
@@ -199,4 +258,23 @@ const checkAuth = (path) => {
     display: block;
     /* 確保圖片是塊級元素 */
 }
+
+
+/* 背景設定&圖 STAR*/
+.background {
+    background-image: url('/src/img/bluesky.jpg');
+    position: fixed;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    /* 背景圖固定，滾動時不移動 */
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    /* 確保背景圖佔滿整個可視區域 */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 背景設定&圖 END*/
 </style>
