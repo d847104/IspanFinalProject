@@ -7,7 +7,7 @@
             <div class="row">
 
                 <!-- content -->
-                <div class="col-lg-9">
+                <div class="col-lg-12">
                     <div class="row justify-content-center mb-3">
                         <div class="col-md-12">
                             <div class="card shadow-0 border rounded-3">
