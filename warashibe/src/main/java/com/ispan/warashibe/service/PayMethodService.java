@@ -139,24 +139,8 @@ public class PayMethodService {
 		}
 		return 0;
 	}
-//	public PayMethod insertOrUpdatePayMethod(PayMethod paym) {
-//		return payMethodRepo.save(paym);
-//	}
-//	
-//	public void deletePayMethod(Integer id) {
-//		payMethodRepo.deleteById(id);
-//	}
-//	
-//	public List<PayMethod> findAllPayMethod(){
-//		return payMethodRepo.findAll();
-//	}
-//	
-//	public PayMethod findPayMethodByID(Integer id) {
-//		Optional<PayMethod> optional = payMethodRepo.findById(id);
-//		if(optional.isPresent()) {
-//			return optional.get();
-//		}
-//		return null;
-//	}
+	public PayMethod findById(Integer payMethodID) {
+		return payMethodRepo.findById(payMethodID).orElse(null);
+	}
 
 }

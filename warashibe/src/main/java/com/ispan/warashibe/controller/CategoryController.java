@@ -28,6 +28,7 @@ import com.ispan.warashibe.service.ProductService;
 @CrossOrigin
 @RestController
 @RequestMapping("/api/categories")
+@CrossOrigin
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;

@@ -8,12 +8,12 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 
 import com.ispan.warashibe.model.Messenger;
 import com.ispan.warashibe.service.MessengerService;
@@ -111,6 +111,23 @@ public class MessengerController {
         return responseBody.toString();
 	}	
 	
-	
+	@GetMapping("/messenger/{msgID}")
+	public String findById(@PathVariable Integer msgID) throws JSONException {
+	    JSONObject responseBody = new JSONObject();
+	    Messenger messenger = messengerService.findById(msgID);
+
+	    if (messenger != null) {
+	        JSONObject item = new JSONObject()
+	                .put("msgID", messenger.getMsgID())
+	                .put("senderID", messenger.getSenderID())
+	                .put("receiverID", messenger.getReceiverID())
+	                .put("msg", messenger.getMsg())
+	                .put("msgTime", messenger.getMsgTime());
+	        responseBody.put("messenger", item);
+	    } else {
+	        responseBody.put("error", "messenger not found");
+	    }
+	    return responseBody.toString();
+	}
 	
 }

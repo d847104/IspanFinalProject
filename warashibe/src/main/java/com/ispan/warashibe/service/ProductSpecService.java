@@ -22,20 +22,19 @@ public class ProductSpecService {
 
     public void saveProductSpecFromJson(String jsonProduct, MultipartFile image) throws Exception {
         JSONObject jsonObj = new JSONObject(jsonProduct);
-        String specOne = jsonObj.getString("specOne");
-        String specOneName = jsonObj.getString("specOneName");
-        String specTwo = jsonObj.getString("specTwo");
-        String specTwoName = jsonObj.getString("specTwoName");
+        String specOne = jsonObj.optString("specOne", null);
+        String specOneName = jsonObj.optString("specOneName", null);
+        String specTwo = jsonObj.optString("specTwo", null);
+        String specTwoName = jsonObj.optString("specTwoName", null);
         int productId = jsonObj.getInt("productID");
+
+        if ((specOneName == null && specOne == null) && (specTwoName == null && specTwo == null)) {
+            throw new IllegalArgumentException("至少需要一个有效的产品规格");
+        }
 
         Products product = productService.getProductById(productId);
         if (product == null) {
             throw new IllegalArgumentException("Product with ID " + productId + " not found");
-        }
-
-        Optional<ProductSpec> existingSpec = productSpecRepository.findBySpecOneAndSpecOneNameAndSpecTwoAndSpecTwoNameAndProduct(specOne, specOneName, specTwo, specTwoName, product);
-        if (existingSpec.isPresent()) {
-            throw new IllegalArgumentException("相同規格已存在");
         }
 
         ProductSpec productSpec = new ProductSpec();
@@ -58,13 +57,21 @@ public class ProductSpecService {
                 .orElseThrow(() -> new Exception("規格未找到"));
         JSONObject jsonObj = new JSONObject(jsonProduct);
         
-        existingProductSpec.setSpecOne(jsonObj.getString("specOne"));
-        existingProductSpec.setSpecOneName(jsonObj.getString("specOneName"));
-        existingProductSpec.setSpecTwo(jsonObj.getString("specTwo"));
-        existingProductSpec.setSpecTwoName(jsonObj.getString("specTwoName"));
+        String specOne = jsonObj.optString("specOne", null);
+        String specOneName = jsonObj.optString("specOneName", null);
+        String specTwo = jsonObj.optString("specTwo", null);
+        String specTwoName = jsonObj.optString("specTwoName", null);
+
+        if ((specOneName == null && specOne == null) && (specTwoName == null && specTwo == null)) {
+            throw new IllegalArgumentException("至少需要一个有效的产品规格");
+        }
+        
+        existingProductSpec.setSpecOne(specOne);
+        existingProductSpec.setSpecOneName(specOneName);
+        existingProductSpec.setSpecTwo(specTwo);
+        existingProductSpec.setSpecTwoName(specTwoName);
         existingProductSpec.setSpecQt(jsonObj.getInt("specQt"));
         
-        // Update the product ID (assuming it's an existing ID in the database)
         int productId = jsonObj.getInt("productID");
         Products product = productService.getProductById(productId);
         if (product == null) {
