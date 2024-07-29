@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Merriweather:400,400i,700");
+/* @import url("https://fonts.googleapis.com/css?family=Merriweather:400,400i,700");
 
 * {
     box-sizing: border-box;
@@ -39,7 +39,7 @@ main {
 }
 
 
-/* Toggle switch */
+
 .theme-switch__input,
 .theme-switch__label {
     position: absolute;
@@ -115,7 +115,7 @@ main {
     }
 }
 
-/* Checked label styles */
+
 .theme-switch__input:checked~.theme-switch__label {
     background-color: lightSlateGray;
 
@@ -131,3 +131,5 @@ main {
         transform: translate3d(70px, 0, 0);
     }
 }
+
+*/

@@ -102,24 +102,8 @@
             <div class="col-lg-12">
                 <ProductList v-for="item in products" :key="item.productID" :item="item"></ProductList>
             </div>
-
-
         </div>
-
-
-
-
-
-
     </div>
-
-
-
-
-
-
-
-
 
 
     <br />

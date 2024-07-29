@@ -1,19 +1,24 @@
-<!-- <template>
+<template>
     <h3>product upload page</h3>
 
 
     <form style="width: 38rem;">
 
+        <!-- <div>
+            <Uploader       
+                server="http://localhost:8080/warashibe/api/productImg"
 
-        <div id="my-strictly-unique-vue-upload-multiple-image" style="text-align: center;">
 
-            <vue-upload-multiple-image
-            @upload-success="uploadImageSuccess"
-            @before-remove="beforeRemove"
-            @edit-image="editImage"
-            @data-change="dataChange"
-            ></vue-upload-multiple-image>
-        </div>
+                :media="media.saved"
+                path="/storage/media"
+                @add="addMedia"
+                @remove="removeMedia"
+            >
+
+            </Uploader>
+        </div> -->
+
+
 
 
 
@@ -21,22 +26,22 @@
 
 
         <div class="form-floating mb-3">
-            <input v-model="待修改" type="text" class="form-control" id="flInputProductName" placeholder="productName">
+            <input  type="text" class="form-control" id="flInputProductName" placeholder="productName">
             <label for="flInputProductName">商品名稱</label>
         </div>
 
         <div class="form-floating mb-3">
-            <input v-model="待修改" type="number" class="form-control" id="flInputPrice" placeholder="price">
+            <input  type="number" class="form-control" id="flInputPrice" placeholder="price">
             <label for="flInputPrice">金額</label>
         </div>
 
         <div class="form-floating mb-3">
-            <input v-model="待修改" type="number" class="form-control" id="flInputStock" placeholder="stock">
+            <input  type="number" class="form-control" id="flInputStock" placeholder="stock">
             <label for="flInputStock">庫存數量</label>
         </div>
 
         <div class="form-floating mb-3">
-            <textarea v-model="待修改" class="form-control" id="flInputDes" placeholder="description"></textarea>
+            <textarea  class="form-control" id="flInputDes" placeholder="description"></textarea>
             <label for="flInputDes">商品說明</label>
         </div>
 
@@ -103,41 +108,25 @@
 </template>
 
 <script setup>
-    // import VueUploadMultipleImage from '@/components/VueUploadMultipleImage.vue';
-    import VueUploadMultipleImage from 'vue-upload-multiple-image';
+
+    import { ref } from 'vue';
+    import Uploader from 'vue-media-upload/src/Uploader.vue';
+    const media = ref([]);
+
+    const changeMedia = (newMedia) => {
+        media.value = newMedia;
+    };
+
+    const addMedia = (addedImage, addedMedia) => {
+        media.value.added = addedMedia;
+    };
+
+    const removeMedia = (removedImage, removedMedia) => {
+        media.value.removed = removedMedia;
+    };
+
 </script>
 
-<style></style> -->
+<style>
 
-
-<template>
-    <div>
-      <vue-upload-multiple-image
-        @upload-success="handleUploadSuccess"
-        :max-upload="5"
-        :max-size="10485760"
-      />
-      <div v-if="uploadedImages.length">
-        <h3>上傳的圖片預覽：</h3>
-        <div v-for="image in uploadedImages" :key="image.id">
-          <img :src="image.url" :alt="`Uploaded image ${image.id}`" />
-        </div>
-      </div>
-    </div>
-  </template>
-  
-  <script setup>
-  import { ref } from 'vue';
-//   import VueUploadMultipleImage from 'vue-upload-multiple-image'; // Merge 後此行出錯故先註解掉
-  
-  const uploadedImages = ref([]);
-  
-  const handleUploadSuccess = (formData) => {
-    formData.forEach((file, index) => {
-      uploadedImages.value.push({
-        id: index,
-        url: URL.createObjectURL(file),
-      });
-    });
-  };
-  </script>
+</style>
