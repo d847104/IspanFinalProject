@@ -145,6 +145,10 @@ public class DeliveryService {
 		return 0;
 	}
 
-
+	public Delivery findById(Integer deliveryID) {
+		return deliveryRepo.findById(deliveryID).orElse(null);
+	}
+	
+	
 
 }

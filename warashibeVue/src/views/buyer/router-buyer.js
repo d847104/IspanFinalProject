@@ -1,5 +1,6 @@
-import BuyerOrder from "./BuyerOrder.vue";
+import BuyerOrder from "./BuyerOrder.vue"
 
 export default [
-    { name: "buyer-buyerorder-link", path: "/buyer/buyerorder", component: BuyerOrder },
+    { name: "buyer-BuyerOrder-link", component: BuyerOrder, path: "/buyer/buyerorder", title: "BuyerOrder" },
+
 ]

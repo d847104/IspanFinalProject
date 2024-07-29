@@ -1,6 +1,5 @@
 package com.ispan.warashibe.model;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -128,8 +127,18 @@ public class Members {
     private List<Favorite> favoritesToSeller;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyer")
-    private List<Orders> buyerOrders = new ArrayList<>();
+    @JsonIdentityReference(alwaysAsId = true)
+    private List<Orders> buyerOrders;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "seller")
-    private List<Orders> sellerOrders = new ArrayList<>();
+    @JsonIdentityReference(alwaysAsId = true)
+    private List<Orders> sellerOrders;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "member")
+    @JsonIdentityReference(alwaysAsId = true)
+    private List<Cart> cart;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "seller")
+    @JsonIdentityReference(alwaysAsId = true)
+    private List<Cart> cartSeller;
 }

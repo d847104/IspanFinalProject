@@ -1,6 +1,6 @@
 <template>
-    <!-- <br>
-    <h3>購物訂單管理</h3>
+    <br>
+    <h3 style="color:#6C6C6C;">購物訂單管理</h3>
     <div class="alert alert-dark" role="alert">
         <div class="row gx-5">
             <div class="col-md-4">
@@ -20,7 +20,7 @@
             </div>
         </div>
     </div>
-    <h5>訂單狀態</h5>
+    <h5 style="color:#6C6C6C;">訂單狀態</h5>
     <div class="alert alert-secondary" role="alert">
         <div class="container overflow-hidden text-center">
             <div class="row gx-5 align-items-center">
@@ -42,7 +42,8 @@
             </div>
         </div>
     </div>
-    <h5>賣家：</h5>
+  
+    <h5 style="color:#6C6C6C;">賣家：</h5>
     <div class="alert alert-light" role="alert">
         <div class="container">
             <div class="row align-items-center">
@@ -57,8 +58,8 @@
                                     <h5 class="card-title">【單色馬克杯】</h5>
                                     <p class="card-text">商品介紹內容</p>
                                     <br><br>
-                                    <p class="card-text"><small class="text-body-secondary">更新時間:</small>
-                                    </p>
+                                    <p class="card-text"><small class="text-body-secondary">更新時間:</small></p>
+                                    <p class="card-text"><small class="text-body-secondary">訂購時間:</small></p>
                                 </div>
                             </div>
                         </div>
@@ -74,7 +75,7 @@
         </div>
     </div>
 
-    <h5>賣家：</h5>
+    <h5 style="color:#6C6C6C;">賣家：</h5>
     <div class="alert alert-light" role="alert">
         <div class="container">
             <div class="row align-items-center">
@@ -89,8 +90,8 @@
                                     <h5 class="card-title">【單色馬克杯】</h5>
                                     <p class="card-text">商品介紹內容</p>
                                     <br><br>
-                                    <p class="card-text"><small class="text-body-secondary">更新時間:</small>
-                                    </p>
+                                    <p class="card-text"><small class="text-body-secondary">更新時間:</small></p>
+                                    <p class="card-text"><small class="text-body-secondary">訂購時間:</small></p>
                                 </div>
                             </div>
                         </div>
@@ -106,7 +107,7 @@
         </div>
     </div>
 
-    <h5>賣家：</h5>
+    <h5 style="color:#6C6C6C;">賣家：</h5>
     <div class="alert alert-light" role="alert">
         <div class="container">
             <div class="row align-items-center">
@@ -121,8 +122,8 @@
                                     <h5 class="card-title">【單色馬克杯】</h5>
                                     <p class="card-text">商品介紹內容</p>
                                     <br><br>
-                                    <p class="card-text"><small class="text-body-secondary">更新時間:</small>
-                                    </p>
+                                    <p class="card-text"><small class="text-body-secondary">更新時間:</small></p>
+                                    <p class="card-text"><small class="text-body-secondary">訂購時間:</small></p>
                                 </div>
                             </div>
                         </div>
@@ -136,7 +137,7 @@
                 </div>
             </div>
         </div>
-    </div>     -->
+    </div>
 </template>
     
 <script setup>

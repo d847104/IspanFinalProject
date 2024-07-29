@@ -154,5 +154,7 @@ public class MessengerService {
 		return 0;
 	}
 	
-	
+	public Messenger findById(Integer msgID) {
+		return messengerRepo.findById(msgID).orElse(null);
+	}
 }
