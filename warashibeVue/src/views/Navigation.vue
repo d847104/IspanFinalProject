@@ -53,7 +53,7 @@
         </form>
         <!-- 右側功能選單 -->
         <li class="nav-item d-none d-lg-block">
-            <RouterLink class="nav-link" to="#">
+            <RouterLink class="nav-link" :to="{name: 'cart'}">
                 <font-awesome-icon :icon="['fas', 'cart-shopping']" size="2x" />
             </RouterLink>
         </li>

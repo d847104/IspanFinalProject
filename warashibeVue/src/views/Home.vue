@@ -21,9 +21,9 @@
         import { ref, onMounted } from 'vue';
         import compCard from '@/components/compCard.vue';
         import compSecHandCard from '@/components/compSecHandCard.vue';
-        import callPopular from '@/plugins/product_popular.js';
-        import callSecondHand from '@/plugins/product_secondhand.js';
-        import callRandom from '@/plugins/product_random';
+        import callPopular from '@/plugins/products/product_popular.js';
+        import callSecondHand from '@/plugins/products/product_secondhand.js';
+        import callRandom from '@/plugins/products/product_random';
 
         const productsPopular = ref([]);
         const startPopular = ref(0);

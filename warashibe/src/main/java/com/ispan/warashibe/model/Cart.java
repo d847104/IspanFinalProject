@@ -2,6 +2,7 @@ package com.ispan.warashibe.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -36,7 +37,7 @@ public class Cart {
 	
 	@ManyToOne
 	@JoinColumn(name = "productID", nullable = false)
-	@JsonIdentityReference(alwaysAsId = true)
+	@JsonIncludeProperties({"productID","productName","productImgs","stock"})
 	private Products product;
 	
 	@ManyToOne
