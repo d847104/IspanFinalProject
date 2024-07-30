@@ -63,7 +63,7 @@
         </RouterLink>
     </li>
         <li class="nav-item d-none d-lg-block" @mouseover="showPopup" @mouseleave="hidePopup">
-            <font-awesome-icon icon="fa-solid fa-bell" />            
+            <!-- <font-awesome-icon icon="fa-solid fa-bell" />             -->
             <NotificationPop :popupVisible="popupVisible" />
             <!-- <RouterLink class="nav-link" to="#"></RouterLink> -->
         </li>

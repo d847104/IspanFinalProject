@@ -7,7 +7,7 @@
         <button @click="goToLogin">登入查看全部</button>
     </div>
     <div v-else>
-        <div v-if="notifications.length === 0">
+        <div v-if="notifications.length === 12">
         <p>沒有通知</p>
         </div>
         <div v-else>
@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, defineProps, defineExpose } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 
@@ -43,6 +43,7 @@ try {
     const receiverID = 1; // 假设这是当前用户的 ID，需要替换为实际数据
     const response = await axios.get(`/ajax/notification/receiver/${receiverID}`);
     notifications.value = response.data.list || [];
+    console.log(notifications.value);
 } catch (error) {
     console.error('Error fetching notifications:', error);
 }
@@ -72,8 +73,11 @@ const removeHighlight = (notification) => {
 // 移除高亮显示
 };
 
-onMounted(() => {
+// 监听 popupVisible 的变化
+watch(popupVisible, (newValue) => {
+if (newValue) {
     fetchNotifications();
+}
 });
 </script>
 
