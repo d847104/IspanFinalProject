@@ -55,7 +55,7 @@
 </template>
 
 <script setup>
-    import Navbar from '../Navigation.vue';
+    import Navbar from '../../layout/Navigation.vue';
     import { useRouter } from 'vue-router';
 
     const router = useRouter()

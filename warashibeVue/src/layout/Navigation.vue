@@ -1,9 +1,5 @@
-
-
-<!-- ====================================================================================== -->
-
 <template>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container px-4 px-lg-5">
             <a class="navbar-brand" href="#!">Start Bootstrap</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
@@ -30,7 +26,7 @@
                 </form>
             </div>
         </div>
-    </nav>
+    </nav> -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container-fluid">
     <!-- 網站LOGO -->
@@ -47,9 +43,9 @@
         <li class="nav-item">
             <RouterLink class="nav-link" to="/">首頁</RouterLink>
         </li>
-        <li class="nav-item">
+        <!-- <li class="nav-item">
             <RouterLink class="nav-link" to="/pages/productpage">商品分類</RouterLink>
-        </li>
+        </li> -->
         <li class="nav-item">
             <RouterLink class="nav-link" to="#">商城/二手</RouterLink>
         </li>
@@ -64,12 +60,12 @@
         <li class="nav-item d-none d-lg-block">
             <RouterLink class="nav-link" to="#">
             <font-awesome-icon icon="fa-solid fa-comments" />
-            </RouterLink>
-        </li>
-        <li class="nav-item d-none d-lg-block">
-            <RouterLink class="nav-link" :to="{path:'/other/notification'}">
-            <font-awesome-icon icon="fa-solid fa-bell" />
-            </RouterLink>
+        </RouterLink>
+    </li>
+        <li class="nav-item d-none d-lg-block" @mouseover="showPopup" @mouseleave="hidePopup">
+            <font-awesome-icon icon="fa-solid fa-bell" />            
+            <NotificationPop :popupVisible="popupVisible" />
+            <!-- <RouterLink class="nav-link" to="#"></RouterLink> -->
         </li>
         <li class="nav-item">
             <RouterLink class="nav-link" to="/secure/login">登入</RouterLink>
@@ -86,14 +82,14 @@
             會員相關
             </a>
             <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
-            <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/profile')">會員基本資料</RouterLink></li>
-            <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/buyer/buyerorder')">買家訂單</RouterLink></li>
-            <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller-orders')">賣家訂單</RouterLink></li>
-            <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller/sellermanageproduct')">賣家商品管理</RouterLink></li>
-            <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/add-product')">上架商品</RouterLink></li>
+                <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/profile')">會員基本資料</RouterLink></li>
+                <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/buyer/buyerorder')">買家訂單</RouterLink></li>
+                <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller-orders')">賣家訂單</RouterLink></li>
+                <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller/sellermanageproduct')">賣家商品管理</RouterLink></li>
+                <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/add-product')">上架商品</RouterLink></li>
             </ul>
-        </li>
-        </ul>
+        </li>        
+        </ul>        
     </div>
     </div>
 </nav>
@@ -103,9 +99,21 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import NotificationPop from '@/components/NotificationPop.vue';
 
 const user = ref(null) // 模擬登入狀態，後續可以替換為實際邏輯
+const popupVisible = ref(false);
 const router = useRouter()
+
+const showPopup = () => {
+    console.log("show");
+    popupVisible.value = true;
+};
+
+const hidePopup = () => {
+    console.log("hide");
+    popupVisible.value = false;
+};
 
 const checkAuth = (path) => {
     //if (!user.value) <-實際是這個,測試先不開這個功能
@@ -166,5 +174,11 @@ align-items: center;
 .search-form {
     display: none;
 }
+}
+
+.dropdown:hover > .dropdown-menu {display: block;}
+.dropdown > .dropdown-toggle:active {
+        /*Without this, clicking will make it sticky*/
+        pointer-events: none;
 }
 </style>
