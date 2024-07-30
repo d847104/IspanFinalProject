@@ -28,7 +28,7 @@
         </div>
     </nav> -->
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top container">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top container">
     <div class="container-fluid">
         <!-- 網站LOGO -->
         <RouterLink class="navbar-brand" to="/">
