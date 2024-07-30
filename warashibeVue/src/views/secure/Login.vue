@@ -85,8 +85,6 @@ function login() {
     }
 
     axiosapi.post("/auth/login", request).then(function (response) {
-        console.log("request", request);
-        console.log("response", response);
         if (response.data.success) {
             swal.fire({
                 icon: "success",

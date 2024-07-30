@@ -24,7 +24,6 @@
     "vue": "^3.4.29",
     "vue-chartjs": "^5.3.1",
     "vue-flatpickr-component": "^11.0.5",
-    "vue-media-upload": "^2.2.4",
     "vue-router": "^4.4.0",
     "vue-upload-component": "^2.8.23",
     "vue.js": "^0.3.2",
