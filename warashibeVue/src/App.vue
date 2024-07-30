@@ -2,19 +2,19 @@
   <Navigation></Navigation>
   <!-- <categoryBar></categoryBar> -->
   <RouterView></RouterView>
+  <!-- <NavBar></NavBar> -->  
 </template>
 
 <script setup>
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-vue/dist/bootstrap-vue.min.css'
-import 'bootstrap/dist/js/bootstrap.bundle.js'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 // import 'sweetalert2/dist/sweetalert2.min.css'
 // import 'flatpickr/dist/flatpickr.css'
-// import Navigation from './views/Navigation.vue'
+import NavBar from './views/NavBar.vue'
 import { RouterView } from 'vue-router';
 import { provide, ref } from 'vue';
-import Navigation from './views/Navigation.vue'
+import Navigation from './layout/Navigation.vue'
 import categoryBar from '@/layout/categoryBar.vue';
 
 const user = ref(null);

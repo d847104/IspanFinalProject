@@ -1,21 +1,22 @@
 <template>
     <br>
     <h3 style="color:#6C6C6C;">購物訂單管理</h3>
-    <div class="alert alert-dark" role="alert">
-        <div class="row gx-5">
+    <div v-for="Orders in Orderall" :key="Orders.orderID" class="alert alert-dark" role="alert">
+        <div class="row gx-5" @onload="openModal('view', order)">
             <div class="col-md-4">
                 <div class="p-3">
-                    <h5>訂單編號</h5>
+                    <h5>訂單編號：</h5>
+                    <h5>訂單編號：{{ Orders.orderID }}</h5>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="p-3">
-                    <h5>訂單時間</h5>
+                    <h5>訂單時間：{{ Orders.orderTime }}</h5>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div v-for="OrderProduct in OrderProducts" :key="OrderProduct.orderID" class="col-md-4">
                 <div class="p-3">
-                    <h5>總金額</h5>
+                    <h5>總金額：{{ OrderProduct.quantity }}</h5>
                 </div>
             </div>
         </div>
@@ -42,7 +43,7 @@
             </div>
         </div>
     </div>
-  
+
     <h5 style="color:#6C6C6C;">賣家：</h5>
     <div class="alert alert-light" role="alert">
         <div class="container">
@@ -75,75 +76,59 @@
         </div>
     </div>
 
-    <h5 style="color:#6C6C6C;">賣家：</h5>
-    <div class="alert alert-light" role="alert">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-10">
-                    <div class="card mb-3">
-                        <div class="row g-0" style="max-width: 500px;">
-                            <div class="col-md-4">
-                                <img src="/src/img/馬克杯84089.jpg" class="img-fluid rounded-start" alt="...">
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <h5 class="card-title">【單色馬克杯】</h5>
-                                    <p class="card-text">商品介紹內容</p>
-                                    <br><br>
-                                    <p class="card-text"><small class="text-body-secondary">更新時間:</small></p>
-                                    <p class="card-text"><small class="text-body-secondary">訂購時間:</small></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="p-4">
-                        <a href="#" class="btn btn-outline-secondary btn-sm d-block mb-2">訂單明細</a>
-                        <a href="#" class="btn btn-outline-secondary btn-sm d-block mb-2">評價</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <h5 style="color:#6C6C6C;">賣家：</h5>
-    <div class="alert alert-light" role="alert">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-10">
-                    <div class="card mb-3">
-                        <div class="row g-0" style="max-width: 500px;">
-                            <div class="col-md-4">
-                                <img src="/src/img/馬克杯27117.jpg" class="img-fluid rounded-start" alt="...">
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <h5 class="card-title">【單色馬克杯】</h5>
-                                    <p class="card-text">商品介紹內容</p>
-                                    <br><br>
-                                    <p class="card-text"><small class="text-body-secondary">更新時間:</small></p>
-                                    <p class="card-text"><small class="text-body-secondary">訂購時間:</small></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="p-4">
-                        <a href="#" class="btn btn-outline-secondary btn-sm d-block mb-2">訂單明細</a>
-                        <a href="#" class="btn btn-outline-secondary btn-sm d-block mb-2">評價</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
 </template>
-    
+
 <script setup>
-    
+import { ref, onMounted } from 'vue';
+import Swal from 'sweetalert2';
+import axiosapi from '@/plugins/axios';
+
+const Orderall = ref([]);
+const Orders = ref({})
+const OrderProducts = ref([]);
+const OrderProduct = ref({})
+
+function openModal(action, selectedOrders = {}) {
+    if (action === 'view') {    
+        isShowInsertButton.value = true;
+        Orders.value = {};
+    } else {
+        isShowInsertButton.value = false;
+        callFindByOrderID(selectedOrders.orderID);
+    }
+    modal.value.openModal();
+}
+
+function callFindByOrderID(orderID) {
+    Swal.fire({
+        text: "處理中.....",
+        allowOutsideClick: false,
+        showConfirmButton: false
+    });
+
+    axiosapi.get(`/warashibe/private/pages/orders/buyer/${orderID}`).then(function (response) {
+        // delivery.value = response.data.list[0];
+        Orders.value = response.data.orderall;
+        setTimeout(function () {
+            Swal.close();
+        }, 500);
+    }).catch(function (error) {
+        console.log("error", error);
+        Swal.fire({
+            text: "查詢失敗：" + error.message,
+            icon: "error"
+        });
+    });
+}
+
+
+
+
+
+
+
 </script>
-    
-<style>
-    
-</style>
+
+<style></style>

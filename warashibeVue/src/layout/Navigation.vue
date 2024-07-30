@@ -5,6 +5,7 @@
             <!-- 網站LOGO -->
             <RouterLink class="navbar-brand" to="/">
                 <img src="/src/img/logoBSS.png" alt="Logo" class="logo navbar-brand">
+                <RouterLink class="navbar-brand" :to="{ name: 'home' }" style="color:#3C3C3C;">物換心儀</RouterLink>
             </RouterLink>
 
             <!-- 漢堡選單按鈕 -->
@@ -48,15 +49,16 @@
                     <li class="nav-item">
                         <RouterLink class="nav-link" :to="{ path: '/secure/member' }">會員中心</RouterLink>
                     </li>
+
                     <!-- 會員相關 Dropdown List -->
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown" @click="toggleDropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             會員相關
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
                             <li>
-                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/profile')">會員基本資料
+                                <RouterLink class="dropdown-item" :to="{ name: 'members-basicinformation-link' }">會員基本資料
                                 </RouterLink>
                             </li>
                             <li>
@@ -78,6 +80,7 @@
                             </li>
                         </ul>
                     </li>
+                    <a>HI~{{ memberID }}</a>
                 </ul>
             </div>
         </div>
@@ -106,37 +109,31 @@
             </ul>
         </div>
     </nav>
-    <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active" data-bs-interval="2000">
-                <img src="/src/img/馬克杯21569.jpg" class="d-block w-100" alt="...">
-            </div>
-            <div class="carousel-item" data-bs-interval="2000">
-                <img src="/src/img/馬克杯36344.jpg" class="d-block w-100" alt="...">
-            </div>
-            <div class="carousel-item" data-bs-interval="2000">
-                <img src="/src/img/馬克杯84089.jpg" class="d-block w-100" alt="...">
-            </div>
-        </div>
-    </div>
+
 
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+let memberID = sessionStorage.getItem("memberID");// 抓登入ID
 
-const user = ref(null) // 模擬登入狀態，後續可以替換為實際邏輯
+// const user = ref(null) // 模擬登入狀態，後續可以替換為實際邏輯
 const router = useRouter()
 
-const checkAuth = (path) => {
-    //if (!user.value) <-實際是這個,測試先不開這個功能
-    if (user.value) {
-        router.push('/login')
-    } else {
-        router.push(path)
-    }
-}
+// const checkAuth = (path) => {
+//if (!user.value) <-實際是這個,測試先不開這個功能
+//     if (user.value) {
+//         router.push('/login')
+//     } else {
+//         router.push(path)
+//     }
+// }
+
+// const toggleDropdown = () => {
+//     isDropdownOpen.value = !isDropdownOpen.value;
+// };
+
 
 import axiosapi from '@/plugins/axios';
 import Swal from 'sweetalert2';
@@ -167,6 +164,8 @@ axiosapi.get("/api/categories/subCategory/all")
             allowOutsideClick: false,
         })
     });
+
+
 </script>
 
 <style scoped>
@@ -224,40 +223,7 @@ axiosapi.get("/api/categories/subCategory/all")
     align-items: center;
 }
 
-.carousel {
-    width: 80vw;
-    /* 設定輪播寬度為螢幕寬度的80% */
-    height: 50vh;
-    /* 設定輪播高度為螢幕高度的50% */
-    margin: auto;
-    /* 使輪播居中 */
-    overflow: hidden;
-    /* 隱藏溢出內容 */
-}
 
-.carousel-inner {
-    height: 100%;
-    /* 使輪播內部容器高度與輪播相同 */
-    align-items: center;
-    justify-content: center;
-
-}
-
-.carousel-item {
-
-    /* 使用 flexbox 使圖片在輪播項目中居中 */
-    height: 100%;
-}
-
-.carousel-item img {
-    max-width: 100%;
-    max-height: 100%;
-    /* 確保圖片在容器內最大化，但不超過容器的大小 */
-    object-fit: cover;
-    /* 保持圖片比例，並填充容器 */
-    display: block;
-    /* 確保圖片是塊級元素 */
-}
 
 
 /* 背景設定&圖 STAR*/
@@ -274,6 +240,7 @@ axiosapi.get("/api/categories/subCategory/all")
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    z-index: -1;
 }
 
 /* 背景設定&圖 END*/

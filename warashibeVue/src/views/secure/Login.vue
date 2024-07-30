@@ -103,6 +103,8 @@ function login() {
                 icon: "success",
                 text: response.data.message,
             }).then(function (result) {
+                sessionStorage.setItem('token', response.data.token);
+                //↑儲存登入token
                 axiosapi.defaults.headers.authorization = `Bearer ${response.data.token}`;
                 sessionStorage.setItem("memberID", response.data.memberID);
                 router.push("/");
