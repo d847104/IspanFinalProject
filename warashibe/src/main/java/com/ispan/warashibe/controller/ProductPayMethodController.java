@@ -23,28 +23,25 @@ import com.ispan.warashibe.service.ProductPayMethodService;
 public class ProductPayMethodController {
 	@Autowired
 	private ProductPayMethodService proPayMethodService;
-	
+
 	@PostMapping("/productPayMethod")
 	public String create(@RequestBody String body) throws JSONException {
 		JSONObject responseBody = new JSONObject();
 		JSONObject obj = new JSONObject(body);
 		Integer ID = obj.isNull("id") ? null : obj.getInt("id");
-		if (ID == null) {
+
+		if (proPayMethodService.exists(ID)) {
 			responseBody.put("success", false);
-			responseBody.put("message", "ID是必要欄位");
+			responseBody.put("message", "ID已存在");
 		} else {
-			if (proPayMethodService.exists(ID)) {
-				responseBody.put("success", false);
-				responseBody.put("message", "ID已存在");
-			} else {
-					proPayMethodService.create(body);
-					responseBody.put("success", true);
-					responseBody.put("message", "新增成功");
-				}
-			}
+			proPayMethodService.create(body);
+			responseBody.put("success", true);
+			responseBody.put("message", "新增成功");
+		}
+
 		return responseBody.toString();
 	}
-	
+
 	@PutMapping("/productPayMethod/{id}")
 	public String modify(@PathVariable Integer id, @RequestBody String body) throws JSONException {
 		JSONObject responseBody = new JSONObject();
@@ -56,7 +53,7 @@ public class ProductPayMethodController {
 				responseBody.put("success", false);
 				responseBody.put("message", "ID不存在");
 			} else {
-				ProductPayMethod productPayMethod = proPayMethodService.modify(body);	
+				ProductPayMethod productPayMethod = proPayMethodService.modify(body);
 				if (productPayMethod == null) {
 					responseBody.put("success", false);
 					responseBody.put("message", "修改失敗");
@@ -68,7 +65,7 @@ public class ProductPayMethodController {
 		}
 		return responseBody.toString();
 	}
-	
+
 	@DeleteMapping("/productPayMethod/{id}")
 	public String remove(@PathVariable Integer id) throws JSONException {
 		JSONObject responseBody = new JSONObject();
@@ -91,16 +88,15 @@ public class ProductPayMethodController {
 		}
 		return responseBody.toString();
 	}
-	
+
 	@PostMapping("/productPayMethod/find")
 	public String find(@RequestBody String body) throws JSONException {
 		JSONObject responseBody = new JSONObject();
 		JSONArray array = new JSONArray();
 		List<ProductPayMethod> productPayMethods = proPayMethodService.find(body);
-		if(productPayMethods !=null && !productPayMethods.isEmpty()) {
-			for(ProductPayMethod productPayMethod:productPayMethods) {
-				JSONObject item = new JSONObject()
-						.put("id", productPayMethod.getId())
+		if (productPayMethods != null && !productPayMethods.isEmpty()) {
+			for (ProductPayMethod productPayMethod : productPayMethods) {
+				JSONObject item = new JSONObject().put("id", productPayMethod.getId())
 						.put("payMethodID", productPayMethod.getpayMethodID())
 						.put("productID", productPayMethod.getProductID());
 				array.put(item);
@@ -108,27 +104,25 @@ public class ProductPayMethodController {
 		}
 		long count = proPayMethodService.count(body);
 		responseBody.put("count", count);
-        responseBody.put("list", array);
+		responseBody.put("list", array);
 
-        return responseBody.toString();
-	}	
-	
+		return responseBody.toString();
+	}
+
 	@GetMapping("/productPayMethod/{id}")
 	public String findById(@PathVariable Integer id) throws JSONException {
-	    JSONObject responseBody = new JSONObject();
-	    ProductPayMethod productPayMethod = proPayMethodService.findById(id);
+		JSONObject responseBody = new JSONObject();
+		ProductPayMethod productPayMethod = proPayMethodService.findById(id);
 
-	    if (productPayMethod != null) {
-	        JSONObject item = new JSONObject()
-	                .put("id", productPayMethod.getId())
-	                .put("payMethodID", productPayMethod.getpayMethodID())
-	                .put("productID	", productPayMethod.getProductID());
-	        responseBody.put("productPayMethod", item);
-	    } else {
-	        responseBody.put("error", "ProductPayMethod not found");
-	    }
-	    return responseBody.toString();
+		if (productPayMethod != null) {
+			JSONObject item = new JSONObject().put("id", productPayMethod.getId())
+					.put("payMethodID", productPayMethod.getpayMethodID())
+					.put("productID	", productPayMethod.getProductID());
+			responseBody.put("productPayMethod", item);
+		} else {
+			responseBody.put("error", "ProductPayMethod not found");
+		}
+		return responseBody.toString();
 	}
-	
-	
+
 }

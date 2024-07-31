@@ -25,8 +25,8 @@ public class ProductPayMethodService {
 			Integer payMethodID = obj.isNull("payMethodID") ? null : obj.getInt("payMethodID");
 			Integer productID = obj.isNull("productID") ? null : obj.getInt("productID");
 			
-			Optional<ProductPayMethod> optional = productPayMethodRepo.findById(id);
-			if (optional.isEmpty()) {
+//			Optional<ProductPayMethod> optional = productPayMethodRepo.findById(id);
+			if (id == null) {
 				ProductPayMethod insert = new ProductPayMethod();
 				insert.setId(id);
 				insert.setPayMethodID(payMethodID);

@@ -78,19 +78,15 @@
     const username = ref("");
     const gender = ref("");
     const mobile = ref("");
-
     const storeAcc = ref('');
     const storePwd = ref('')
+
     onMounted(() => {
         storeAcc.value = sessionStorage.getItem('account');
         storePwd.value = sessionStorage.getItem('password');
     });
 
-
-
     function register() {
-
-
         let request = {
             "account": storeAcc.value,
             "password": storePwd.value,

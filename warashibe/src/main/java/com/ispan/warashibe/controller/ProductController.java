@@ -105,9 +105,11 @@ public class ProductController {
     public String saveProduct(@RequestBody String jsonProduct) throws JsonProcessingException, JSONException {
         JSONObject responseBody = new JSONObject();
         try {
-            productService.saveProductFromJson(jsonProduct);
+        	Integer productID = productService.saveProductFromJson(jsonProduct);
+            
             responseBody.put("success", true);
             responseBody.put("message", "新增成功");
+            responseBody.put("productID", productID);
         } catch (Exception e) {
             responseBody.put("success", false);
             responseBody.put("message", "新增失敗: " + e.getMessage());
