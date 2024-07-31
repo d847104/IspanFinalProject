@@ -1,20 +1,11 @@
 import axiosapi from "@/plugins/axios.js";
 import Swal from "sweetalert2";
 
-function modifyCart(cartId,memberId,productId,productSpecId,sellerId,quantity){
-        let request = {
-                "cartID": cartId,
-                "member": memberId,
-                "product": productId,
-                "productSpec": productSpecId,
-                "seller": sellerId,
-                "quantity": quantity
-        }
-
-        axiosapi.put("/private/pages/cart/modify",request)
+function removeCart(cartId){
+        axiosapi.delete("/private/pages/cart/delete/"+cartId)
         .then(function(result){
                 if(result.data.success){
-                        console.log("購物車修改成功")
+                        console.log("購物車商品移除成功")
                 }else{
                         Swal.fire({
                                 icon: "error",
@@ -34,4 +25,4 @@ function modifyCart(cartId,memberId,productId,productSpecId,sellerId,quantity){
 
 }
 
-export default modifyCart;
+export default removeCart;

@@ -42,12 +42,12 @@ public class Cart {
 	
 	@ManyToOne
 	@JoinColumn(name = "specID", nullable = true)
-	@JsonIdentityReference(alwaysAsId = true)
+	@JsonIncludeProperties({"specID","specOneName","specOne","specTwoName","specTwo","specImg"})
 	private ProductSpec productSpec;
 	
 	@ManyToOne
 	@JoinColumn(name = "sellerID", nullable = false)
-	@JsonIdentityReference(alwaysAsId = true)
+	@JsonIncludeProperties({"memberID","username"})
 	private Members seller;
 	
 	@Column(name = "quantity", nullable = false)
