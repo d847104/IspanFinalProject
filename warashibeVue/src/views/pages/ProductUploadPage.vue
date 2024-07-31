@@ -126,9 +126,7 @@
     import { ref, onMounted } from 'vue';
     import axiosapi from '@/plugins/axios';
     import Swal from 'sweetalert2';
-import { event } from 'jquery';
-import { jsx } from 'vue/jsx-runtime';
-import ProductCard from '../products/product-card.vue';
+
     const payMethods = ref([]);
     const deliverys = ref([]);
     const allMainCate = ref([]);
@@ -204,25 +202,36 @@ import ProductCard from '../products/product-card.vue';
     }
 
     // 處理上傳圖片功能
-    async function imagePost(productID, event) {
+    async function imagePost(productID) {
         
-        const file = event.target.files[0];
-        if(file) {
             const formData = new FormData();
             formData.append('jsonProduct', JSON.stringify({productID : productID}));
 
-        }
+            images.value.forEach((image, index) => {
+
+                console.log(index);
+                formData.append('image', image.file);
+            });
+
+            // console.log('formData',formData.data);
+            try {
+                await axiosapi.post("/api/productImg", formData, {
+                    headers: {
+                        'Content-Type' : 'multipart/form-data'
+                    }
+                }).then(function(response) {
+                    console.log(response.data);
+                }).catch(function(error) {
+                    console.log(error.message);
+                });
+            } catch(error) {
+                console.error('Error uploading image:', error);
+                alert('圖片上傳失敗');
+            }
         
         
-        // let requestImage = { 
-        //     "product" : productID,
-        //     "img" : fdf
-        // };
-        await axiosapi.post("/api/productImg", requestImage).then(function(response) {
+    
 
-        }).catch(function(error) {
-
-        });
     }
 
     // 處理圖片預覽(新增、刪除)
@@ -235,8 +244,6 @@ import ProductCard from '../products/product-card.vue';
             };
             reader.readAsDataURL(files[i]);
         }
-        console.log(images.value[0]);
-        console.log(images.value[1]);
     };
 
     const removeImage = (index) => {
