@@ -11,6 +11,7 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -116,6 +117,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
+    @Transactional
     public String updateProduct(@PathVariable int id, @RequestBody String jsonProduct) throws JsonProcessingException, JSONException {
         JSONObject responseBody = new JSONObject();
         try {
@@ -148,6 +150,12 @@ public class ProductController {
             responseBody.put("message", "刪除失敗: " + e.getMessage());
         }
         return responseBody.toString();
+    }
+    
+    @GetMapping("/member/{memberID}")
+    public String getProductsByMemberID(@PathVariable int memberID) throws JSONException, JsonProcessingException, ParseException {
+        List<Products> products = productService.getProductsByMemberID(memberID);
+        return createResponse(products);
     }
 
     private Pageable createPageRequest(JSONObject request) throws JSONException {

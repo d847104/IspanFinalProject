@@ -40,4 +40,6 @@ public interface ProductRepository extends JpaRepository<Products, Integer> {
     List<Products> findByMember(Members member);
 
     List<Products> findByProductStatusAndMember(Boolean status, Members member);
+    
+    List<Products> findByMember_MemberID(Integer memberID);
 }

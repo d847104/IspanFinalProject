@@ -1,8 +1,6 @@
-<template>
-   
+<template> 
         <nav class="navbar navbar-expand-lg fixed-top">
-            <div class="container-fluid">
-                   
+            <div class="container-fluid">                 
 
                 <img src="/src/img/ss.png" href="#">
                 <RouterLink class="navbar-brand" :to="{ name: 'home' }" style="color:#3C3C3C;">物換心儀</RouterLink>

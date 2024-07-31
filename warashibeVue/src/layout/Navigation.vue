@@ -1,37 +1,9 @@
 <template>
-    <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container px-4 px-lg-5">
-            <a class="navbar-brand" href="#!">Start Bootstrap</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#!">All Products</a></li>
-                            <li><hr class="dropdown-divider" /></li>
-                            <li><a class="dropdown-item" href="#!">Popular Items</a></li>
-                            <li><a class="dropdown-item" href="#!">New Arrivals</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <form class="d-flex">
-                    <button class="btn btn-outline-dark" type="submit">
-                        <i class="bi-cart-fill me-1"></i>
-                        Cart
-                        <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
-                    </button>
-                </form>
-            </div>
-        </div>
-    </nav> -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container-fluid">
     <!-- 網站LOGO -->
     <RouterLink class="navbar-brand" to="/">
-        <img src="@/assets/logo.png" alt="Logo" class="logo navbar-brand">
+        <img src="@/img/logo.png" alt="Logo" class="logo navbar-brand">
     </RouterLink>
     <!-- 漢堡選單按鈕 -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,9 +15,6 @@
         <li class="nav-item">
             <RouterLink class="nav-link" to="/">首頁</RouterLink>
         </li>
-        <!-- <li class="nav-item">
-            <RouterLink class="nav-link" to="/pages/productpage">商品分類</RouterLink>
-        </li> -->
         <li class="nav-item">
             <RouterLink class="nav-link" to="#">商城/二手</RouterLink>
         </li>
@@ -60,23 +29,26 @@
         <li class="nav-item d-none d-lg-block">
             <RouterLink class="nav-link" to="#">
             <font-awesome-icon icon="fa-solid fa-comments" />
-        </RouterLink>
-    </li>
-        <li class="nav-item d-none d-lg-block" @mouseover="showPopup" @mouseleave="hidePopup">
-            <!-- <font-awesome-icon icon="fa-solid fa-bell" />             -->
-            <NotificationPop :popupVisible="popupVisible" />
-            <!-- <RouterLink class="nav-link" to="#"></RouterLink> -->
+            </RouterLink>
         </li>
-        <li class="nav-item">
+        <li class="nav-item d-none d-lg-block" @mouseover="showPopup" @mouseleave="hidePopup">
+            <NotificationPop :popupVisible="popupVisible" />
+        </li>
+        <li class="nav-item" v-if="!user">
             <RouterLink class="nav-link" to="/secure/login">登入</RouterLink>
         </li>
-        <li class="nav-item">
-            <RouterLink class="nav-link" to="#">註冊</RouterLink>
+        <li class="nav-item" v-if="!user">
+            <RouterLink class="nav-link" to="/secure/registerOne">註冊</RouterLink>
+        </li>
+        <li class="nav-item" v-if="user">
+            <span class="nav-link">{{ user?.username }}</span>
+        </li>
+        <li class="nav-item" v-if="user">
+            <button class="nav-link active" @click="logout">登出</button>
         </li>
         <li class="nav-item">
             <RouterLink class="nav-link" :to="{path:'/secure/member'}">會員中心</RouterLink>
         </li>
-        <!-- 會員相關 Dropdown List -->
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             會員相關
@@ -93,17 +65,28 @@
     </div>
     </div>
 </nav>
-
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import NotificationPop from '@/components/NotificationPop.vue';
+import axiosapi from '@/plugins/axios';
 
-const user = ref(null) // 模擬登入狀態，後續可以替換為實際邏輯
+const router = useRouter();
+
+// 登入相關
+const user = inject('user');
+const setUser = inject('setUser');
+function logout(){
+    axiosapi.defaults.headers.authorization = "";
+    sessionStorage.removeItem("memberID");
+    sessionStorage.removeItem("token");
+    setUser(false);
+    router.push("/secure/login");
+}
+
 const popupVisible = ref(false);
-const router = useRouter()
 
 const showPopup = () => {
     console.log("show");
@@ -116,11 +99,10 @@ const hidePopup = () => {
 };
 
 const checkAuth = (path) => {
-    //if (!user.value) <-實際是這個,測試先不開這個功能
-    if (user.value) {
-        router.push('/login')
+    if (!user.value) {
+        router.push('/secure/login');
     } else {
-        router.push(path)
+        router.push(path);
     }
 }
 </script>
@@ -134,12 +116,12 @@ font-size: 1.5rem;
 }
 
 .logo {
-width: 100px;
+width: 75px;
 height: auto;
 }
 
 .nav-item {
-margin: 0 15px;
+margin: 0 5px;
 text-decoration: none;
 color: #fff;
 }
@@ -178,7 +160,6 @@ align-items: center;
 
 .dropdown:hover > .dropdown-menu {display: block;}
 .dropdown > .dropdown-toggle:active {
-        /*Without this, clicking will make it sticky*/
         pointer-events: none;
 }
 </style>

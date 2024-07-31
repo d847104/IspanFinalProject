@@ -1,15 +1,4 @@
 <template>
-    <div>
-        <div class="login-form">
-            <h2>登入會員</h2>
-            <input type="text" placeholder="請輸入帳號">
-            <input type="password" placeholder="請輸入密碼">
-            <button>登入</button>
-            <div>或</div>
-            <button>使用Google帳號登入</button>
-        </div>
-    </div>
-
 <section class="vh-100">
 <div class="container-fluid">   
     <div class="row">
@@ -75,12 +64,13 @@
 <script setup>
 import swal from 'sweetalert2';
 import axiosapi from '@/plugins/axios';
-import { ref } from 'vue';
+import { ref, inject } from 'vue';
 import { useRouter } from 'vue-router';
 
 const account = ref("");
 const password = ref("");
 const router = useRouter();
+const setUser = inject('setUser');
 
 function login() {
     axiosapi.defaults.headers.authorization="";
@@ -106,9 +96,21 @@ function login() {
             swal.fire({
                 icon: "success",
                 text: response.data.message,
-            }).then(function(result) {
+            }).then(async function(result) {
                 axiosapi.defaults.headers.authorization=`Bearer ${response.data.token}`;
                 sessionStorage.setItem("memberID",response.data.memberID);
+                sessionStorage.setItem("token",response.data.token);
+                // console.log(sessionStorage.getItem("token"));
+
+                // 记录用户信息
+                try {
+                    const userResponse = await axiosapi.get(`/ajax/members/${response.data.memberID}`);
+                    setUser(userResponse.data.list[0],response.data.token);
+                    // console.log(userResponse.data);
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                }
+
                 router.push("/");
                 console.log("登入成功");
             });
