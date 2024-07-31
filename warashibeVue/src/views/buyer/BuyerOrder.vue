@@ -1,49 +1,54 @@
 <template>
     <br>
     <h3 style="color:#6C6C6C;">購物訂單管理</h3>
-    <div v-for="Orders in Orderall" :key="Orders.orderID" class="alert alert-dark" role="alert">
-        <div class="row gx-5" @onload="openModal('view', order)">
-            <div class="col-md-4">
-                <div class="p-3">
-                    <h5>訂單編號：</h5>
-                    <h5>訂單編號：{{ Orders.orderID }}</h5>
+    <div v-if="selectedOrder">
+        <div class="alert alert-dark" role="alert">
+            <div class="row gx-5">
+                <div class="col-md-4">
+                    <div class="p-3">
+                        <h5>訂單編號：{{ selectedOrder.orderID }}</h5>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="p-3">
-                    <h5>訂單時間：{{ Orders.orderTime }}</h5>
+                <div class="col-md-4">
+                    <div class="p-3">
+                        <h5>訂單時間：{{ formatDateTime(selectedOrder.orderTime) }}</h5>
+                    </div>
                 </div>
-            </div>
-            <div v-for="OrderProduct in OrderProducts" :key="OrderProduct.orderID" class="col-md-4">
-                <div class="p-3">
-                    <h5>總金額：{{ OrderProduct.quantity }}</h5>
+                <div class="col-md-4">
+                    <div class="p-3">
+                        <h5>總金額：{{ selectedOrder.total }}</h5>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <h5 style="color:#6C6C6C;">訂單狀態</h5>
-    <div class="alert alert-secondary" role="alert">
-        <div class="container overflow-hidden text-center">
-            <div class="row gx-5 align-items-center">
-                <div class="col-md-10 ">
-                    <div class="p-3">
-                        <div class="progress" role="progressbar" aria-label="Example 20px high" aria-valuenow="25"
-                            aria-valuemin="0" aria-valuemax="100" style="height: 20px">
-                            <div class="progress-bar" style="width: 25%">送出訂單</div>
+
+        <h5 style="color:#6C6C6C;">訂單狀態{{ selectedOrder.orderStatus }}</h5>
+        <div class="alert alert-secondary" role="alert">
+            <div class="container overflow-hidden text-center">
+                <div class="row gx-5 align-items-center">
+                    <div class="col-md-10 ">
+                        <div class="p-3">
+                            <div class="progress" role="progressbar" aria-label="Example 20px high" aria-valuenow="25"
+                                aria-valuemin="0" aria-valuemax="100" style="height: 20px">
+                                <div class="progress-bar" style="width: 25%">送出訂單</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="p-3">
+                            <a href="#" class="btn btn-secondary btn-sm d-block mb-2">完成訂單</a>
+                            <a href="#" class="btn btn-outline-secondary btn-sm d-block mb-2">取消訂單</a>
+                            <a href="#" class="btn btn-outline-secondary btn-sm d-block mb-2">我要退貨</a>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <div class="p-3">
-                        <a href="#" class="btn btn-secondary btn-sm d-block mb-2">完成訂單</a>
-                        <a href="#" class="btn btn-outline-secondary btn-sm d-block mb-2">取消訂單</a>
-                        <a href="#" class="btn btn-outline-secondary btn-sm d-block mb-2">我要退貨</a>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
-
+    <div v-else>
+        <p>目前沒有訂單</p>
+    </div>
+    <div></div>
     <h5 style="color:#6C6C6C;">賣家：</h5>
     <div class="alert alert-light" role="alert">
         <div class="container">
@@ -84,33 +89,31 @@
 import { ref, onMounted } from 'vue';
 import Swal from 'sweetalert2';
 import axiosapi from '@/plugins/axios';
+import { format } from 'date-fns';
 
-const Orderall = ref([]);
-const Orders = ref({})
-const OrderProducts = ref([]);
-const OrderProduct = ref({})
+const BuyerID = ref(1);
+const selectedOrder = ref(null);
 
-function openModal(action, selectedOrders = {}) {
-    if (action === 'view') {    
-        isShowInsertButton.value = true;
-        Orders.value = {};
-    } else {
-        isShowInsertButton.value = false;
-        callFindByOrderID(selectedOrders.orderID);
-    }
-    modal.value.openModal();
-}
-
-function callFindByOrderID(orderID) {
+onMounted(() => {
+    callFindByBuyerID(BuyerID.value);
+});
+function callFindByBuyerID(BuyerID) {
     Swal.fire({
         text: "處理中.....",
         allowOutsideClick: false,
         showConfirmButton: false
     });
 
-    axiosapi.get(`/warashibe/private/pages/orders/buyer/${orderID}`).then(function (response) {
-        // delivery.value = response.data.list[0];
-        Orders.value = response.data.orderall;
+    axiosapi.get(`/private/pages/orders/buyer/${BuyerID}`).then(function (response) {
+        const fetchedOrders = response.data.list || [];
+        if (fetchedOrders.length > 0) {
+            selectedOrder.value = fetchedOrders.reduce((maxOrder, currentOrder) => {
+                return (currentOrder.orderID > maxOrder.orderID) ? currentOrder : maxOrder;
+            });
+        } else {
+            selectedOrder.value = null; // 沒有訂單時的處理
+        }
+        // orders.value = response.data.orders;
         setTimeout(function () {
             Swal.close();
         }, 500);
@@ -123,11 +126,10 @@ function callFindByOrderID(orderID) {
     });
 }
 
-
-
-
-
-
+function formatDateTime(isoDateString) {
+    const date = new Date(isoDateString);
+    return format(date, 'yyyy-MM-dd HH:mm:ss');
+}
 
 </script>
 

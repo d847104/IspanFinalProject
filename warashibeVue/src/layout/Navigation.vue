@@ -62,7 +62,7 @@
                                 </RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/buyer/buyerorder')">
+                                <RouterLink class="dropdown-item" :to="{ name: 'buyer-BuyerOrder-link' }">
                                     買家訂單
                                 </RouterLink>
                             </li>
