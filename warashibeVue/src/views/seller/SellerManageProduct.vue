@@ -1,66 +1,64 @@
 <template>
 <div class="container">
-    <div class="seller-manage-product">
+<div class="seller-manage-product">
     <h1>上架商品</h1>
     <div class="product-list">
-        <div class="product-item" v-for="product in onSaleProducts" :key="product.productID">
-            <div class="product-info">
-                <img :src="productImage(product)" alt="商品圖片" class="product-image" />
-                <div class="product-details">
-                    <p>商品名稱: {{ product.productName }}</p>
-                    <div class="quantity">
-                        數量: 
-                        <button @click="decreaseQuantity(product)">-</button>
-                        <input type="number" v-model.number="product.stock" />
-                        <button @click="increaseQuantity(product)">+</button>
-                    </div>
-                    <div class="price">
-                        定價: 
-                        <button @click="decreasePrice(product)">-</button>
-                        <input type="number" v-model.number="product.price" />
-                        <button @click="increasePrice(product)">+</button>
-                    </div>
-                    <p>已售出量: {{ product.sold }}</p>
-                    <p>總數量: {{ product.stock }}</p>
-                    <input type="file" @change="uploadImage(product, $event)" />
-                    <button class="upload-button">新增商品圖片</button>
-                </div>
+    <div class="product-item" v-for="product in onSaleProducts" :key="product.productID">
+        <div class="product-info">
+        <img :src="product.imageUrl || '/default-product.png'" alt="商品圖片" class="product-image" />
+        <div class="product-details">
+            <p>商品名稱: {{ product.productName }}</p>
+            <div class="quantity">
+            數量: 
+            <button @click="decreaseQuantity(product)">-</button>
+            <input type="number" v-model.number="product.stock" />
+            <button @click="increaseQuantity(product)">+</button>
             </div>
-            <button class="action-button" @click="takeOffProduct(product)">下架</button>
-            <button class="action-button" @click="deleteProduct(product)">刪除</button>
+            <div class="price">
+            定價: 
+            <button @click="decreasePrice(product)">-</button>
+            <input type="number" v-model.number="product.price" />
+            <button @click="increasePrice(product)">+</button>
+            </div>
+            <p>已售出量: {{ product.sold }}</p>
+            <p>總數量: {{ product.stock }}</p>
         </div>
+        </div>
+        <input type="file" @change="uploadImage(product, $event)"/>
+        <button class="action-button" @click="takeOffProduct(product)">下架</button>
+        <button class="action-button" @click="deleteProduct(product)">刪除</button>
+    </div>
     </div>
     <hr />
     <h1>下架商品</h1>
     <div class="product-list">
-        <div class="product-item" v-for="product in offSaleProducts" :key="product.productID">
-            <div class="product-info">
-                <img :src="productImage(product)" alt="商品圖片" class="product-image" />
-                <div class="product-details">
-                    <p>商品名稱: {{ product.productName }}</p>
-                    <div class="quantity">
-                        數量: 
-                        <button @click="decreaseQuantity(product)">-</button>
-                        <input type="number" v-model.number="product.stock" />
-                        <button @click="increaseQuantity(product)">+</button>
-                    </div>
-                    <div class="price">
-                        定價: 
-                        <button @click="decreasePrice(product)">-</button>
-                        <input type="number" v-model.number="product.price" />
-                        <button @click="increasePrice(product)">+</button>
-                    </div>
-                    <p>未售出量: {{ product.unsold }}</p>
-                    <p>總數量: {{ product.stock }}</p>
-                    <input type="file" @change="uploadImage(product, $event)" />
-            <button class="upload-button">新增商品圖片</button>
+    <div class="product-item" v-for="product in offSaleProducts" :key="product.productID">
+        <div class="product-info">
+        <img :src="product.imageUrl || '/default-product.png'" alt="商品圖片" class="product-image" />
+        <div class="product-details">
+            <p>商品名稱: {{ product.productName }}</p>
+            <div class="quantity">
+            數量: 
+            <button @click="decreaseQuantity(product)">-</button>
+            <input type="number" v-model.number="product.stock" />
+            <button @click="increaseQuantity(product)">+</button>
+            </div>
+            <div class="price">
+            定價: 
+            <button @click="decreasePrice(product)">-</button>
+            <input type="number" v-model.number="product.price" />
+            <button @click="increasePrice(product)">+</button>
+            </div>
+            <p>未售出量: {{ product.unsold }}</p>
+            <p>總數量: {{ product.stock }}</p>
         </div>
+        </div>
+        <input type="file" @change="uploadImage(product, $event)" />
+        <button class="action-button" @click="putOnProduct(product)">上架</button>
+        <button class="action-button" @click="deleteProduct(product)">刪除</button>
     </div>
-    <button class="action-button" @click="putOnProduct(product)">上架</button>
-    <button class="action-button" @click="deleteProduct(product)">刪除</button>
     </div>
-    </div>
-    </div>
+</div>
 </div>
 </template>
 
@@ -73,33 +71,34 @@ const onSaleProducts = ref([]);
 const offSaleProducts = ref([]);
 
 const fetchMemberProducts = async () => {
-    if (user.value) {
-        try {
-        const response = await axiosapi.get(`/api/products/member/${user.value.id}`);
-        const products = response.data.list || [];
-
-        onSaleProducts.value = products.filter(product => product.productStatus);
-        offSaleProducts.value = products.filter(product => !product.productStatus);
-        } catch (error) {
-        console.error('Error fetching products:', error);
+if (user.value) {
+    try {
+    const response = await axiosapi.get(`/api/products/member/${user.value.id}`);
+    const products = response.data.list || [];
+    
+    // 获取图片并存储在产品对象中
+    for (let product of products) {
+        if (product.productImgs.length > 0) {
+        const imgID = product.productImgs[0];
+        product.imageUrl = await fetchProductImage(imgID);
+        } else {
+        product.imageUrl = '/default-product.png';
         }
     }
-};
 
-const productImage = (product) => {
-if (product.productImgs.length > 0) {
-    const imgID = product.productImgs[0];
-    console.log(product.productID,imgID);
-    return fetchProductImage(imgID);
+    onSaleProducts.value = products.filter(product => product.productStatus);
+    offSaleProducts.value = products.filter(product => !product.productStatus);
+    } catch (error) {
+    console.error('Error fetching products:', error);
+    }
 }
-return '/default-product.png';
 };
 
 const fetchProductImage = async (imgID) => {
 try {
     const response = await axiosapi.get(`/api/productImg/${imgID}`);
     if (response.data && response.data.list && response.data.list.img) {
-        return `data:image/png;base64,${response.data.list.img}`;
+    return `data:image/png;base64,${response.data.list.img}`;
     }
 } catch (error) {
     console.error('Error fetching product image:', error);
@@ -174,6 +173,7 @@ if (file) {
         }
     });
     alert('圖片上傳成功');
+    fetchMemberProducts(); // 刷新列表以显示新上传的图片
     } catch (error) {
     console.error('Error uploading image:', error);
     alert('圖片上傳失敗');

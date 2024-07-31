@@ -39,23 +39,27 @@ public class ProductImgService {
         productImgRepository.save(productImg);
     }
 
-    public void updateProductImgFromJson(int id, String jsonProduct, MultipartFile image) throws Exception {
-        ProductImg existingProductImg = productImgRepository.findById(id)
-                .orElseThrow(() -> new Exception("圖片未找到"));
-        JSONObject jsonObj = new JSONObject(jsonProduct);
-
-        // Update the product ID (assuming it's an existing ID in the database)
-        int productId = jsonObj.getInt("productID");
+    public void updateProductImgFromJson(int productId, String jsonProduct, MultipartFile image) throws Exception {
         Products product = productService.getProductById(productId);
         if (product == null) {
             throw new IllegalArgumentException("Product with ID " + productId + " not found");
         }
-        existingProductImg.setProduct(product);
 
+        // Try to find an existing image for the product
+        ProductImg existingProductImg = productImgRepository.findByProduct(product);
+
+        if (existingProductImg == null) {
+            // Create a new ProductImg if none exists
+            existingProductImg = new ProductImg();
+            existingProductImg.setProduct(product);
+        }
+
+        // If a new image file is provided, update the image data
         if (image != null && !image.isEmpty()) {
             existingProductImg.setImg(image.getBytes());
         }
 
+        // Save the updated or new ProductImg object
         productImgRepository.save(existingProductImg);
     }
 
