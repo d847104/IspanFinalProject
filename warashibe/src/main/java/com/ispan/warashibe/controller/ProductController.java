@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -132,19 +133,22 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
+    @Transactional
     public String deleteProduct(@PathVariable int id) throws JSONException {
         JSONObject responseBody = new JSONObject();
         try {
-        	Products productById = productService.getProductById(id);
-        	if(productById != null) {        		
-        		productService.deleteProduct(id);
-        		responseBody.put("success", true);
-        		responseBody.put("message", "刪除成功");
-        	}
-        	else {
-        		responseBody.put("success", false);
+            Products productById = productService.getProductById(id);
+            if (productById != null) {
+                productService.deleteProduct(id);
+                responseBody.put("success", true);
+                responseBody.put("message", "刪除成功");
+            } else {
+                responseBody.put("success", false);
                 responseBody.put("message", "查無產品");
-        	}
+            }
+        } catch (DataIntegrityViolationException e) {
+            responseBody.put("success", false);
+            responseBody.put("message", "無法刪除此商品，因為它與其他數據存在關聯。");
         } catch (Exception e) {
             responseBody.put("success", false);
             responseBody.put("message", "刪除失敗: " + e.getMessage());
