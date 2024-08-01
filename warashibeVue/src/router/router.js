@@ -1,15 +1,16 @@
 // src/router.js
 import { createRouter, createWebHistory } from 'vue-router';
-import Login from '../views/secure/Login.vue';
-import Home from '../views/Home.vue';
+import Home from '@/views/Home.vue';
+import Login from '@/views/secure/Login.vue';
 import SecondHand from '@/views/SecondHand.vue';
 import infiniteTest from '@/views/infiniteTest.vue';
+import Cart from '@/views/pages/Cart.vue';
 
 //1. 引用元件
 import NotFound from "../views/NotFound.vue";
 // import routerBuyer from '../views/buyer/router-buyer.js';
-import routerBuyer from '../views/buyer/router-buyer.js';
-import routerMembers from '../views/members/router-members.js';
+import routerBuyer from '@/views/buyer/router-buyer.js';
+import routerMembers from '@/views/members/router-members.js';
 import routerSecure from '@/views/secure/router-secure.js';
 import routerProduct from '@/views/product/router-product';
 import routerSeller from '@/views/seller/router-seller';
@@ -28,6 +29,7 @@ const routes = [
     { path: '/login', component: Login },
     { path: '/secondHand', component: SecondHand},
     { path: '/infiniteTest', component: infiniteTest},
+    { name: 'cart', path: '/cart', component: Cart},
     ...routerSecure,
     ...routerPages,
     ...routerProduct,

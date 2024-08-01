@@ -26,8 +26,8 @@ public class ProductDeliveryService {
 			
 //			Optional<PayMethod> optaional1=payMethodRepo.findById(payMethodID);
 			
-			Optional<ProductDelivery> optional = productDeliveryRepo.findById(id);
-			if (optional.isEmpty()) {
+//			Optional<ProductDelivery> optional = productDeliveryRepo.findById(id);
+			if (id == null) {
 				ProductDelivery insert = new ProductDelivery();
 				insert.setId(id);
 				insert.setDeliveryID(deliveryID);

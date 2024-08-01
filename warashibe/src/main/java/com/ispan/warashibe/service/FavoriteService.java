@@ -6,19 +6,13 @@ import java.util.Optional;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ispan.warashibe.model.Favorite;
 import com.ispan.warashibe.model.Members;
 import com.ispan.warashibe.model.Products;
-import com.ispan.warashibe.model.Recepient;
 import com.ispan.warashibe.repository.FavoriteRepository;
 import com.ispan.warashibe.repository.MembersRepository;
 import com.ispan.warashibe.repository.ProductRepository;
-import com.ispan.warashibe.repository.RecepientRepository;
 
 @Service
 public class FavoriteService {
@@ -97,6 +91,11 @@ public class FavoriteService {
 		
 		
 		
+	}
+	
+	// 以會員ID查詢多筆
+	public List<Favorite> findByMemberId(Integer memberId) {
+		return favoriteRepo.findByMemberId(memberId);
 	}
 	
 // #######收藏商品需要修改嗎？

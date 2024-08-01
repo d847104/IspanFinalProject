@@ -1,15 +1,4 @@
 <template>
-    <!-- <div>
-        <div class="login-form">
-            <h2>登入會員</h2>
-            <input type="text" placeholder="請輸入帳號">
-            <input type="password" placeholder="請輸入密碼">
-            <button>登入</button>
-            <div>或</div>
-            <button>使用Google帳號登入</button>
-        </div>
-    </div> -->
-
     <section class="vh-100">
         <div class="container-fluid">
             <div class="row">
@@ -57,11 +46,10 @@
 
                         </form>
                     </div>
-
-                    <div class="col-sm-6 px-0 d-none d-sm-block">
-                        <img src="../../assets/images/barter.jpg" alt="Login image" class="w-100 vh-90"
-                            style="object-fit: cover; object-position: left;">
-                    </div>
+                </div>
+                <div class="col-sm-6 px-0 d-none d-sm-block">
+                    <img src="../../assets/images/barter.jpg" alt="Login image" class="w-100 vh-90"
+                        style="object-fit: cover; object-position: left;">
                 </div>
             </div>
         </div>
@@ -96,15 +84,11 @@ function login() {
     }
 
     axiosapi.post("/auth/login", request).then(function (response) {
-        console.log("request", request);
-        console.log("response", response);
         if (response.data.success) {
             swal.fire({
                 icon: "success",
                 text: response.data.message,
             }).then(function (result) {
-                sessionStorage.setItem('token', response.data.token);
-                //↑儲存登入token
                 axiosapi.defaults.headers.authorization = `Bearer ${response.data.token}`;
                 sessionStorage.setItem("memberID", response.data.memberID);
                 router.push("/");

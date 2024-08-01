@@ -22,29 +22,26 @@ import com.ispan.warashibe.service.ProductDeliveryService;
 @CrossOrigin
 public class ProductDeliveryController {
 	@Autowired
-	private ProductDeliveryService	productDeliveryService;
-	
+	private ProductDeliveryService productDeliveryService;
+
 	@PostMapping("/productDelivery")
 	public String create(@RequestBody String body) throws JSONException {
 		JSONObject responseBody = new JSONObject();
 		JSONObject obj = new JSONObject(body);
 		Integer ID = obj.isNull("id") ? null : obj.getInt("id");
-		if (ID == null) {
+
+		if (productDeliveryService.exists(ID)) {
 			responseBody.put("success", false);
-			responseBody.put("message", "ID是必要欄位");
+			responseBody.put("message", "ID已存在");
 		} else {
-			if (productDeliveryService.exists(ID)) {
-				responseBody.put("success", false);
-				responseBody.put("message", "ID已存在");
-			} else {
-				productDeliveryService.create(body);
-					responseBody.put("success", true);
-					responseBody.put("message", "新增成功");
-				}
-			}
+			productDeliveryService.create(body);
+			responseBody.put("success", true);
+			responseBody.put("message", "新增成功");
+		}
+
 		return responseBody.toString();
 	}
-	
+
 	@PutMapping("/productDelivery/{id}")
 	public String modify(@PathVariable Integer id, @RequestBody String body) throws JSONException {
 		JSONObject responseBody = new JSONObject();
@@ -56,7 +53,7 @@ public class ProductDeliveryController {
 				responseBody.put("success", false);
 				responseBody.put("message", "ID不存在");
 			} else {
-				ProductDelivery productDelivery = productDeliveryService.modify(body);	
+				ProductDelivery productDelivery = productDeliveryService.modify(body);
 				if (productDelivery == null) {
 					responseBody.put("success", false);
 					responseBody.put("message", "修改失敗");
@@ -68,7 +65,7 @@ public class ProductDeliveryController {
 		}
 		return responseBody.toString();
 	}
-	
+
 	@DeleteMapping("/productDelivery/{id}")
 	public String remove(@PathVariable Integer id) throws JSONException {
 		JSONObject responseBody = new JSONObject();
@@ -91,17 +88,15 @@ public class ProductDeliveryController {
 		}
 		return responseBody.toString();
 	}
-	
-	
+
 	@PostMapping("/productDelivery/find")
 	public String find(@RequestBody String body) throws JSONException {
 		JSONObject responseBody = new JSONObject();
 		JSONArray array = new JSONArray();
 		List<ProductDelivery> productDeliverys = productDeliveryService.find(body);
-		if(productDeliverys !=null && !productDeliverys.isEmpty()) {
-			for(ProductDelivery productDelivery:productDeliverys) {
-				JSONObject item = new JSONObject()
-						.put("id", productDelivery.getId())
+		if (productDeliverys != null && !productDeliverys.isEmpty()) {
+			for (ProductDelivery productDelivery : productDeliverys) {
+				JSONObject item = new JSONObject().put("id", productDelivery.getId())
 						.put("deliveryID", productDelivery.getDelivery().getDeliveryID())
 						.put("productID", productDelivery.getProductID());
 				array.put(item);
@@ -109,37 +104,25 @@ public class ProductDeliveryController {
 		}
 		long count = productDeliveryService.count(body);
 		responseBody.put("count", count);
-        responseBody.put("list", array);
+		responseBody.put("list", array);
 
-        return responseBody.toString();
+		return responseBody.toString();
 	}
-	
+
 	@GetMapping("/productDelivery/{id}")
 	public String findById(@PathVariable Integer id) throws JSONException {
-	    JSONObject responseBody = new JSONObject();
-	    ProductDelivery productDelivery = productDeliveryService.findById(id);
+		JSONObject responseBody = new JSONObject();
+		ProductDelivery productDelivery = productDeliveryService.findById(id);
 
-	    if (productDelivery != null) {
-	        JSONObject item = new JSONObject()
-	        		 .put("id", productDelivery.getId())
-		                .put("deliveryID", productDelivery.getDeliveryID())
-		                .put("productID	", productDelivery.getProductID());
-	        responseBody.put("productDelivery", item);
-	    } else {
-	        responseBody.put("error", "ProductDelivery not found");
-	    }
-	    return responseBody.toString();
+		if (productDelivery != null) {
+			JSONObject item = new JSONObject().put("id", productDelivery.getId())
+					.put("deliveryID", productDelivery.getDeliveryID())
+					.put("productID	", productDelivery.getProductID());
+			responseBody.put("productDelivery", item);
+		} else {
+			responseBody.put("error", "ProductDelivery not found");
+		}
+		return responseBody.toString();
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 }
