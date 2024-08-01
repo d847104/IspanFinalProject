@@ -72,13 +72,13 @@ import "@/css/home.css"
 </script>
 
 <style>
-.navbar {
-  width: 95%;
-  background: transparent;
-  position: fixed;
-  top: 0;
-  left: 25px;
-  z-index: 1000; /* 固定navbar */
- 
-}
+    .navbar {
+        width: 95%;
+        background: transparent;
+        position: fixed;
+        top: 0;
+        left: 25px;
+        z-index: 1000; /* 固定navbar */
+        
+    }
 </style>

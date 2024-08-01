@@ -77,12 +77,10 @@
                         </label>
                     </div>
                 </div>
-
-
-
-
             </div>
         </div>
+
+        
 
         <div class=" col-md-9">
             <ul class="list-group list-group-horizontal-md list-group-item-secondary">
