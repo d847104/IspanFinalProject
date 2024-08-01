@@ -8,7 +8,7 @@
 <script setup>
     import { ref, onMounted, onUpdated } from 'vue';
     import compCard from '@/components/compCard.vue'
-    import callFind from '@/plugins/product_find';
+    import callFind from '@/plugins/products/product_find';
     import InfiniteLoading from 'v3-infinite-loading';
     import 'v3-infinite-loading/lib/style.css';
 

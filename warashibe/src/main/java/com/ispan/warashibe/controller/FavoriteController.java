@@ -3,6 +3,7 @@ package com.ispan.warashibe.controller;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -106,6 +107,23 @@ public class FavoriteController {
         }
         return responseBody.toString();
 	} // end of insert
+	
+	
+	// 以會員ID查詢多筆
+	@GetMapping("/favorite/member/{id}")
+	public String getMethodName(@PathVariable Integer id) {
+		JSONObject responseBody = new JSONObject();
+		JSONArray array = new JSONArray();
+		List<Favorite> result = favoriteService.findByMemberId(id);
+		for(Favorite favorite : result) {
+			if(favorite!=null) {
+				try {array.put(new JSONObject(objectMapper.writeValueAsString(favorite)));}
+				catch (Exception e) {e.printStackTrace();}
+			}
+		}
+		responseBody.put("list", array);
+		return responseBody.toString();
+	}
 	
 	// #######收藏商品需要修改嗎？
 }
