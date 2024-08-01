@@ -5,13 +5,13 @@
         <form class="upload-form">
             <div class="form-floating mb-3">
             <input type="file" @change="handleFileChange" multiple />
-            <div class="image-preview">
-                <div class="image-container"  v-for="(image, index) in images" :key="index">
-                    <img :src="image.url" alt="Preview" class="preview-img" />
-                    <div @click="removeImage(index)" class="remove-btn">X</div>
+                <div class="image-preview">
+                    <div class="image-container"  v-for="(image, index) in images" :key="index">
+                        <img :src="image.url" alt="Preview" class="preview-img" />
+                        <div @click="removeImage(index)" class="remove-btn">X</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
         <div class="form-floating mb-3">
             <input v-model="productName" type="text" class="form-control" id="flInputProductName" placeholder="productName">
@@ -29,12 +29,11 @@
         </div>
 
         <div class="form-floating mb-3">
-            <textarea style="height: 200px;" v-model="description" class="form-control" id="flInputDes" placeholder="description"></textarea>
+            <textarea style="height: 150px;" v-model="description" class="form-control" id="flInputDes" placeholder="description"></textarea>
             <label for="flInputDes">商品說明</label>
         </div>
 
         <!-- 資料庫欄位 商品上下架productStatus 預設上架true-->
-
 
         <div class="form-floating mb-3">
             <div class="btn-group w-100" role="group" aria-label="Basic checkbox toggle button group">
@@ -68,23 +67,18 @@
         <div class="form-floating mb-3">
             <div class="btn-group w-100" role="group" aria-label="Basic checkbox toggle button group">
                 <span style="margin-right: 30px;" class="col-md-3">運送方式：</span>
-                <div class="form-check form-check-inline">
-                    <input v-model="delRequest1" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" ></input>
-                    <label v-if="deliverys[0]" style="margin-right: 30px;" class="form-check-label" for="inlineCheckbox1">
-                        {{ deliverys[0].delivery }}</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input v-model="delRequest2" class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
-                    <label v-if="deliverys[1]" style="margin-right: 30px;" class="form-check-label " for="inlineCheckbox2">
-                        {{ deliverys[1].delivery }}</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input v-model="delRequest3" class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3">
-                    <label v-if="deliverys[2]" class="form-check-label " for="inlineCheckbox2">
-                        {{ deliverys[2].delivery }}</label>
-                </div>
-            </div>
+                <input v-model="delRequest1" class="btn-check" type="checkbox" id="inlineCheckbox1" value="option1" ></input>
+                <label v-if="deliverys[0]" style="margin-right: 30px;" class="btn btn-outline-secondary col-md-3 rounded-pill w-50" for="inlineCheckbox1">
+                    {{ deliverys[0].delivery }}</label>
 
+                <input v-model="delRequest2" class="btn-check" type="checkbox" id="inlineCheckbox2" value="option2">
+                <label v-if="deliverys[1]" style="margin-right: 30px;" class="btn btn-outline-secondary col-md-3 rounded-pill w-50 " for="inlineCheckbox2">
+                    {{ deliverys[1].delivery }}</label>
+
+                <input v-model="delRequest3" class="btn-check" type="checkbox" id="inlineCheckbox3" value="option3">
+                <label v-if="deliverys[2]" class="btn btn-outline-secondary col-md-3 rounded-pill w-50 " for="inlineCheckbox3">
+                    {{ deliverys[2].delivery }}</label>
+            </div>
         </div>
 
         <div class="form-floating mb-3">
@@ -111,6 +105,43 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <span style="margin-right: 30px;" class="col-md-3">規格ㄧ：</span>
+        <div class="form-floating mb-3">
+            <div class="input-row">
+                <div class="input-group">
+                    <input v-model="spec1" type="text" class="form-control" id="specCate" placeholder="請輸入規格種類">
+                </div>
+                <div class="input-group">
+                    <input v-model="specName1" type="text" class="form-control" id="specName" placeholder="請輸入規格名稱">
+                </div>
+            </div>    
+
+        </div>
+
+        <span style="margin-right: 30px;" class="col-md-3">規格二：</span>
+        <div class="form-floating mb-3">
+            <div class="input-row">
+                <div class="input-group">
+                    <input v-model="spec2" type="text" class="form-control" id="specCate" placeholder="請輸入規格種類">
+                </div>
+                <div class="input-group">
+                    <input v-model="specName2" type="text" class="form-control" id="specName" placeholder="請輸入規格名稱">
+                </div>
+                <div class="input-group">
+                    <input v-model="specNum" type="number" class="form-control" id="specQt" placeholder="請輸入數量">
+                </div>
+
+            </div> 
+                <!-- <input type="file" @change="handleFileChange" multiple /> -->
+                <input type="file" @change="specImageChange"  />
+                <div v-if="specImage1.url" class="specImage1-preview">
+                    <div class="specImage1-container">
+                        <img :src="specImage1.url" alt="Preview" class="preview-specImage1" />
+                        <div @click="removeSpecImage1" class="remove-btn">X</div>
+                    </div>
+                </div>
         </div>
 
         <div class="form-floating mb-3">
@@ -140,12 +171,19 @@
     const selectedSub = ref('');
     const subCategories = ref([]);
 
-    const payRequest1 = ref('')
-    const payRequest2 = ref('')
-    const payRequest3 = ref('')
-    const delRequest1 = ref('')
-    const delRequest2 = ref('')
-    const delRequest3 = ref('')
+    const payRequest1 = ref('');
+    const payRequest2 = ref('');
+    const payRequest3 = ref('');
+    const delRequest1 = ref('');
+    const delRequest2 = ref('');
+    const delRequest3 = ref('');
+
+    const spec1 = ref('');
+    const spec2 = ref('');
+    const specName1 = ref('');
+    const specName2 = ref('');
+    const specNum = ref(0);
+    const specImage1 = ref({});
 
     const images = ref([]);
     const productName = ref('');
@@ -155,7 +193,6 @@
     const isSecondHand = ref(false);
     const onMainCategoryChange = () => {
         subCategories.value = allSubCate.value.filter((subcate) => subcate.mainCategory === selectedMain.value);
-
         selectedSub.value = '';
     }
 
@@ -187,6 +224,7 @@
                 await payPost(productID);
                 await delPost(productID);
                 await imagePost(productID);
+                await specPost(productID);
                 Swal.fire({
                     icon: "success",
                     text: "成功",
@@ -206,9 +244,43 @@
         }
     }
 
+    // 處理規格圖片上傳功能
+    async function specPost(productID) {
+        const formData = new FormData();
+            formData.append('jsonProduct', 
+                JSON.stringify({productID : productID,
+                                specOne : spec1.value,
+                                specOneName : specName1.value,
+                                specTwo : spec2.value,
+                                specTwoName : specName2.value,
+                                specQt : specNum.value,
+                                
+                }));
+            formData.append('image', specImage1.value.file);
+            await uploadSpec(formData);
+    }
+
+    async function uploadSpec(formData) {
+        try {
+                await axiosapi.post("/api/productSpec", formData, {
+                    headers: {
+                        'Content-Type' : 'multipart/form-data'
+                    }
+                }).then(function(response) {
+                    console.log(response.data);
+                }).catch(function(error) {
+                    console.log(error.message);
+                });
+            } catch(error) {
+                console.error('Error uploading spec:', error);
+                alert('規格上傳失敗');
+            }
+    }
+
+
+
     // 處理上傳圖片功能
-    async function imagePost(productID) {
-        
+    async function imagePost(productID) {  
             const formData = new FormData();
             formData.append('jsonProduct', JSON.stringify({productID : productID}));
 
@@ -216,7 +288,6 @@
                 formData.set('image', image.file);
                 await uploadImage(formData);
             });
-
     }
 
     async function uploadImage(formData) {
@@ -236,7 +307,20 @@
             }
     }
 
-
+    // 處理規格單張圖片上傳
+    const specImageChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                specImage1.value = { file: file, url: e.target.result };
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+    const removeSpecImage1 = () => {
+        specImage1.value = {};
+};
 
     // 處理圖片預覽(新增、刪除)
     const handleFileChange = (event) => {
@@ -253,7 +337,6 @@
     const removeImage = (index) => {
         images.value.splice(index, 1);
     };
-
 
     // 處理上傳支付方式
     async function payPost (productID) {
@@ -321,7 +404,6 @@
                 icon: "error",
                 text: "上傳貨運方式失敗: " + error.message,
             });
-
         }
     }
 
@@ -365,6 +447,43 @@
 </script>
 
 <style>
+
+    .specImage1-preview {
+        flex-wrap: nowrap;
+        display: flex;
+        overflow-x: auto; /*當圖片數量超過容器寬度時，會顯示水平滾動條*/
+        margin-top: 10px;
+    }
+    .specImage1-container {
+        position: relative;
+        margin: 5px;
+        border: 1px solid #ccc;
+        padding: 5px;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f8f8;
+    }
+    .preview-specImage1 {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+
+    .input-row {
+        display: flex;
+        gap: 10px;
+    }
+
+    .input-group {
+        display: flex;
+        flex-direction: row;
+        width: 220px;
+    }
+
+
     .form-container {
         display: flex;
         justify-content: center;
