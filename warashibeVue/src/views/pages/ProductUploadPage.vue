@@ -1,21 +1,17 @@
 <template>
-    <h3>product upload page</h3>
 
 
-    <form style="width: 38rem;">
-
-        <div class="form-floating mb-3">
+    <div class="form-container">
+        <form class="upload-form">
+            <div class="form-floating mb-3">
             <input type="file" @change="handleFileChange" multiple />
-            <div class="image-preview" v-for="(image, index) in images" :key="index">
-                <div class="image-container">
+            <div class="image-preview">
+                <div class="image-container"  v-for="(image, index) in images" :key="index">
                     <img :src="image.url" alt="Preview" class="preview-img" />
-                    <div @click="removeImage(index)" class="remove-btn">刪除</div>
+                    <div @click="removeImage(index)" class="remove-btn">X</div>
                 </div>
             </div>
         </div>
-
-
-
 
         <div class="form-floating mb-3">
             <input v-model="productName" type="text" class="form-control" id="flInputProductName" placeholder="productName">
@@ -33,7 +29,7 @@
         </div>
 
         <div class="form-floating mb-3">
-            <textarea v-model="description" class="form-control" id="flInputDes" placeholder="description"></textarea>
+            <textarea style="height: 200px;" v-model="description" class="form-control" id="flInputDes" placeholder="description"></textarea>
             <label for="flInputDes">商品說明</label>
         </div>
 
@@ -41,15 +37,18 @@
 
 
         <div class="form-floating mb-3">
-            <span style="margin-right: 75px;" class="col-md-3">是二手商品嗎：</span>
-            <div class="form-check form-check-inline">
-                <input v-model="isSecondHand" class="form-check-input" type="radio" name="options1" id="inlineRadio1" value="false" checked>
-                <label style="margin-right: 30px;" class="form-check-label" for="inlineRadio1">否</label>
+            <div class="btn-group w-100" role="group" aria-label="Basic checkbox toggle button group">
+                <span style="margin-right: 30px;" class="col-md-3">是二手商品嗎：</span>
+                <div class="form-check form-check-inline">
+                    <input v-model="isSecondHand" class="form-check-input" type="radio" name="options1" id="inlineRadio1" value="false" checked>
+                    <label style="margin-right: 30px;" class="form-check-label" for="inlineRadio1">否</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input v-model="isSecondHand" class="form-check-input" type="radio" name="options2" id="inlineRadio2" value="true">
+                    <label style="margin-right: 30px;" class="form-check-label" for="inlineRadio2">是</label>
+                </div>
             </div>
-            <div class="form-check form-check-inline">
-                <input v-model="isSecondHand" class="form-check-input" type="radio" name="options2" id="inlineRadio2" value="true">
-                <label style="margin-right: 30px;" class="form-check-label" for="inlineRadio2">是</label>
-            </div>
+
         </div>
 
         <div class="form-floating mb-3">
@@ -67,26 +66,29 @@
         </div>
 
         <div class="form-floating mb-3">
-            <span style="margin-right: 105px;" class="col-md-3">運送方式：</span>
-            <div class="form-check form-check-inline">
-                <input v-model="delRequest1" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" ></input>
-                <label v-if="deliverys[0]" style="margin-right: 30px;" class="form-check-label" for="inlineCheckbox1">
-                    {{ deliverys[0].delivery }}</label>
+            <div class="btn-group w-100" role="group" aria-label="Basic checkbox toggle button group">
+                <span style="margin-right: 30px;" class="col-md-3">運送方式：</span>
+                <div class="form-check form-check-inline">
+                    <input v-model="delRequest1" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" ></input>
+                    <label v-if="deliverys[0]" style="margin-right: 30px;" class="form-check-label" for="inlineCheckbox1">
+                        {{ deliverys[0].delivery }}</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input v-model="delRequest2" class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+                    <label v-if="deliverys[1]" style="margin-right: 30px;" class="form-check-label " for="inlineCheckbox2">
+                        {{ deliverys[1].delivery }}</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input v-model="delRequest3" class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3">
+                    <label v-if="deliverys[2]" class="form-check-label " for="inlineCheckbox2">
+                        {{ deliverys[2].delivery }}</label>
+                </div>
             </div>
-            <div class="form-check form-check-inline">
-                <input v-model="delRequest2" class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
-                <label v-if="deliverys[1]" style="margin-right: 30px;" class="form-check-label " for="inlineCheckbox2">
-                    {{ deliverys[1].delivery }}</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input v-model="delRequest3" class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3">
-                <label v-if="deliverys[2]" class="form-check-label " for="inlineCheckbox2">
-                    {{ deliverys[2].delivery }}</label>
-            </div>
+
         </div>
 
         <div class="form-floating mb-3">
-            <div class="row">
+            <div class="row w-100">
                 <span style="margin-right: 30px;" class="col-md-3">商品分類：</span>
                 <div class="col-md-3">
                     <div class="form-group">
@@ -113,11 +115,14 @@
 
         <div class="form-floating mb-3">
             <div class="row justify-content-end">
-            <div @click="upload" class="btn btn-outline-primary col-md-3 rounded-pill ">送出</div>
-            <div  class="btn btn-outline-primary col-md-3 rounded-pill ">新增下一筆</div>
+            <RouterLink :to="{name: 'product-Upload-page-link'}" @click="upload" 
+                class="btn btn-outline-primary col-md-3 rounded-pill ">送出</RouterLink>
+            <RouterLink :to="{name: 'product-Upload-page-link'}" @click="upload" 
+                class="btn btn-outline-primary col-md-3 rounded-pill ">新增下一筆</RouterLink>
             </div>
         </div>
-    </form>
+        </form>
+    </div>
 
 
 </template>
@@ -207,14 +212,15 @@
             const formData = new FormData();
             formData.append('jsonProduct', JSON.stringify({productID : productID}));
 
-            images.value.forEach((image, index) => {
-
-                console.log(index);
-                formData.append('image', image.file);
+            images.value.forEach(async (image, index) => {
+                formData.set('image', image.file);
+                await uploadImage(formData);
             });
 
-            // console.log('formData',formData.data);
-            try {
+    }
+
+    async function uploadImage(formData) {
+        try {
                 await axiosapi.post("/api/productImg", formData, {
                     headers: {
                         'Content-Type' : 'multipart/form-data'
@@ -228,11 +234,9 @@
                 console.error('Error uploading image:', error);
                 alert('圖片上傳失敗');
             }
-        
-        
-    
-
     }
+
+
 
     // 處理圖片預覽(新增、刪除)
     const handleFileChange = (event) => {
@@ -361,9 +365,27 @@
 </script>
 
 <style>
-    .image-preview {
+    .form-container {
         display: flex;
-        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #f0dddd;
+        padding: 20px;
+    }
+
+    .upload-form {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 800px;
+    }
+    .image-preview {
+        flex-wrap: nowrap;
+        display: flex;
+        overflow-x: auto; /*當圖片數量超過容器寬度時，會顯示水平滾動條*/
         margin-top: 10px;
     }
     .image-container {
@@ -387,7 +409,7 @@
         top: 5px;
         right: 5px;
         background-color: rgba(255, 0, 0, 0.7);
-        color: white;
+        color: black;
         border: none;
         border-radius: 50%;
         width: 20px;
