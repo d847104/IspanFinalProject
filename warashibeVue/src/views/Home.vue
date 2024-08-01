@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container p-4">
         <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active" data-bs-interval="2000">
@@ -69,27 +69,6 @@
 </script>
 
 <style scoped>
-
-    .container .row { 
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1.5rem;
-        /* 調整間距 */
-        margin-bottom: 1.5rem;
-        /* 可以根據需要進行調整 */
-    }
-
-    .container .row:last-of-type {
-        margin-bottom: 0;
-        /* 最後一行不需要額外間距 */
-    }
-
-    .lh-lg {
-        line-height: 1.5;
-        /* 可以根據需要進行調整 */
-    }
-
-
     .carousel {
         width: 80vw;
         /* 設定輪播寬度為螢幕寬度的80% */
