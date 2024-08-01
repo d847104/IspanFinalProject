@@ -1,5 +1,5 @@
 <template>
-    <h3>Not Found</h3>
+    <h3>請登入查詢</h3>
 </template>
     
 <script setup>
