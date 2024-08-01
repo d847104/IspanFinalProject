@@ -11,7 +11,7 @@
         // import 'flatpickr/dist/flatpickr.css'
         import { RouterView } from 'vue-router';
         import { provide, ref } from 'vue';
-        import Navigation from './views/Navigation.vue'
+        import Navigation from '@/views/Navigation.vue'
         import categoryBar from '@/layout/categoryBar.vue';
 
         const user = ref(null);
