@@ -30,7 +30,7 @@
                                                                 <button class="btn btn-outline-secondary" type="button" @click="removeOne" :disabled="cart.quantity===1">
                                                                         <font-awesome-icon :icon="['fas', 'minus']" />
                                                                 </button>
-                                                                <input type="text" class="form-control text-center" placeholder="" :value="cart.quantity" :id="cart.product.productID+'Qt'" @change="checkQt">
+                                                                <input type="text" class="form-control text-center" placeholder="" v-model="cart.quantity" :id="cart.product.productID+'Qt'" @change="checkQt" @focus="focus">
                                                                 <button class="btn btn-outline-secondary" type="button" @click="addOne" :style="[exceed?'border-color: var(--bs-dark-border-subtle)':'']">
                                                                         <span data-bs-toggle="tooltip" data-bs-placement="top" :title="alert" v-show="exceed" style="color: var(--bs-dark-border-subtle);">
                                                                                 <font-awesome-icon :icon="['fas', 'plus']" />
@@ -86,13 +86,20 @@
 
         const alert = `該產品庫存剩餘${props.cart.product.stock}件`;
         const exceed = ref(false);
-        
-        function checkQt(){
+
+        var focusValue;
+        function focus(){
+                focusValue = props.cart.quantity;
+        }
+
+        function checkQt(e){
                 exceed.value = false;
-                let productId = props.cart.product.productID
+                let productId = props.cart.product.productID;
                 let cartQt = parseInt(document.getElementById(productId+'Qt').value);
-                if(cartQt > props.cart.product.stock){
-                        props.cart.quantity = props.cart.product.stock
+                if(!Number.isInteger(cartQt) || cartQt <1){
+                        props.cart.quantity = focusValue;
+                }else if(cartQt > props.cart.product.stock){
+                        props.cart.quantity = props.cart.product.stock;
                         exceed.value = true;
                 }else{
                         props.cart.quantity = cartQt;
@@ -174,4 +181,6 @@
         }
 </script>
 
-<style></style>
+<style scoped>
+
+</style>
