@@ -12,20 +12,21 @@
                     <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">註冊會員</h3>
 
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                        <input v-model="account" type="email" class="form-control" id="floatingInput" placeholder="name@example.com" >
                         <label for="floatingInput">請輸入電子郵件</label>
                     </div>
                     <div class="form-floating mb-3" >
-                        <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                        <input v-model="password" type="password" class="form-control" id="floatingPassword" placeholder="Password">
                         <label for="floatingPassword">請輸入密碼</label>
                     </div>
                     <div class="form-floating">
                         <input type="password" class="form-control" id="checkPassword" placeholder="Password">
                         <label for="checkPassword">請確認密碼</label>
+                        <span id="pwdMatch"></span>
                     </div>
 
                     <div class="pt-3 mb-4">
-                        <RouterLink :to="{name: 'register-two-link'}" class="btn btn-info btn-lg btn-block" type="button">下一步</RouterLink>
+                        <RouterLink @click="saveData" :to="{name: 'register-two-link'}" class="btn btn-info btn-lg btn-block" type="button">下一步</RouterLink>
                     </div>
 
                     <hr class="my-4">
@@ -50,8 +51,32 @@
     </section>
 </template>
 
-<script>
+<script setup>
+    // function checkPwdMatch() {
+    //     var password = document.getElementById('floatingPassword').value;
+    //     let checkPassword = document.getElementById('checkPassword').value;
+    //     let pwdMatch = document.getElementById('pwdMatch');
 
+    //     if(password != checkPassword) {
+    //         pwdMatch.innerHTML = "密碼不相符";
+    //     } else {
+    //         pwdMatch.innerHTML = "";
+    //     }
+    // }
+
+    import { ref } from 'vue';
+
+    const account = ref("");
+    const password = ref("");
+
+    function saveData() {
+        sessionStorage.setItem('account', account.value);
+        sessionStorage.setItem('password', password.value);
+    }
+
+
+
+    
 
 </script>
 

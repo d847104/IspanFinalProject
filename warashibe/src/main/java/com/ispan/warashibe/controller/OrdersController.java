@@ -5,6 +5,7 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -88,6 +89,21 @@ public class OrdersController {
 		JSONArray array = new JSONArray();
 		List<Orders> result = ordersServ.findBySellerId(id);
 		for(Orders order : result) {
+			if(order!=null) {
+				try {array.put(new JSONObject(objMapper.writeValueAsString(order)));
+				} catch (Exception e) {e.printStackTrace();}
+			}
+		}
+		responseBody.put("list", array);
+		return responseBody.toString();
+	}
+	
+	@PostMapping("/orders/all")
+	public String findAllByPage(@RequestBody String body) {
+		JSONObject responseBody = new JSONObject();
+		JSONArray array = new JSONArray();
+		Page<Orders> page = ordersServ.findAllByPage(body);
+		for(Orders order : page.getContent()) {
 			if(order!=null) {
 				try {array.put(new JSONObject(objMapper.writeValueAsString(order)));
 				} catch (Exception e) {e.printStackTrace();}

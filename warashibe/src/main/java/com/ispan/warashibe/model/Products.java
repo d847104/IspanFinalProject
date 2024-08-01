@@ -20,6 +20,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -77,6 +78,19 @@ public class Products {
 
 	@Lob
 	private String wishItem;
+	
+	
+    @PrePersist
+    public void onCreate() {
+        if (uploadDate == null) {
+        	uploadDate = new java.util.Date();
+        }
+        if (updateTime == null) {
+        	updateTime = new Date();
+        }
+    }
+	
+	
 
 	@JsonIgnoreProperties("products") // 防止無限遞歸
 	@JsonIdentityReference(alwaysAsId = true)

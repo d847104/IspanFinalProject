@@ -102,24 +102,8 @@
             <div class="col-lg-12">
                 <ProductList v-for="item in products" :key="item.productID" :item="item"></ProductList>
             </div>
-
-
         </div>
-
-
-
-
-
-
     </div>
-
-
-
-
-
-
-
-
 
 
     <br />
@@ -134,9 +118,8 @@ import ProductList from '@/components/ProductList.vue';
 import axiosapi from '@/plugins/axios.js';
 import swal from 'sweetalert2';
 import { ref, onMounted } from 'vue';
-const item = ref({});
+// const item = ref({});
 const products = ref([]);
-
 const total = ref(0)
 const current = ref(1)
 const pages = ref(0)
@@ -190,8 +173,6 @@ function callSearch(page) {
     });
 
 }
-
-
 
 
 </script>

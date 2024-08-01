@@ -53,9 +53,13 @@ public class ProductService {
         return productRepository.findById(id).orElse(null);
     }
 
-    public void saveProductFromJson(String jsonProduct) throws JsonProcessingException {
+    public Integer saveProductFromJson(String jsonProduct) throws JsonProcessingException {        
+        
         Products product = objectMapper.readValue(jsonProduct, Products.class);
-        productRepository.save(product);
+        Products savedProduct = productRepository.save(product);
+        return savedProduct.getProductID();
+        
+        
     }
     
     public List<Products> getProductsByName(String name, Pageable pageable) {

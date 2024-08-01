@@ -9,8 +9,11 @@
     <categoryBar></categoryBar>
     <RouterView></RouterView>
   </div>
+        <Navigation></Navigation>
+        <categoryBar></categoryBar>
+        <RouterView></RouterView>
 </template>
-  
+
 <script setup>
     import 'bootstrap/dist/css/bootstrap.min.css'
     // import 'bootstrap-vue/dist/bootstrap-vue.min.css'
@@ -23,8 +26,16 @@
     import Navigation from './layout/Navigation.vue'
     import categoryBar from '@/layout/categoryBar.vue';
     import axiosapi from './plugins/axios';
+        import 'bootstrap/dist/css/bootstrap.min.css'
+        import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+        // import 'sweetalert2/dist/sweetalert2.min.css'
+        // import 'flatpickr/dist/flatpickr.css'
+        import { RouterView } from 'vue-router';
+        import { provide, ref } from 'vue';
+        import Navigation from '@/views/Navigation.vue'
+        import categoryBar from '@/layout/categoryBar.vue';
 
-    const user = ref(null);
+        const user = ref(null);
 
     const fetchUserData = async () => {
     try {
@@ -91,5 +102,12 @@
   flex-direction: column;
   min-height: 100vh;
 }
+        provide('user', user)
+        provide('setUser', newUser => {
+                user.value = newUser;
+        })
+</script>
+
+<style>
 
 </style>

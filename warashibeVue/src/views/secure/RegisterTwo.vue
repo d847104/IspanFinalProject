@@ -12,7 +12,7 @@
                     <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">註冊會員</h3>
 
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="name">
+                        <input v-model="username" type="text" class="form-control" id="floatingInput" placeholder="name">
                         <label for="floatingInput">請輸入姓名</label>
                     </div>
 
@@ -21,31 +21,31 @@
                         <h6 class="mb-0 me-4">性別: </h6>
 
                         <div class="form-check form-check-inline mb-0 me-4">
-                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="femaleGender"
-                                value="option1" />
+                            <input v-model="gender" class="form-check-input" type="radio" name="inlineRadioOptions" id="femaleGender"
+                                value="female" />
                             <label class="form-check-label" for="femaleGender">女</label>
                         </div>
 
                         <div class="form-check form-check-inline mb-0 me-4">
-                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="maleGender"
-                                value="option2" />
+                            <input v-model="gender" class="form-check-input" type="radio" name="inlineRadioOptions" id="maleGender"
+                                value="male" />
                             <label class="form-check-label" for="maleGender">男</label>
                         </div>
 
                         <div class="form-check form-check-inline mb-0">
-                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="otherGender"
-                                value="option3" />
+                            <input v-model="gender" class="form-check-input" type="radio" name="inlineRadioOptions" id="otherGender"
+                                value="other" />
                             <label class="form-check-label" for="otherGender">其他</label>
                         </div>
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="mobile">
+                        <input v-model="mobile" type="text" class="form-control" id="floatingMobile" placeholder="mobile">
                         <label for="floatingInput">請輸入手機號碼</label>
                     </div>
 
                     <div class="pt-3 mb-4">
-                        <RouterLink :to="{name: 'register-three-link'}" class="btn btn-info btn-lg btn-block" type="button">下一步</RouterLink>
+                        <RouterLink @click="register" :to="{name: 'register-three-link'}" class="btn btn-info btn-lg btn-block" type="button">註冊</RouterLink>
                     </div>
 
                     <hr class="my-4">
@@ -70,7 +70,60 @@
     </section>
 </template>
 
-<script>
+<script setup>
+    import { ref, onMounted } from 'vue';
+    import axiosapi from '@/plugins/axios';
+    import Swal from 'sweetalert2';
+
+    const username = ref("");
+    const gender = ref("");
+    const mobile = ref("");
+    const storeAcc = ref('');
+    const storePwd = ref('')
+
+    onMounted(() => {
+        storeAcc.value = sessionStorage.getItem('account');
+        storePwd.value = sessionStorage.getItem('password');
+    });
+
+    function register() {
+        let request = {
+            "account": storeAcc.value,
+            "password": storePwd.value,
+            "username": username.value,
+            "gender": gender.value,
+            "mobile": mobile.value,
+            "intro": "",
+            "status": "active",
+        }
+
+
+
+        axiosapi.post("/auth/insert", request).then(function(response) {
+            if(response.data.success) {
+                Swal.fire({
+                    icon: "success",
+                    text: response.data.message,
+                })
+            }else {
+                Swal.fire({
+                    icon: "warning",
+                    text: response.data.message,
+                });
+            }
+            
+        }).catch(function (error){
+            Swal.fire({
+                icon: "error",
+                text: "註冊失敗: " + error.message,
+            });
+        });
+
+
+
+
+    }
+
 
 
 </script>

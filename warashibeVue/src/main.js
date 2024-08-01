@@ -8,6 +8,6 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
 
 createApp(App)
-    .component('font-awesome-icon', FontAwesomeIcon)
     .use(router)
+    .component('font-awesome-icon', FontAwesomeIcon)
     .mount('#app');
