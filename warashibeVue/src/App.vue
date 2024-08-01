@@ -1,12 +1,7 @@
 <template>
-  <!-- <div id="app" class="background">
-      <div class="container">
-        <NavBar></NavBar>
-      </div>
-  </div> -->
-  <div class="app-container background">
-    <categoryBar></categoryBar>
+  <div class="background">
     <Navigation></Navigation>
+    <categoryBar></categoryBar>
     <RouterView></RouterView>
   </div>
 </template>
@@ -59,9 +54,6 @@
 </script>
 
 <style>
-.app-container {
-    padding-top: 7%; /* Adjust this value based on Navbar height */
-}
 .background {
   background-image: url('/src/img/bg01.jpg');
   background-size: cover;
@@ -74,22 +66,4 @@
   display: flex;
   flex-direction: column;
 }
-
-.container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 80px 20px 20px; /* Padding top to avoid content hidden behind NavBar */
-  background: rgba(255, 255, 255, 0.8);
-  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); */
-  /* border-radius: 8px; */
-  flex: 1; /* Make sure content area takes up the remaining space */
-}
-
-#app {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
 </style>

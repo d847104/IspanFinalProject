@@ -1,7 +1,7 @@
 <template>
-        <div class="col-lg-3 col-md-6">
-                <div class="card little-product-card" @click="viewProductDetail">
-                        <img class="card-img-top" :alt="product.productName" :src="path">
+        <div class="col-lg-3 col-md-6 mb-5">
+                <div class="card h-100" @click="viewProductDetail">
+                        <img class="card-img-top h-100 object-fit-contain" :alt="product.productName" :src="path">
                         <div class="card-body">
                                 <h6 class="card-title fw-bold">{{product.productName}}</h6>
                                 <div class="card-text text-danger text-end fs-5" v-if="!product.secondHand">NT$ {{product.price}}</div>
@@ -34,11 +34,5 @@ const viewProductDetail = () => {
 </script>
 
 <style scoped>
-.little-product-card {
-cursor: pointer;
-}
-.little-product-card .card-img-top {
-height: 250px;
-object-fit: cover;
-}
+
 </style>

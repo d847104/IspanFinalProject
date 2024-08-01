@@ -1,20 +1,18 @@
 <template>
-    
-    <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active" data-bs-interval="2000">
-                <img src="/src/img/馬克杯21569.jpg" class="d-block w-100" alt="...">
-            </div>
-            <div class="carousel-item" data-bs-interval="2000">
-                <img src="/src/img/馬克杯36344.jpg" class="d-block w-100" alt="...">
-            </div>
-            <div class="carousel-item" data-bs-interval="2000">
-                <img src="/src/img/馬克杯84089.jpg" class="d-block w-100" alt="...">
+    <div class="container p-4">
+        <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active" data-bs-interval="2000">
+                    <img src="/src/img/馬克杯21569.jpg" class="d-block w-100" alt="...">
+                </div>
+                <div class="carousel-item" data-bs-interval="2000">
+                    <img src="/src/img/馬克杯36344.jpg" class="d-block w-100" alt="...">
+                </div>
+                <div class="carousel-item" data-bs-interval="2000">
+                    <img src="/src/img/馬克杯84089.jpg" class="d-block w-100" alt="...">
+                </div>
             </div>
         </div>
-    </div>
-
-    <div class="container">
         <h2 class="lh-lg">熱門商品</h2>
         <div class="row">
             <compCard v-for="product in productsPopular" :key="product.productID" :product="product"></compCard>
@@ -71,27 +69,6 @@
 </script>
 
 <style scoped>
-
-    .container .row { 
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1.5rem;
-        /* 調整間距 */
-        margin-bottom: 1.5rem;
-        /* 可以根據需要進行調整 */
-    }
-
-    .container .row:last-of-type {
-        margin-bottom: 0;
-        /* 最後一行不需要額外間距 */
-    }
-
-    .lh-lg {
-        line-height: 1.5;
-        /* 可以根據需要進行調整 */
-    }
-
-
     .carousel {
         width: 80vw;
         /* 設定輪播寬度為螢幕寬度的80% */
