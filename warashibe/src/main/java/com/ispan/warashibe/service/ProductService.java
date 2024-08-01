@@ -69,13 +69,18 @@ public class ProductService {
     public void updateProductFromJson(int id, String jsonProduct) throws JsonProcessingException {
         Products existingProduct = getProductById(id);
         if (existingProduct != null) {
-            Products updatedProduct = objectMapper.readValue(jsonProduct, Products.class);
-            updatedProduct.setProductID(id); // 保持ID一致
-            productRepository.save(updatedProduct);
+            // 使用 ObjectMapper 的 updateValue 方法进行部分字段更新
+            objectMapper.readerForUpdating(existingProduct).readValue(jsonProduct);
+            // 保存更新后的产品
+            productRepository.save(existingProduct);
         }
     }
 
     public void deleteProduct(int id) {
         productRepository.deleteById(id);
+    }
+    
+    public List<Products> getProductsByMemberID(Integer memberID) {
+        return productRepository.findByMember_MemberID(memberID);
     }
 }

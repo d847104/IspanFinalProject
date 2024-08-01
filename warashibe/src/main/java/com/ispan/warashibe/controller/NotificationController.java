@@ -63,6 +63,22 @@ public class NotificationController {
         return responseBody.toString();
 	}
 	
+	// 根據 receiverID 查詢通知
+    @GetMapping("/notification/receiver/{receiverID}")
+    public String findByReceiverID(@PathVariable(name = "receiverID") Integer receiverID) throws JsonProcessingException {
+        JSONObject responseBody = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<Notification> notifications = notificationService.findByReceiverID(receiverID);
+        
+        for (Notification notification : notifications) {
+            JSONObject item = new JSONObject(objectMapper.writeValueAsString(notification));
+            array.put(item);
+        }
+
+        responseBody.put("list", array);
+        return responseBody.toString();
+    }
+	
 	// 刪除單筆
     @DeleteMapping("/notification/delete/{id}")
     public String delete(@PathVariable Integer id) {

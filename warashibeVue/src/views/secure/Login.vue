@@ -59,12 +59,13 @@
 <script setup>
 import swal from 'sweetalert2';
 import axiosapi from '@/plugins/axios';
-import { ref } from 'vue';
+import { ref, inject } from 'vue';
 import { useRouter } from 'vue-router';
 
 const account = ref("");
 const password = ref("");
 const router = useRouter();
+const setUser = inject('setUser');
 
 function login() {
     axiosapi.defaults.headers.authorization = "";
@@ -88,6 +89,21 @@ function login() {
             swal.fire({
                 icon: "success",
                 text: response.data.message,
+            }).then(async function(result) {
+                axiosapi.defaults.headers.authorization=`Bearer ${response.data.token}`;
+                sessionStorage.setItem("memberID",response.data.memberID);
+                sessionStorage.setItem("token",response.data.token);
+                // console.log(sessionStorage.getItem("token"));
+
+                // 记录用户信息
+                try {
+                    const userResponse = await axiosapi.get(`/ajax/members/${response.data.memberID}`);
+                    setUser(userResponse.data.list[0],response.data.token);
+                    // console.log(userResponse.data);
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                }
+
             }).then(function (result) {
                 axiosapi.defaults.headers.authorization = `Bearer ${response.data.token}`;
                 sessionStorage.setItem("memberID", response.data.memberID);

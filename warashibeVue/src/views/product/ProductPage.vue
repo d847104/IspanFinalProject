@@ -68,7 +68,7 @@
         <div class="col-md-12">
         <h3>查看更多</h3>
         <div class="row">
-            <LittleProductCard v-for="product in relatedProducts" :key="product.productID" :product="product" />
+            <RelatedCard v-for="product in relatedProducts" :key="product.productID" :product="product" />
         </div>
         <Paginate :page-count="pages" :click-handler="callFind" :prev-text="'&lt;'" :next-text="'&gt;'" />
         </div>
@@ -81,11 +81,11 @@
 import { ref, onMounted, watch } from 'vue';
 import axiosapi from '@/plugins/axios';
 import { useRoute } from 'vue-router';
-import LittleProductCard from '@/components/LittleProductCard.vue';
+import RelatedCard from '@/components/RelatedCard.vue';
 import Paginate from 'vuejs-paginate-next';
 
 const route = useRoute();
-const productID = ref(route.query.productID || 10);
+const productID = ref(route.query.productID);
 const product = ref({});
 const productImages = ref([]);
 const specImages = ref([]);

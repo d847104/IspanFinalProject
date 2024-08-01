@@ -25,6 +25,11 @@ public class NotificationService {
 	@Autowired
 	private OrdersRepository ordersRepo;
 	
+	//查詢會員通知
+	public List<Notification> findByReceiverID(Integer receiverID) {
+        return notificationRepo.findByReceiverID_MemberID(receiverID);
+    }
+	
 	//查詢單筆
 	public Notification findById(Integer id) {
 		Optional<Notification> optional = notificationRepo.findById(id);

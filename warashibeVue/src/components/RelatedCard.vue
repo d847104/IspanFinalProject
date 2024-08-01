@@ -24,7 +24,7 @@ return props.product.productImgs && props.product.productImgs.length
 });
 
 const viewProductDetail = () => {
-router.push(`/pages/productpage?productID=${props.product.productID}`);
+    router.push(`/pages/productpage?productID=${props.product.productID}`);
 };
 </script>
 
@@ -33,7 +33,7 @@ router.push(`/pages/productpage?productID=${props.product.productID}`);
 cursor: pointer;
 }
 .little-product-card .card-img-top {
-height: 150px;
+height: 250px;
 object-fit: cover;
 }
 </style>

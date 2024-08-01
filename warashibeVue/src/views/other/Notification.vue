@@ -1,20 +1,22 @@
 <template>
-<div class="notification-page">
-    <h1>通知訊息</h1>
-    <div class="notification-list">
-    <div class="notification-item" v-for="notification in notifications" :key="notification.notificationID">
-        <div class="notification-info">
-        <img :src="notification.image" alt="用户头像" class="notification-image" />
-        <div class="notification-details">
-            <p>
-            <span class="sender">{{ notification.senderName }}</span>
-            {{ notification.content }}
-            <span class="action">{{ notification.action }}</span>
-            </p>
-        </div>
-        </div>
-        <div class="notification-action">
-        <button class="action-button">前往商品管理</button>
+<div class="container">
+    <div class="notification-page">
+        <h1 class="notification-title">通知訊息</h1>
+        <div class="notification-list">
+        <div class="notification-item" v-for="notification in notifications" :key="notification.notificationID">
+            <div class="notification-info">
+                <img :src="notification.senderProfileImg || '/default-avatar.png'" alt="用戶頭像" class="notification-image" />
+                <div class="notification-details">
+                    <p>
+                        <span class="sender">{{ notification.senderName }}</span>
+                        {{ notification.content }}
+                        <span class="action">{{ notification.action }}</span>
+                    </p>
+                </div>
+            </div>
+            <div class="notification-action">
+                <button class="action-button">前往商品管理</button>
+            </div>
         </div>
     </div>
     </div>
@@ -22,88 +24,104 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, inject } from 'vue';
+import axiosapi from '@/plugins/axios';
 
-// 假数据，实际应用中从后端获取
-const notifications = ref([
-{
-    notificationID: 1,
-    senderName: '會員 Alan',
-    content: '對您的商品感興趣，提出',
-    action: '交換',
-    image: '/src/img/user1.jfif',
-    date: '2024-07-26',
-},
-{
-    notificationID: 2,
-    senderName: '會員 Tom',
-    content: '對您的商品感興趣，提出',
-    action: '購買',
-    image: '/src/img/user2.jfif',
-    date: '2024-07-26',
-},
-{
-    notificationID: 3,
-    senderName: '會員 Jack',
-    content: '對您的商品感興趣，提出',
-    action: '交換',
-    image: '/src/img/user3.jfif',
-    date: '2024-07-26',
-},
-]);
+const notifications = ref([]);
+const user = inject('user');
+
+const fetchSenderInfo = async (senderID) => {
+    try {
+        const response = await axiosapi.get(`/ajax/members/${senderID}`);
+        const member = response.data.list[0];
+        return {
+            username: member.username,
+            profileImg: member.profileImg ? `data:image/png;base64,${member.profileImg}` : '/default-avatar.png'
+        };
+    } catch (error) {
+        console.error(`Error fetching member info for ID ${senderID}:`, error);
+        return { username: 'Unknown', profileImg: '/default-avatar.png' };
+    }
+};
+
+const fetchNotifications = async () => {
+    try {
+        const response = await axiosapi.get(`/ajax/notification/receiver/${user.value.id}`);
+        const notificationList = response.data.list || [];
+
+        for (const notification of notificationList) {
+            const senderInfo = await fetchSenderInfo(notification.senderID);
+            notification.senderName = senderInfo.username;
+            notification.senderProfileImg = senderInfo.profileImg;
+        }
+
+        notifications.value = notificationList;
+    } catch (error) {
+        console.error('Error fetching notifications:', error);
+    }
+};
+
+onMounted(fetchNotifications);
 </script>
 
 <style scoped>
 .notification-page {
-padding: 20px;
+    padding: 0; /* 去掉 padding */
+    background-color: transparent;
+}
+
+.notification-title {
+    margin: 0;
+    padding: 10px;
+    color: aliceblue;
 }
 
 .notification-list {
-margin-top: 20px;
+    margin-top: 10px; /* 调整为你所需要的间距 */
 }
 
 .notification-item {
-display: flex;
-align-items: center;
-justify-content: space-between;
-padding: 10px;
-border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
 }
 
 .notification-info {
-display: flex;
-align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .notification-image {
-width: 50px;
-height: 50px;
-margin-right: 10px;
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
 }
 
 .notification-details {
-display: flex;
-flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .sender {
-color: #e74c3c;
-font-weight: bold;
+    color: #e74c3c;
+    font-weight: bold;
 }
 
 .action {
-color: #e74c3c;
+    color: #e74c3c;
 }
 
 .notification-action {
-text-align: right;
+    text-align: right;
 }
 
 .action-button {
-color: #e74c3c;
-background: none;
-border: none;
-cursor: pointer;
-text-decoration: underline;
+    color: #e74c3c;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
 }
 </style>

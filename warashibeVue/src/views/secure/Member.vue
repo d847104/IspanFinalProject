@@ -61,7 +61,7 @@
     const router = useRouter()
 
     const navigateTo = (path) => {
-    router.push(path)
+        router.push(path)
     }
 </script>
 
