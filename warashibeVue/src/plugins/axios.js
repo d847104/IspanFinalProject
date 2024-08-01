@@ -5,6 +5,12 @@ const axiosapi = axios.create({
     baseURL: import.meta.env.VITE_API_URL
 });
 
+// 從 sessionStorage 中讀取 token
+const token = sessionStorage.getItem('token');
+if (token) {
+    axiosapi.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+}
+
 axiosapi.interceptors.response.use(
     function (response) {
         return response;

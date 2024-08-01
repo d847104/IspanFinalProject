@@ -4,7 +4,12 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,5 +80,16 @@ public class OrdersService {
 
 	public List<Orders> findBySellerId(Integer sellerID) {	// 以賣家ID查詢多筆
 		return ordersRepo.findBySellerId(sellerID);
+	}
+	
+	public Page<Orders> findAllByPage(String json) {
+		JSONObject requestBody = new JSONObject(json);
+		int pageNum = requestBody.isNull("pageNum")? 1 : requestBody.getInt("pageNum");		// 若未給予第幾頁則預設第一頁
+		int pageRow = requestBody.isNull("pageRow")? 10 : requestBody.getInt("pageRow");	// 若未回傳每頁筆數則預設十筆
+		Sort.Direction direction = requestBody.isNull("dir")? 								// 若未給予排序方向則預設降冪排列
+				Sort.Direction.DESC : (requestBody.getString("dir").toUpperCase()=="ASC"? Sort.Direction.ASC : Sort.Direction.DESC);
+		String dirBy = requestBody.isNull("dirBy")? "orderUpdate" : requestBody.getString("dirBy");	// 若未給予排序的依據欄位則預設以訂單更新時間排序
+		Pageable pgb = PageRequest.of(pageNum - 1, pageRow, direction, dirBy);
+		return ordersRepo.findByPage(pgb);
 	}
 }
