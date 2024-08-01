@@ -48,12 +48,13 @@
     <div v-else>
         <p>目前沒有訂單</p>
     </div>
-    <div></div>
-    <h5 style="color:#6C6C6C;">賣家：</h5>
-    <div class="alert alert-light" role="alert">
+
+
+    <div class="alert alert-light" role="alert" v-if="selectedOrder">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-10">
+                    <h5 style="color:#6C6C6C;">賣家：{{ selectedOrder.seller }}</h5>
                     <div class="card mb-3">
                         <div class="row g-0" style="max-width: 500px;">
                             <div class="col-md-4">
@@ -61,11 +62,13 @@
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body">
-                                    <h5 class="card-title">【單色馬克杯】</h5>
+                                    <h5 class="card-title">【{{ productName }}】</h5>
                                     <p class="card-text">商品介紹內容</p>
                                     <br><br>
-                                    <p class="card-text"><small class="text-body-secondary">更新時間:</small></p>
-                                    <p class="card-text"><small class="text-body-secondary">訂購時間:</small></p>
+                                    <p class="card-text"><small class="text-body-secondary">更新時間:{{
+                                        formatDateTime(selectedOrder.orderUpdate) }}</small></p>
+                                    <p class="card-text"><small class="text-body-secondary">訂購時間:{{
+                                        formatDateTime(selectedOrder.orderTime) }}</small></p>
                                 </div>
                             </div>
                         </div>
@@ -82,7 +85,6 @@
     </div>
 
 
-
 </template>
 
 <script setup>
@@ -93,37 +95,61 @@ import { format } from 'date-fns';
 
 const BuyerID = ref(1);
 const selectedOrder = ref(null);
+const productName = ref('');
 
 onMounted(() => {
-    callFindByBuyerID(BuyerID.value);
+    fetchOrderDetails(BuyerID.value);
 });
-function callFindByBuyerID(BuyerID) {
+
+async function fetchOrderDetails(buyerID) {
     Swal.fire({
         text: "處理中.....",
         allowOutsideClick: false,
         showConfirmButton: false
     });
 
-    axiosapi.get(`/private/pages/orders/buyer/${BuyerID}`).then(function (response) {
+    try {
+        const response = await axiosapi.get(`/private/pages/orders/buyer/${buyerID}`);
         const fetchedOrders = response.data.list || [];
         if (fetchedOrders.length > 0) {
             selectedOrder.value = fetchedOrders.reduce((maxOrder, currentOrder) => {
                 return (currentOrder.orderID > maxOrder.orderID) ? currentOrder : maxOrder;
             });
+
+            // 查詢產品資料
+            await fetchOrderProducts(selectedOrder.value.orderID);
         } else {
             selectedOrder.value = null; // 沒有訂單時的處理
         }
-        // orders.value = response.data.orders;
-        setTimeout(function () {
-            Swal.close();
-        }, 500);
-    }).catch(function (error) {
+        Swal.close();
+    } catch (error) {
         console.log("error", error);
         Swal.fire({
             text: "查詢失敗：" + error.message,
             icon: "error"
         });
-    });
+    }
+}
+
+async function fetchOrderProducts(orderID) {
+    try {
+        const response = await axiosapi.get(`/private/pages/orderProducts/order/${orderID}`);
+        console.log('Response data:', response.data.list.orderID);
+        const products = response.data.list || [];
+
+        // 假設產品名稱是第一個產品的名稱
+        if (products.length > 0) {
+            productName.value = products[0].productName;
+        } else {
+            productName.value = '產品名稱未提供'; // 沒有產品時的預設值
+        }
+    } catch (error) {
+        console.log("Error fetching products:", error);
+        Swal.fire({
+            text: "查詢產品資料失敗：" + error.message,
+            icon: "error"
+        });
+    }
 }
 
 function formatDateTime(isoDateString) {
