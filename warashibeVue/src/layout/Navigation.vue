@@ -23,7 +23,7 @@
                 <!-- 搜尋列 -->
                 <form class="d-flex search-form d-none d-lg-flex mx-auto" role="search">
                     <input class="form-control me-1 search-bar" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success search-button" type="submit">
+                    <button class="btn btn-outline-secondary search-button" type="submit">
                     <font-awesome-icon icon="fa-solid fa-search" />
                     </button>
                 </form>
