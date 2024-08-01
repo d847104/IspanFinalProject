@@ -79,7 +79,7 @@
             會員相關
             </a>
             <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
-            <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/profile')">會員基本資料</RouterLink></li>
+            <li><RouterLink class="dropdown-item"  :to="{name: 'members-basicinformation-link'}" >會員基本資料</RouterLink></li>
             <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/buyer/buyerorder')">買家訂單</RouterLink></li>
             <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller-orders')">賣家訂單</RouterLink></li>
             <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller/sellermanageproduct')">賣家商品管理</RouterLink></li>

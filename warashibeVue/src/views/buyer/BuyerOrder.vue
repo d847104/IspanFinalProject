@@ -1,6 +1,8 @@
 <template>
     <br>
     <h3 style="color:#6C6C6C;">購物訂單管理</h3>
+    
+    <!-- 顯示選擇的訂單 -->
     <div v-if="selectedOrder">
         <div class="alert alert-dark" role="alert">
             <div class="row gx-5">
@@ -22,15 +24,15 @@
             </div>
         </div>
 
-        <h5 style="color:#6C6C6C;">訂單狀態{{ selectedOrder.orderStatus }}</h5>
+        <h5 style="color:#6C6C6C;">訂單狀態: {{ selectedOrder.orderStatus }}</h5>
         <div class="alert alert-secondary" role="alert">
             <div class="container overflow-hidden text-center">
                 <div class="row gx-5 align-items-center">
-                    <div class="col-md-10 ">
+                    <div class="col-md-10">
                         <div class="p-3">
                             <div class="progress" role="progressbar" aria-label="Example 20px high" aria-valuenow="25"
                                 aria-valuemin="0" aria-valuemax="100" style="height: 20px">
-                                <div class="progress-bar" style="width: 25%">送出訂單</div>
+                                <div class="progress-bar" :style="{ width: progressWidth }">{{ progressText }}</div>
                             </div>
                         </div>
                     </div>
@@ -49,59 +51,62 @@
         <p>目前沒有訂單</p>
     </div>
 
-
-    <div class="alert alert-light" role="alert" v-if="selectedOrder">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-10">
-                    <h5 style="color:#6C6C6C;">賣家：{{ selectedOrder.seller }}</h5>
-                    <div class="card mb-3">
-                        <div class="row g-0" style="max-width: 500px;">
-                            <div class="col-md-4">
-                                <img src="/src/img/馬克杯21569.jpg" class="img-fluid rounded-start" alt="...">
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <h5 class="card-title">【{{ productName }}】</h5>
-                                    <p class="card-text">商品介紹內容</p>
-                                    <br><br>
-                                    <p class="card-text"><small class="text-body-secondary">更新時間:{{
-                                        formatDateTime(selectedOrder.orderUpdate) }}</small></p>
-                                    <p class="card-text"><small class="text-body-secondary">訂購時間:{{
-                                        formatDateTime(selectedOrder.orderTime) }}</small></p>
+    <!-- 顯示訂單列表 -->
+    <div v-if="orders.length > 0">
+        <div class="alert alert-light" role="alert" v-for="order in orders" :key="order.orderID">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-10">
+                        <h5 style="color:#6C6C6C;">賣家：{{ order.seller }}</h5>
+                        <div class="card mb-3">
+                            <div class="row g-0" style="max-width: 500px;">
+                                <div class="col-md-4">
+                                    <img src="..." class="img-fluid rounded-start" alt="...">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5>訂單編號：{{ order.orderID }}</h5>
+                                        <h5 class="card-title">品名:【{{ productNameMap[order.orderID] || '產品名稱未提供' }}】</h5>
+                                        <p class="card-text">商品介紹內容</p>
+                                        <br><br>
+                                        <p class="card-text"><small class="text-body-secondary">更新時間: {{ formatDateTime(order.orderUpdate) }}</small></p>
+                                        <p class="card-text"><small class="text-body-secondary">訂購時間: {{ formatDateTime(order.orderTime) }}</small></p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="p-4">
-                        <a href="#" class="btn btn-outline-secondary btn-sm d-block mb-2">訂單明細</a>
-                        <a href="#" class="btn btn-outline-secondary btn-sm d-block mb-2">評價</a>
+                    <div class="col-md-2">
+                        <div class="p-4">
+                            <a href="#" class="btn btn-outline-secondary btn-sm d-block mb-2">訂單明細</a>
+                            <a href="#" class="btn btn-outline-secondary btn-sm d-block mb-2">評價</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-
+    <div v-else>
+        <p>目前沒有訂單</p>
+    </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import Swal from 'sweetalert2';
 import axiosapi from '@/plugins/axios';
 import { format } from 'date-fns';
 
 const BuyerID = ref(1);
 const selectedOrder = ref(null);
-const productName = ref('');
+const orders = ref([]);
+const productNameMap = ref({}); // 用於存儲每個訂單的產品名稱
 
 onMounted(() => {
-    fetchOrderDetails(BuyerID.value);
+    fetchOrders(BuyerID.value);
 });
 
-async function fetchOrderDetails(buyerID) {
+async function fetchOrders(buyerID) {
     Swal.fire({
         text: "處理中.....",
         allowOutsideClick: false,
@@ -111,14 +116,20 @@ async function fetchOrderDetails(buyerID) {
     try {
         const response = await axiosapi.get(`/private/pages/orders/buyer/${buyerID}`);
         const fetchedOrders = response.data.list || [];
+        
         if (fetchedOrders.length > 0) {
-            selectedOrder.value = fetchedOrders.reduce((maxOrder, currentOrder) => {
-                return (currentOrder.orderID > maxOrder.orderID) ? currentOrder : maxOrder;
-            });
+            // 根據 ORDERID 降冪排序
+            orders.value = fetchedOrders.sort((a, b) => b.orderID - a.orderID);
+            
+            // 設置選擇的訂單
+            selectedOrder.value = orders.value[0]; // 假設選擇最新的一個訂單
 
-            // 查詢產品資料
-            await fetchOrderProducts(selectedOrder.value.orderID);
+            // 查詢每個訂單的產品資料
+            for (const order of orders.value) {
+                await fetchOrderProducts(order.orderID);
+            }
         } else {
+            orders.value = [];
             selectedOrder.value = null; // 沒有訂單時的處理
         }
         Swal.close();
@@ -134,14 +145,13 @@ async function fetchOrderDetails(buyerID) {
 async function fetchOrderProducts(orderID) {
     try {
         const response = await axiosapi.get(`/private/pages/orderProducts/order/${orderID}`);
-        console.log('Response data:', response.data.list.orderID);
         const products = response.data.list || [];
 
         // 假設產品名稱是第一個產品的名稱
         if (products.length > 0) {
-            productName.value = products[0].productName;
+            productNameMap.value[orderID] = products[0].productName;
         } else {
-            productName.value = '產品名稱未提供'; // 沒有產品時的預設值
+            productNameMap.value[orderID] = '產品名稱未提供'; // 沒有產品時的預設值
         }
     } catch (error) {
         console.log("Error fetching products:", error);
@@ -157,6 +167,29 @@ function formatDateTime(isoDateString) {
     return format(date, 'yyyy-MM-dd HH:mm:ss');
 }
 
+// 計算訂單進度
+const progressWidth = computed(() => {
+    if (!selectedOrder.value) return '0%';
+    switch (selectedOrder.value.orderStatus) {
+        case '已送出':
+            return '25%';
+        case '已處理':
+            return '50%';
+        case '已出貨':
+            return '75%';
+        case '完成':
+            return '100%';
+        default:
+            return '0%';
+    }
+});
+
+const progressText = computed(() => {
+    if (!selectedOrder.value) return '未開始';
+    return selectedOrder.value.orderStatus;
+});
 </script>
 
-<style></style>
+<style>
+/* 在此添加自定義樣式 */
+</style>
