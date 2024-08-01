@@ -1,4 +1,3 @@
-<!-- ===================================================================================== -->
 <template>
     <div class="container mt-5">
         <div class="row">
@@ -62,7 +61,26 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+    import axiosapi from '@/plugins/axios';
+    import { ref,  onMounted} from 'vue';
+    const member = ref([]);
+
+    onMounted(function () {
+        callMember();
+    });
+
+
+    function callMember() {
+
+        const memberID = sessionStorage.getItem("id");
+        axiosapi.get(`/ajax/members/${memberID}`).then(function(response) {
+            member.value = response.data.list;
+            console.log(response.data.list);
+            
+        }).catch(function(error) {
+            
+        });
+    }
 
 const products = ref([
     {
