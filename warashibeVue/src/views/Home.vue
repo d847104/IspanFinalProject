@@ -12,7 +12,7 @@
         <br>
         <h2 class="lh-lg">物換心儀</h2>
         <div class="row">
-            <compSecHandCard v-for="product in productsSecHand" :key="product.productID" :product="product"></compSecHandCard>
+            <compCard v-for="product in productsSecHand" :key="product.productID" :product="product"></compCard>
         </div>
     </div>
 </template>
@@ -20,7 +20,6 @@
 <script setup>
         import { ref, onMounted } from 'vue';
         import compCard from '@/components/compCard.vue';
-        import compSecHandCard from '@/components/compSecHandCard.vue';
         import callPopular from '@/plugins/products/product_popular.js';
         import callSecondHand from '@/plugins/products/product_secondhand.js';
         import callRandom from '@/plugins/products/product_random';
@@ -57,9 +56,5 @@
 </script>
 
 <style scoped>
-.button-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 10px; /* 可調整，根據你的設計 */
-}
+
 </style>
