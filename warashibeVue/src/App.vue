@@ -5,63 +5,65 @@
     <RouterView></RouterView>
   </div>
 </template>
-  
+
 <script setup>
-    import 'bootstrap/dist/css/bootstrap.min.css'
-    // import 'bootstrap-vue/dist/bootstrap-vue.min.css'
-    import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
-    import 'bootstrap/dist/js/bootstrap.bundle.min.js'
-    import 'sweetalert2/dist/sweetalert2.min.css'
-    import 'flatpickr/dist/flatpickr.css'
-    import { RouterView } from 'vue-router';
-    import { provide, ref, onMounted } from 'vue';
-    import Navigation from './layout/Navigation.vue'
-    import categoryBar from '@/layout/categoryBar.vue';
-    import axiosapi from './plugins/axios';
+import 'bootstrap/dist/css/bootstrap.min.css'
+// import 'bootstrap-vue/dist/bootstrap-vue.min.css'
+import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import 'sweetalert2/dist/sweetalert2.min.css'
+import 'flatpickr/dist/flatpickr.css'
+import { RouterView } from 'vue-router';
+import { provide, ref, onMounted } from 'vue';
+import Navigation from './layout/Navigation.vue'
+import categoryBar from '@/layout/categoryBar.vue';
+import axiosapi from './plugins/axios';
 
-    const user = ref(null);
+const user = ref(null);
 
-    const fetchUserData = async () => {
-    try {
-        const memberID = sessionStorage.getItem("memberID");
-        const token = sessionStorage.getItem("token");
-        
-        if (memberID && token) {
-            axiosapi.defaults.headers.authorization = `Bearer ${token}`;
-            const response = await axiosapi.get(`/ajax/members/${memberID}`);
-            user.value = response.data.list[0];
-        }
-    } catch (error) {
-        console.error('Error fetching user data:', error);
+const fetchUserData = async () => {
+  try {
+    const memberID = sessionStorage.getItem("memberID");
+    const token = sessionStorage.getItem("token");
+
+    if (memberID && token) {
+      axiosapi.defaults.headers.authorization = `Bearer ${token}`;
+      const response = await axiosapi.get(`/ajax/members/${memberID}`);
+      user.value = response.data.list[0];
     }
-  };
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+  }
+};
 
-  onMounted(fetchUserData);
+onMounted(fetchUserData);
 
-  provide('user', user);
-  provide('setUser', (newUser,token) => {
-      user.value = newUser;
-      if (newUser) {
-          sessionStorage.setItem("memberID", newUser.id);
-          sessionStorage.setItem("token", token);
-          axiosapi.defaults.headers.authorization = `Bearer ${token}`;
-      } else {
-          sessionStorage.removeItem("memberID");
-          sessionStorage.removeItem("token");
-          axiosapi.defaults.headers.authorization = '';
-      }
-  });
+provide('user', user);
+provide('setUser', (newUser, token) => {
+  user.value = newUser;
+  if (newUser) {
+    sessionStorage.setItem("memberID", newUser.id);
+    sessionStorage.setItem("token", token);
+    axiosapi.defaults.headers.authorization = `Bearer ${token}`;
+  } else {
+    sessionStorage.removeItem("memberID");
+    sessionStorage.removeItem("token");
+    axiosapi.defaults.headers.authorization = '';
+  }
+});
 </script>
 
 <style>
 .background {
-  background-image: url('/src/img/bg01.jpg');
+  background-image: url('/src/img/bluesky.jpg');
   background-size: cover;
   background-repeat: no-repeat;
-  background-attachment: fixed; /* 背景圖固定，滾動時不移動 */
+  background-attachment: fixed;
+  /* 背景圖固定，滾動時不移動 */
   width: 100%;
   height: 100%;
-  min-height: 100vh; /* 確保背景圖佔滿整個可視區域 */
+  min-height: 100vh;
+  /* 確保背景圖佔滿整個可視區域 */
   overflow: hidden;
   display: flex;
   flex-direction: column;
