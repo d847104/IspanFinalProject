@@ -8,127 +8,79 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ispan.warashibe.model.Favorite;
+import com.ispan.warashibe.model.FavoriteID;
 import com.ispan.warashibe.model.Members;
 import com.ispan.warashibe.model.Products;
 import com.ispan.warashibe.repository.FavoriteRepository;
-import com.ispan.warashibe.repository.MembersRepository;
-import com.ispan.warashibe.repository.ProductRepository;
 
 @Service
 public class FavoriteService {
-
-//	@Autowired
-//	private ObjectMapper objectMapper;
 	
-	@Autowired
-	private ProductRepository productRepo;
-	@Autowired
-	private MembersRepository membersRepo;
 	@Autowired
 	private FavoriteRepository favoriteRepo;
 	
-	//查詢單筆
-	public  Favorite findById(Integer id) {
-		Optional< Favorite> optional = favoriteRepo.findById(id);
+	// 查詢單筆
+	public  Favorite findById(FavoriteID favId) {
+		Optional<Favorite> optional = favoriteRepo.findById(favId);
 		if(optional.isPresent()) {
 			return optional.get();
 		}
-		return null;	
+		return null;
 	}
 	
-	//查詢全部
+	// 查詢全部
 	public List<Favorite> findAll() {
 		return favoriteRepo.findAll();
 	}
 	
-	public boolean exists(Integer id) {
-		if (id != null) {
-			return favoriteRepo.existsById(id);
+	// 查詢是否存在
+	public boolean exists(FavoriteID favId) {
+		if (favId != null) {
+			return favoriteRepo.existsById(favId);
 		}
 		return false;
 	}
+	
 	// 刪除單筆
-	public Boolean deleteOne(Integer id) {
-		if (id != null) {
-			Optional<Favorite> optional = favoriteRepo.findById(id);
+	public boolean deleteOne(FavoriteID favId) {
+		if (favId != null) {
+			Optional<Favorite> optional = favoriteRepo.findById(favId);
 			if (optional.isPresent()) {
-				favoriteRepo.deleteById(id);
+				favoriteRepo.deleteById(favId);
 				return true;
 			}
 		}
 		return false;
-	} // end of deleteOne
+	}
 	
 	// 新增單筆
-	public Favorite insert(String json) {
-//		Favorite favorite = null;
-//		try {
-//			favorite = objectMapper.readValue(json, Favorite.class);
-//		} catch (JsonProcessingException e) {
-//			e.printStackTrace();
-//		}
-//		return favoriteRepo.save(favorite);
-		
+	public Favorite insert(String json) {		
         JSONObject obj = new JSONObject(json);
-		Integer favID = obj.isNull("favID") ? null : obj.getInt("favID");
-		Integer memberID = obj.isNull("memberID") ? null : obj.getInt("memberID");
-		Integer productID = obj.isNull("productID") ? null : obj.getInt("productID");
-		Integer sellerID = obj.isNull("sellerID") ? null : obj.getInt("sellerID");
-
-        Optional<Members> member = membersRepo.findById(memberID);
-        Optional<Members> seller = membersRepo.findById(sellerID);
-        Optional<Products> product = productRepo.findById(productID);
-
-        if(favID == null) {
+        
+        FavoriteID favID = obj.isNull("memberID") || obj.isNull("productID") ? 
+        		null : new FavoriteID(obj.getInt("memberID"),obj.getInt("productID"));
+        Members member = obj.isNull("memberID") ? null : new Members();
+        Products product = obj.isNull("productID") ? null : new Products();
+        Members seller = obj.isNull("sellerID") ? null : new Members();
+        
+        if(!this.exists(favID)) {
+        	member.setMemberID(obj.getInt("memberID"));
+        	product.setProductID(obj.getInt("productID"));
+        	seller.setMemberID(obj.getInt("sellerID"));
+        	
         	Favorite favorite = new Favorite();
-        	favorite.setMember(member.get());
-        	favorite.setProduct(product.get());
-        	favorite.setSeller(seller.get());
-
+        	favorite.setFavID(favID);
+        	favorite.setMember(member);
+        	favorite.setProduct(product);
+        	favorite.setSeller(seller);
         	return favoriteRepo.save(favorite);
         }
         return null;
-		
-		
-		
 	}
 	
 	// 以會員ID查詢多筆
 	public List<Favorite> findByMemberId(Integer memberId) {
 		return favoriteRepo.findByMemberId(memberId);
-	}
-	
-// #######收藏商品需要修改嗎？
-	
-//	// 修改單筆
-//	public Favorite modify(String json) {
-//		JSONObject obj = new JSONObject(json);
-//		Integer favID = obj.isNull("id") ? null : obj.getInt("id");
-//		Optional<Favorite> optional = favoriteRepo.findById(favID);
-//		
-//		String name = obj.isNull("name") ? optional.get().getName() : obj.getString("name");
-//		String mobile = obj.isNull("mobile") ? optional.get().getMobile() : obj.getString("mobile");
-//		String address = obj.isNull("address") ? optional.get().getAddress() : obj.getString("address");
-//
-//		if(optional.isPresent()) {
-//			Recepient update = optional.get();
-//			update.setName(name);
-//			update.setMobile(mobile);
-//			update.setAddress(address);
-//			return recepientRepo.save(update);
-//		}
-//		return null;
-//	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	}	
+
 }

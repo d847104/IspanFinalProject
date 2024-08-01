@@ -127,4 +127,8 @@ public class Products {
     @OneToMany(mappedBy = "product")
 	@JsonIdentityReference(alwaysAsId = true)
 	private List<Cart> cart;
+    
+    @OneToMany(mappedBy = "product")
+    @JsonIdentityReference(alwaysAsId = true)
+    private List<Favorite> favorite;
 }

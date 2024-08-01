@@ -3,7 +3,6 @@ package com.ispan.warashibe.controller;
 import java.util.List;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ispan.warashibe.model.Favorite;
+import com.ispan.warashibe.model.FavoriteID;
 import com.ispan.warashibe.service.FavoriteService;
 
 @RestController
@@ -31,17 +31,16 @@ public class FavoriteController {
 	@Autowired
 	private ObjectMapper objectMapper;
 	
-	// 查詢單筆
-	@GetMapping("/favorite/{id}")
-	public String findById(@PathVariable(name = "id")Integer id) throws JsonProcessingException {
-        JSONObject responseBody = new JSONObject();
-        JSONArray array = new JSONArray();
-        Favorite favorite = favoriteService.findById(id);
-        if(favorite != null) {
-    			array = array.put(new JSONObject(objectMapper.writeValueAsString(favorite)));
+	// 查詢單筆是否已收藏
+	@GetMapping("/favorite/match")
+	public boolean findById(@RequestBody String body) throws JsonProcessingException {
+        JSONObject obj = new JSONObject(body);
+        FavoriteID favId = obj.isNull("memberID") || obj.isNull("productID") ? 
+        		null : new FavoriteID(obj.getInt("memberID"),obj.getInt("productID")); 
+        if(favId != null) {
+        	return favoriteService.exists(favId);
         }
-        responseBody.put("list", array);
-        return responseBody.toString();
+        return false;
 	}
 	
 	// 查詢全部
@@ -61,18 +60,21 @@ public class FavoriteController {
 	}
 	
 	// 刪除單筆
-    @DeleteMapping("/favorite/delete/{id}")
-    public String delete(@PathVariable Integer id) {
+    @DeleteMapping("/favorite/delete")
+    public String delete(@RequestBody String body) {
         JSONObject responseBody = new JSONObject();
-        if (id == null) {
+        JSONObject obj = new JSONObject(body);
+        FavoriteID favId = obj.isNull("memberID") || obj.isNull("productID") ? 
+        		null : new FavoriteID(obj.getInt("memberID"),obj.getInt("productID"));
+        if (favId == null) {
             responseBody.put("success", false);
-            responseBody.put("message", "Id是必要欄位");
+            responseBody.put("message", "memberID 及 productID 是必要欄位");
         } else {
-            if (!favoriteService.exists(id)) {
+            if (!favoriteService.exists(favId)) {
                 responseBody.put("success", false);
                 responseBody.put("message", "Id不存在");
             } else {
-                if (!favoriteService.deleteOne(id)) {
+                if (!favoriteService.deleteOne(favId)) {
                     responseBody.put("success", false);
                     responseBody.put("message", "刪除失敗");
                 } else {
@@ -90,9 +92,10 @@ public class FavoriteController {
 	public String insert(@RequestBody String body) {
         JSONObject responseBody = new JSONObject();
         JSONObject obj = new JSONObject(body);
-        Integer id = obj.isNull("id") ? null : obj.getInt("id");
+        FavoriteID favId = obj.isNull("memberID") || obj.isNull("productID") ? 
+        		null : new FavoriteID(obj.getInt("memberID"),obj.getInt("productID"));
 
-        if (favoriteService.exists(id)) {
+        if (favoriteService.exists(favId)) {
             responseBody.put("success", false);
             responseBody.put("message", "Id已存在");
         } else {

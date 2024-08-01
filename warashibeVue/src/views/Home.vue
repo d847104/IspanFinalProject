@@ -1,20 +1,18 @@
 <template>
-    
-    <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active" data-bs-interval="2000">
-                <img src="/src/img/馬克杯21569.jpg" class="d-block w-100" alt="...">
-            </div>
-            <div class="carousel-item" data-bs-interval="2000">
-                <img src="/src/img/馬克杯36344.jpg" class="d-block w-100" alt="...">
-            </div>
-            <div class="carousel-item" data-bs-interval="2000">
-                <img src="/src/img/馬克杯84089.jpg" class="d-block w-100" alt="...">
+    <div class="container">
+        <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active" data-bs-interval="2000">
+                    <img src="/src/img/馬克杯21569.jpg" class="d-block w-100" alt="...">
+                </div>
+                <div class="carousel-item" data-bs-interval="2000">
+                    <img src="/src/img/馬克杯36344.jpg" class="d-block w-100" alt="...">
+                </div>
+                <div class="carousel-item" data-bs-interval="2000">
+                    <img src="/src/img/馬克杯84089.jpg" class="d-block w-100" alt="...">
+                </div>
             </div>
         </div>
-    </div>
-
-    <div class="container">
         <h2 class="lh-lg">熱門商品</h2>
         <div class="row">
             <compCard v-for="product in productsPopular" :key="product.productID" :product="product"></compCard>
