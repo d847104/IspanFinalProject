@@ -1,9 +1,4 @@
 <template>
-<<<<<<< HEAD
-<section class="vh-100">
-<div class="container-fluid">   
-    <div class="row">
-    <div class="col-sm-6 text-black">
     <section class="vh-100">
         <div class="container-fluid">
             <div class="row">
