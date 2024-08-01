@@ -1,12 +1,11 @@
 <template>
-    <!-- <div class="container"> -->
-
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top container">
         <div class="container-fluid">
             <!-- 網站LOGO -->
             <RouterLink class="navbar-brand" to="/">
-                <img src="@/img/logo.png" alt="Logo" class="logo navbar-brand">
+                <img src="@/assets/logo.png" alt="Logo" class="logo navbar-brand">
             </RouterLink>
+
             <!-- 漢堡選單按鈕 -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -15,10 +14,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mb-2 mb-lg-0 w-100">
-                    <!-- 左側導航連結 -->
-                    <li class="nav-item">
-                        <RouterLink class="nav-link" to="/">首頁</RouterLink>
-                    </li>
                     <li class="nav-item">
                         <RouterLink class="nav-link" to="#">商城/二手</RouterLink>
                     </li>
@@ -33,32 +28,26 @@
                     <!-- 右側功能選單 -->
                     <li class="nav-item d-none d-lg-block">
                         <RouterLink class="nav-link" :to="{ name: 'cart' }">
-                            <font-awesome-icon :icon="['fas', 'cart-shopping']" />
+                            <font-awesome-icon :icon="['fas', 'cart-shopping']" size="2x" />
                         </RouterLink>
                     </li>
                     <li class="nav-item d-none d-lg-block">
                         <RouterLink class="nav-link" to="#">
-                            <font-awesome-icon icon="fa-solid fa-comments" />
+                            <font-awesome-icon icon="fa-solid fa-comments" size="2x" />
                         </RouterLink>
                     </li>
-                    <li class="nav-item d-none d-lg-block" @mouseover="showPopup" @mouseleave="hidePopup">
-                        <NotificationPop :popupVisible="popupVisible" />
+                    <li class="nav-item d-none d-lg-block">
+                        <RouterLink class="nav-link" :to="{ path: '/other/notification' }">
+                            <font-awesome-icon icon="fa-solid fa-bell" size="2x" />
+                        </RouterLink>
                     </li>
-                    <li class="nav-item" v-if="!user">
-                        <RouterLink class="nav-link" to="/secure/login">登入</RouterLink>
-                    </li>
-                    <li class="nav-item" v-if="!user">
-                        <RouterLink class="nav-link" to="/secure/registerOne">註冊</RouterLink>
-                    </li>
-                    <li class="nav-item" v-if="user">
-                        <span class="nav-link">{{ user?.username }}</span>
-                    </li>
-                    <li class="nav-item" v-if="user">
-                        <button class="nav-link active" @click="logout">登出</button>
+                    <li class="nav-item">
+                        <RouterLink class="nav-link" to="/secure/login">登入/註冊</RouterLink>
                     </li>
                     <li class="nav-item">
                         <RouterLink class="nav-link" :to="{ path: '/secure/member' }">會員中心</RouterLink>
                     </li>
+                    <!-- 會員相關 Dropdown List -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
@@ -82,8 +71,8 @@
                                     @click="checkAuth('/seller/sellermanageproduct')">賣家商品管理</RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/add-product')">上架商品
-                                </RouterLink>
+                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/pages/productUploadPage')">
+                                    上架商品</RouterLink>
                             </li>
                         </ul>
                     </li>
@@ -91,45 +80,22 @@
             </div>
         </div>
     </nav>
-    <!-- </div> -->
+
 </template>
 
 <script setup>
-import { ref, inject } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import NotificationPop from '@/components/NotificationPop.vue';
-import axiosapi from '@/plugins/axios';
 
-const router = useRouter();
-
-// 登入相關
-const user = inject('user');
-const setUser = inject('setUser');
-function logout() {
-    axiosapi.defaults.headers.authorization = "";
-    sessionStorage.removeItem("memberID");
-    sessionStorage.removeItem("token");
-    setUser(false);
-    router.push("/secure/login");
-}
-
-const popupVisible = ref(false);
-
-const showPopup = () => {
-    console.log("show");
-    popupVisible.value = true;
-};
-
-const hidePopup = () => {
-    console.log("hide");
-    popupVisible.value = false;
-};
+const user = ref(null) // 模擬登入狀態，後續可以替換為實際邏輯
+const router = useRouter()
 
 const checkAuth = (path) => {
-    if (!user.value) {
-        router.push('/secure/login');
+    //if (!user.value) <-實際是這個,測試先不開這個功能
+    if (user.value) {
+        router.push('/login')
     } else {
-        router.push(path);
+        router.push(path)
     }
 }
 </script>
@@ -143,12 +109,12 @@ const checkAuth = (path) => {
 }
 
 .logo {
-    width: 75px;
+    width: 100px;
     height: auto;
 }
 
 .nav-item {
-    margin: 0 5px;
+    margin: 0 15px;
     text-decoration: none;
     color: #fff;
 }
@@ -184,13 +150,5 @@ const checkAuth = (path) => {
     .search-form {
         display: none;
     }
-}
-
-.dropdown:hover>.dropdown-menu {
-    display: block;
-}
-
-.dropdown>.dropdown-toggle:active {
-    pointer-events: none;
 }
 </style>
