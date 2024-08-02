@@ -15,9 +15,9 @@
     import 'flatpickr/dist/flatpickr.css'
     import { RouterView } from 'vue-router';
     import { provide, ref, onMounted } from 'vue';
-    import Navigation from './layout/Navigation.vue'
+    import Navigation from '@/layout/Navigation.vue'
     import categoryBar from '@/layout/categoryBar.vue';
-    import axiosapi from './plugins/axios';
+    import axiosapi from '@/plugins/axios';
 
     const user = ref(null);
 
@@ -55,7 +55,7 @@
 
 <style>
 .background {
-  background-image: url('/src/img/bg01.jpg');
+  /* background-image: url('/src/img/bg01.jpg'); */
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed; /* 背景圖固定，滾動時不移動 */
