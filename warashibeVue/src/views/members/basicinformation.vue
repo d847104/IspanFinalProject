@@ -1,6 +1,5 @@
 <template>
-
-    <br><br><br><br><br><br>
+    <!-- 會員照及照片修改未完成 -->
     <div v-if="selectedMember" class="container">
         <h3 style="color:#CCEEFF;">會員基本資料</h3>
         <a>HI~{{ memberID }}</a>
@@ -23,41 +22,30 @@
                             <input type="text" class="form-control" v-model="selectedMember.username"
                                 :disabled="!isEditing.username">
                         </div>
-                        <button type="button" class="col-sm-1 btn"
-                            :class="isEditing.username ? 'btn-outline-secondary' : 'btn-secondary'"
+                        <button type="button" class="col-sm-1 btn btn-outline-secondary"
+                            :class="isEditing.username ? 'btn-outline-secondary' : 'btn-outline-secondary'"
                             @click="toggleEdit('username')">
-                            <font-awesome-icon icon="fa-solid fa-pen-clip" />
+                            <font-awesome-icon icon="fa-solid fa-pencil" />
                         </button>
                     </div>
-
-                    <!-- <div class="row mb-3">
-                        <label class="col-sm-2 col-form-label text-end">姓名</label>
-                        <div class="col-sm-7">
-                            <input type="text" class="form-control" id="floatingInputDisabled"
-                                :value="selectedMember.username" disabled>
-                        </div>
-                        <button type="button" class="col-sm-1 btn btn-outline-secondary"><font-awesome-icon
-                                icon="fa-solid fa-pen-clip" /></button>
-                    </div> -->
 
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label text-end">帳號</label>
                         <div class="col-sm-7">
-                            <input type="text" class="form-control" id="floatingInputDisabled"
-                                :value="selectedMember.account" disabled>
+                            <input type="text" class="form-control" v-model="selectedMember.account"
+                                :disabled="!isEditing.account">
                         </div>
-                        <button type="button" class="col-sm-1 btn btn-outline-secondary"><font-awesome-icon
-                                icon="fa-solid fa-pen" /></button>
                     </div>
 
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label text-end">手機</label>
                         <div class="col-sm-7">
-                            <input type="text" class="form-control" id="floatingInputDisabled"
-                                :value="selectedMember.mobile" disabled>
+                            <input type="text" class="form-control" v-model="selectedMember.mobile"
+                                :disabled="!isEditing.mobile">
                         </div>
-                        <button type="button" class="col-sm-1 btn btn-outline-secondary"><font-awesome-icon
-                                icon="fa-solid fa-pencil" /></button>
+                        <button type="button" class="col-sm-1 btn btn-outline-secondary"
+                            :class="isEditing.mobile ? 'btn-outline-secondary' : 'btn-outline-secondary'"
+                            @click="toggleEdit('mobile')"><font-awesome-icon icon="fa-solid fa-pencil" /></button>
                     </div>
 
                     <div class="row mb-3">
@@ -73,17 +61,20 @@
                         <label class="col-sm-2 col-form-label text-end">性別</label>
                         <div class="col-sm-7">
                             <button type="button" class="btn mx-2" :class="{
-                                'btn-secondary': selectedMember.gender === 'Male',
-                                'btn-outline-secondary': selectedMember.gender !== 'Male'
+                                'btn-secondary': selectedMember.gender === 'male',
+                                'btn-outline-secondary': selectedMember.gender !== 'male'
                             }" disabled>男</button>
                             <button type="button" class="btn mx-2" :class="{
-                                'btn-secondary': selectedMember.gender === 'Female',
-                                'btn-outline-secondary': selectedMember.gender !== 'Female'
+                                'btn-secondary': selectedMember.gender === 'female',
+                                'btn-outline-secondary': selectedMember.gender !== 'female'
                             }" disabled>女</button>
                             <button type="button" class="btn mx-2" :class="{
                                 'btn-secondary': !selectedMember.gender || selectedMember.gender === '',
                                 'btn-outline-secondary': selectedMember.gender && selectedMember.gender !== ''
                             }" disabled>不願透露</button>
+                            <!-- <button type="button" class="col-sm-1 btn btn-outline-secondary"
+                                :class="isEditing.gender ? 'btn-outline-secondary' : 'btn-outline-secondary'"
+                                @click="toggleEdit('gender')"><font-awesome-icon icon="fa-solid fa-pencil" /></button> -->
                         </div>
                     </div>
                     <!-- gender判斷END -->
@@ -110,7 +101,7 @@
 
             <div class="col-md-4 ">
                 <div class="card" style="width: 18rem;">
-                    <img src="/src/img/貓頭鷹.jpg" class="card-img-top" alt="...">
+                    <img :src="selectedMember.profileImg || '/src/img/預設圖片.jpg'" class="card-img-top" alt="...">
                     <div class="card-body">
                         <h5 class="card-title">{{ selectedMember.username }}</h5>
                         <p class="card-text">帳號：{{ selectedMember.account }}</p>
@@ -171,38 +162,48 @@ function toggleEdit(field) {
 
 function cancelEdit() {
     // 取消編輯，恢復原始數據
-    memberData.value = { ...originalMemberData.value };
+    selectedMember.value = { ...originalMemberData.value };
     isEditing.value = { username: false, account: false, mobile: false };
 }
 
 function saveChanges() {
+
+    // 彈出處理中提示
     Swal.fire({
-        text: "執行中",
+        text: "儲存中...",
         allowOutsideClick: false,
         showConfirmButton: false,
+
     });
 
-    axiosapi.put(`/ajax/members/update/${selectedMember.value.id}`, selectedMember.value).then(response => {
-        console.log("response", response);
+    // 發送 PUT 請求更新會員資料
+    axiosapi.put(`/ajax/members/update/${selectedMember.value.id}`, {
+        id: selectedMember.value.id,
+        username: selectedMember.value.username,
+        mobile: selectedMember.value.mobile,
+        gender: selectedMember.value.gender
+    }).then(response => {
         if (response.data.success) {
             Swal.fire({
                 icon: "success",
-                text: response.data.message,
+                text: response.data.message
             }).then(() => {
-                modal.value.closeModal();
-                findall();
+                // 重新載入會員資料
+                findByMemberID(memberID.value);
+                // 恢復編輯狀態
+                cancelEdit();
             });
         } else {
             Swal.fire({
                 icon: "warning",
-                text: response.data.message,
+                text: response.data.message
             });
         }
     }).catch(function (error) {
         console.log("error", error);
         Swal.fire({
             icon: "error",
-            text: "修改錯誤：" + error.message,
+            text: "修改錯誤：" + error.message
         });
     });
 }
