@@ -8,6 +8,7 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ispan.warashibe.model.ProductSpec;
 import com.ispan.warashibe.model.Products;
 import com.ispan.warashibe.repository.ProductSpecRepository;
@@ -19,6 +20,8 @@ public class ProductSpecService {
     private ProductSpecRepository productSpecRepository;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public void saveProductSpecFromJson(String jsonProduct, MultipartFile image) throws Exception {
         JSONObject jsonObj = new JSONObject(jsonProduct);
@@ -55,34 +58,27 @@ public class ProductSpecService {
     public void updateProductSpecFromJson(int id, String jsonProduct, MultipartFile image) throws Exception {
         ProductSpec existingProductSpec = productSpecRepository.findById(id)
                 .orElseThrow(() -> new Exception("規格未找到"));
-        JSONObject jsonObj = new JSONObject(jsonProduct);
-        
-        String specOne = jsonObj.optString("specOne", null);
-        String specOneName = jsonObj.optString("specOneName", null);
-        String specTwo = jsonObj.optString("specTwo", null);
-        String specTwoName = jsonObj.optString("specTwoName", null);
 
-        if ((specOneName == null && specOne == null) && (specTwoName == null && specTwo == null)) {
-            throw new IllegalArgumentException("至少需要一个有效的产品规格");
+        if (jsonProduct != null && !jsonProduct.isEmpty()) {
+            // 使用 ObjectMapper 的 updateValue 方法进行部分字段更新
+            objectMapper.readerForUpdating(existingProductSpec).readValue(jsonProduct);
+
+            JSONObject jsonObj = new JSONObject(jsonProduct);
+
+            if (jsonObj.has("productID")) {
+                int productId = jsonObj.getInt("productID");
+                Products product = productService.getProductById(productId);
+                if (product == null) {
+                    throw new IllegalArgumentException("Product with ID " + productId + " not found");
+                }
+                existingProductSpec.setProduct(product);
+            }
         }
-        
-        existingProductSpec.setSpecOne(specOne);
-        existingProductSpec.setSpecOneName(specOneName);
-        existingProductSpec.setSpecTwo(specTwo);
-        existingProductSpec.setSpecTwoName(specTwoName);
-        existingProductSpec.setSpecQt(jsonObj.getInt("specQt"));
-        
-        int productId = jsonObj.getInt("productID");
-        Products product = productService.getProductById(productId);
-        if (product == null) {
-            throw new IllegalArgumentException("Product with ID " + productId + " not found");
-        }
-        existingProductSpec.setProduct(product);
-        
+
         if (image != null && !image.isEmpty()) {
             existingProductSpec.setSpecImg(image.getBytes());
         }
-        
+
         productSpecRepository.save(existingProductSpec);
     }
 

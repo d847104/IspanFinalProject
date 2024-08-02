@@ -4,27 +4,27 @@
     <div class="row">
         <!-- 左侧商品图片区域 -->
         <div class="col-md-7">
-            <div class="product-image">
+        <div class="product-image">
             <img :src="currentImage" class="main-image" alt="Product Image" />
-                <div class="image-thumbnails-wrapper">
-                    <button v-if="imageIndex > 0" @click="prevImages" class="carousel-control-prev">
-                        <span class="carousel-control-prev-icon">&lt;</span>
-                    </button>
-                    <div class="thumbnails">
-                        <img
-                            v-for="(img, index) in displayedImages"
-                            :key="`${img.type}-${img.imgID || img.specID}`"
-                            :src="img.img || img.specImg"
-                            class="thumbnail"
-                            @mouseover="currentImage = img.img || img.specImg"
-                            :class="{ active: currentImage === (img.img || img.specImg) }"
-                        />
-                    </div>
-                    <button v-if="imageIndex + 5 < combinedImages.length" @click="nextImages" class="carousel-control-next">
-                        <span class="carousel-control-next-icon">&gt;</span>
-                    </button>
-                </div>
+            <div class="image-thumbnails-wrapper">
+            <button v-if="imageIndex > 0" @click="prevImages" class="carousel-control-prev">
+                <span class="carousel-control-prev-icon">&lt;</span>
+            </button>
+            <div class="thumbnails">
+                <img
+                v-for="(img, index) in displayedImages"
+                :key="`${img.type}-${img.imgID || img.specID}`"
+                :src="img.img || img.specImg"
+                class="thumbnail"
+                @mouseover="currentImage = img.img || img.specImg"
+                :class="{ active: currentImage === (img.img || img.specImg) }"
+                />
             </div>
+            <button v-if="imageIndex + 5 < combinedImages.length" @click="nextImages" class="carousel-control-next">
+                <span class="carousel-control-next-icon">&gt;</span>
+            </button>
+            </div>
+        </div>
         </div>
         <!-- 右侧商品信息区域 -->
         <div class="col-md-5">
@@ -33,25 +33,26 @@
         <p class="description">{{ product.description }}</p>
         <div class="specs">
             <div v-for="(specs, specName) in groupedSpecs" :key="specName" class="spec">
-                <h5 style="margin-top:15px;">{{ specName }}</h5>
-                <div v-for="spec in specs" :key="spec.specOne || spec.specTwo" style="display:inline-block; margin-right: 10px;">
-                    <button 
-                        v-if="spec.specOne" 
-                        class="btn btn-outline-secondary" 
-                        @click="selectSpecOne(spec.specOne, spec.specImg)"
-                        @mouseover="updateCurrentImage(spec.specImg)"
-                    >
-                        {{ spec.specOne }}
-                    </button>
-                    <button 
-                        v-if="spec.specTwo" 
-                        class="btn btn-outline-secondary" 
-                        @click="selectSpecTwo(spec.specTwo, spec.specImg)"
-                        @mouseover="updateCurrentImage(spec.specImg)"
-                    >
-                        {{ spec.specTwo }}
-                    </button>
-                </div>
+            <h5 style="margin-top:15px;">{{ specName }}</h5>
+            <div v-for="spec in specs" :key="spec.specOne || spec.specTwo" style="display:inline-block; margin-right: 10px;">
+                <button 
+                v-if="spec.specOne" 
+                class="btn btn-outline-secondary" 
+                @click="selectSpecOne(spec.specOne, spec.specImg)"
+                @mouseover="updateCurrentImage(spec.specImg)"
+                :class="{ active: selectedSpecOne.value === spec.specOne }"
+                >
+                {{ spec.specOne }}
+                </button>
+                <button 
+                v-if="spec.specTwo" 
+                class="btn btn-outline-secondary" 
+                @click="selectSpecTwo(spec.specTwo)"
+                :class="{ active: selectedSpecTwo.value === spec.specTwo }"
+                >
+                {{ spec.specTwo }}
+                </button>
+            </div>
             </div>
         </div>
         <div class="quantity">
@@ -59,8 +60,11 @@
             <input type="number" v-model="quantity" />
             <button @click="increaseQuantity">+</button>
         </div>
-        <button class="btn btn-primary" @click="addToCart">加入購物車</button>
-        <button class="btn btn-success" @click="buyNow">直接購買</button>
+        <form>
+            <button class="btn btn-success" @click="addToFavorite">加入最愛</button>&nbsp;
+            <button class="btn btn-primary" @click="addToCart">加入購物車</button>&nbsp;
+            <button class="btn btn-danger" @click="buyNow">直接購買</button>
+        </form>
         </div>
     </div>
     <!-- 查看更多 -->
@@ -78,13 +82,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, inject } from 'vue';
 import axiosapi from '@/plugins/axios';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import RelatedCard from '@/components/RelatedCard.vue';
 import Paginate from 'vuejs-paginate-next';
+import Swal from 'sweetalert2';
 
+const user = inject("user");
 const route = useRoute();
+const router = useRouter();
 const productID = ref(route.query.productID);
 const product = ref({});
 const productImages = ref([]);
@@ -248,17 +255,33 @@ const updateCurrentImage = (image) => {
 };
 
 const selectSpecOne = (spec, image) => {
-    selectedSpecOne.value = spec;
-    selectedSpecImage.value = image || ''; // 保存选择的规格图片
-    console.log(selectedSpecOne.value);
-    console.log(selectedSpecImage.value);
+    if (selectedSpecOne.value === spec) {
+        selectedSpecOne.value = '';
+        selectedSpecImage.value = '';
+    } else {
+        selectedSpecOne.value = spec;
+        selectedSpecImage.value = image || ''; // 保存选择的规格图片
+    }
+    filterSpecs();
 };
 
-const selectSpecTwo = (spec, image) => {
-    selectedSpecTwo.value = spec;
-    selectedSpecImage.value = image || ''; // 保存选择的规格图片
-    console.log(selectedSpecTwo.value);
-    console.log(selectedSpecImage.value);
+const selectSpecTwo = (spec) => {
+    if (selectedSpecTwo.value === spec) {
+        selectedSpecTwo.value = '';
+    } else {
+        selectedSpecTwo.value = spec;
+    }
+    filterSpecs();
+};
+
+const filterSpecs = () => {
+    const filteredSpecs = productSpecs.value.filter(spec => {
+        const matchesSpecOne = selectedSpecOne.value ? spec.specOne === selectedSpecOne.value : true;
+        const matchesSpecTwo = selectedSpecTwo.value ? spec.specTwo === selectedSpecTwo.value : true;
+        return matchesSpecOne && matchesSpecTwo;
+    });
+
+    groupSpecs(filteredSpecs);
 };
 
 const decreaseQuantity = () => {
@@ -266,15 +289,76 @@ const decreaseQuantity = () => {
 };
 
 const increaseQuantity = () => {
-    quantity.value += 1;
+    if (selectedSpecOne.value || selectedSpecTwo.value) {
+        const selectedSpec = productSpecs.value.find(spec => {
+            const matchesSpecOne = selectedSpecOne.value ? spec.specOne === selectedSpecOne.value : true;
+            const matchesSpecTwo = selectedSpecTwo.value ? spec.specTwo === selectedSpecTwo.value : true;
+            return matchesSpecOne && matchesSpecTwo;
+        });
+        if (quantity.value < selectedSpec.specQt) {
+            quantity.value += 1;
+        }
+    } else {
+        quantity.value += 1;
+    }
 };
 
-const addToCart = () => {
-    console.log('加入購物車');
+const addToFavorite = async () => {
+    try {
+        await axiosapi.post('/ajax/favorite/insert', {
+            memberID: user.value.id,
+            productID: product.value.productID,
+            sellerID: product.value.sellerID
+        });
+        Swal.fire('成功', '已將該商品加入最愛', 'success');
+    } catch (error) {
+        console.error('加入最愛失敗', error);
+        Swal.fire('失敗', '加入最愛失敗', 'error');
+    }
 };
 
-const buyNow = () => {
-    console.log('直接購買');
+const addToCart = async () => {
+    try {
+        const selectedSpec = productSpecs.value.find(spec => {
+            const matchesSpecOne = selectedSpecOne.value ? spec.specOne === selectedSpecOne.value : true;
+            const matchesSpecTwo = selectedSpecTwo.value ? spec.specTwo === selectedSpecTwo.value : true;
+            return matchesSpecOne && matchesSpecTwo;
+        });
+
+        await axiosapi.post('/private/pages/cart/create', {
+            member: user.value.id,
+            product: product.value.productID,
+            productSpec: selectedSpec.specID,
+            seller: product.value.sellerID,
+            quantity: quantity.value
+        });
+        Swal.fire('成功', '已將該商品加入購物車', 'success');
+    } catch (error) {
+        console.error('加入購物車失敗', error);
+        Swal.fire('失敗', '加入購物車失敗', 'error');
+    }
+};
+
+const buyNow = async () => {
+    try {
+        const selectedSpec = productSpecs.value.find(spec => {
+            const matchesSpecOne = selectedSpecOne.value ? spec.specOne === selectedSpecOne.value : true;
+            const matchesSpecTwo = selectedSpecTwo.value ? spec.specTwo === selectedSpecTwo.value : true;
+            return matchesSpecOne && matchesSpecTwo;
+        });
+
+        await axiosapi.post('/private/pages/cart/create', {
+            member: user.value.id,
+            product: product.value.productID,
+            productSpec: selectedSpec.specID,
+            seller: product.value.sellerID,
+            quantity: quantity.value
+        });
+        router.push("/cart");
+    } catch (error) {
+        console.error('直接購買失敗', error);
+        Swal.fire('失敗', '直接購買失敗', 'error');
+    }
 };
 
 const callFind = (page) => {

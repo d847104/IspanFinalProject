@@ -1,11 +1,11 @@
 <template>
 <div class="col-lg-3 col-md-6 mb-4">
-    <div class="card little-product-card" @click="viewProductDetail">
-    <img :src="productImageSrc" class="card-img-top" :alt="product.productName" />
-    <div class="card-body">
-        <h5 class="card-title">{{ product.productName }}</h5>
-        <p class="card-text text-danger text-end">NT$ {{ product.price }}</p>
-    </div>
+    <div class="card little-product-card" @click="viewProductDetail" v-show="product.productStatus">
+        <img :src="productImageSrc" class="card-img-top" :alt="product.productName" />
+        <div class="card-body">
+            <h5 class="card-title">{{ product.productName }}</h5>
+            <p class="card-text text-danger text-end">NT$ {{ product.price }}</p>
+        </div>
     </div>
 </div>
 </template>
