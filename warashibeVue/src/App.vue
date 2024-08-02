@@ -5,9 +5,9 @@
       </div>
   </div> -->
   <div class="app-container background">
-    <categoryBar></categoryBar>
-    <Navigation></Navigation>
-    <RouterView></RouterView>
+  <categoryBar></categoryBar>
+  <Navigation></Navigation>
+  <RouterView></RouterView>
   </div>
 </template>
   
@@ -63,7 +63,7 @@
     padding-top: 7%; /* Adjust this value based on Navbar height */
 }
 .background {
-  background-image: url('/src/img/bg01.jpg');
+  background-image: url('');
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed; /* 背景圖固定，滾動時不移動 */

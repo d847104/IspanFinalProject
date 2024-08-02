@@ -52,7 +52,7 @@ public class MembersController {
                     .put("mobile", member.getMobile())
                     .put("gender", member.getGender())
                     .put("profileImg", member.getProfileImg())
-                    .put("into", member.getIntro())
+                    .put("intro", member.getIntro())
                     .put("createTime", member.getCreateTime())
                     .put("lastLogin", member.getLastLogin())
                     .put("status", member.getStatus());

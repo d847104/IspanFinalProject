@@ -58,7 +58,7 @@
                     <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/buyer/buyerorder')">買家訂單</RouterLink></li>
                     <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller-orders')">賣家訂單</RouterLink></li>
                     <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller/sellermanageproduct')">賣家商品管理</RouterLink></li>
-                    <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/add-product')">上架商品</RouterLink></li>
+                    <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/pages/productUploadPage')">上架商品</RouterLink></li>
                 </ul>
             </li>        
             </ul>        
