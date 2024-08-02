@@ -55,7 +55,7 @@
 
 <style>
 .background {
-  background-image: url('/src/img/bg01.jpg');
+  background-image: url('');
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed; /* 背景圖固定，滾動時不移動 */

@@ -1,86 +1,133 @@
 <template>
+
+    <!-- <div class="container">
+        <div class="row">
+            <div class="d-flex justify-content-between mb-3">
+                <div class="col-md-4">
+                        <img src="" alt="賣家" class="img-fluid">
+                    </div>
+                    <div class="col-md-4">
+                        <p v-if="user"> {{ user.intro }}</p>
+                    </div>
+            </div>
+        </div>
+    </div> -->
+
+
+
     <div class="container mt-5">
         <div class="row">
-
             <!-- 右側內容區域 -->
             <div class="col-md-9">
                 <!-- 搜尋欄和賣家資訊 -->
-                <div class="d-flex justify-content-between mb-3">
+                <div class="d-flex justify-content-between mb-4">
 
                     <div class="col-md-4">
                         <img src="" alt="賣家" class="img-fluid">
                     </div>
                     <div class="col-md-4">
-                        <p>{{  }}</p>
+                        <p > </p>
                     </div>
-                    <div>
+                    <div class="col-md-4">
                         <p>會員資訊</p>
                         <p>Rate: 4.5/5.0</p>
                         <p>Comments: 105</p>
                         <p>Message to Seller</p>
                     </div>
                 </div>
+
+                <hr>
+                <hr>
                 <!-- 商品列表 -->
-                <div class="product-list">
-                    <div class="product-item mb-4" v-for="(product, index) in products" :key="index">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <img :src="product.image" alt="商品" class="img-fluid">
-                            </div>
-                            <div class="col-md-8">
-                                <h5>{{ product.name }}</h5>
-                                <p>{{ product.description }}</p>
-                                <p>NT${{ product.price }}</p>
-                                <p>數量: {{ product.stock }}</p>
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        <button class="btn btn-outline-primary">加入購物車</button>
-                                        <button class="btn btn-outline-primary">我的收藏</button>
-                                    </div>
-                                    <!-- <div>
-                                        <button class="btn btn-outline-secondary">-</button>
-                                        <input type="text" class="form-control d-inline-block" style="width: 50px;"
-                                            v-model="product.quantity">
-                                        <button class="btn btn-outline-secondary">+</button>
-                                    </div> -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div v-if="SellerProducts.length === 0" class="no-products">
+                    <h3>查無商品</h3>
+                    <br>
+                </div>
+                <div class="row product-list">
+                    <compCard v-for="product in SellerProducts" :key="product.productID" :product="product"></compCard>
+
+
+
+
                 </div>
                 <!-- 分頁排序 -->
-                <div class="sort-by mt-4">
-                    <p>Sort By:</p>
-                    <button class="btn btn-outline-secondary">Popularity</button>
-                    <button class="btn btn-outline-secondary">Price</button>
-                    <button class="btn btn-outline-secondary">Latest</button>
-                </div>
+
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
+    import compCard from '@/components/compCard.vue';
     import axiosapi from '@/plugins/axios';
-    import { ref,  onMounted} from 'vue';
-    const member = ref([]);
+    import { ref, onMounted, inject } from 'vue';
+    const SellerProducts = ref([]);
+    const user = inject('user');
+
 
     onMounted(function () {
-        callMember();
+        loadProductsFromLocalStorage();
+        callProduct();
+
     });
 
+    // 从本地存储加载数据
+    const loadProductsFromLocalStorage = () => {
+        const onSale = localStorage.getItem('SellerProducts');
+        if (onSale) SellerProducts.value = JSON.parse(onSale);
+    };
 
-    function callMember() {
 
-        const memberID = sessionStorage.getItem("id");
-        axiosapi.get(`/ajax/members/${memberID}`).then(function(response) {
-            member.value = response.data.list;
-            console.log(response.data.list);
-            
-        }).catch(function(error) {
-            
+    async function callProduct() {
+        // 暫時寫1號
+        await axiosapi.get(`/api/products/member/${2}`).then(function (response) {
+            const products = response.data.list || [];
+            for (let product of products) {
+                product.isEditing = false; // 默认不可编辑
+                if (product.productImgs.length > 0) {
+                    const imgID = product.productImgs[0];
+                    product.imageUrl = fetchProductImage(imgID);
+                } else {
+                    product.imageUrl = '/default-product.png';
+                }
+            }
+            SellerProducts.value = products.filter(product => product.productStatus);
+            // 保存数据到本地存储
+            saveProductsToLocalStorage();
+
+        }).catch(function (error) {
+            console.error('Error fetching products:', error);
         });
     }
+
+
+    // 保存数据到本地存储
+    const saveProductsToLocalStorage = () => {
+        localStorage.setItem('SellerProducts', JSON.stringify(SellerProducts.value));
+
+    };
+
+    const fetchProductImage = async (imgID) => {
+        try {
+            const response = await axiosapi.get(`/api/productImg/${imgID}`);
+            if (response.data && response.data.list && response.data.list.img) {
+                return `data:image/png;base64,${response.data.list.img}`;
+            }
+        } catch (error) {
+            console.error('Error fetching product image:', error);
+        }
+        return '/default-product.png';
+    };
+
+
+
+
+
+
+
+
+
+
 
 const products = ref([
     {
@@ -108,5 +155,9 @@ const products = ref([
     border-bottom: 1px solid #ccc;
     padding-bottom: 10px;
     margin-bottom: 10px;
+}
+
+.container {
+    justify-content: center;
 }
 </style>

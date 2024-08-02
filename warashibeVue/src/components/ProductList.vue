@@ -42,7 +42,6 @@
                                                 </div>
                                                 <span class="text-muted">數量{{ item.stock }}</span>
                                             </div>
-
                                             <p class="text mb-4 mb-md-0">
                                                 {{ item.description }}
                                             </p>
@@ -66,7 +65,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

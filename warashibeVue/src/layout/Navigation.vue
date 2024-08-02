@@ -1,73 +1,70 @@
 <template>
-    <!-- <div class="container"> -->
-
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-            <div class="container-fluid">
-            <!-- 網站LOGO -->
-            <RouterLink class="navbar-brand" to="/">
-                <img src="@/img/logo.png" alt="Logo" class="logo navbar-brand">
-            </RouterLink>
-            <!-- 漢堡選單按鈕 -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mb-2 mb-lg-0 w-100">
-                <!-- 左側導航連結 -->
-                <li class="nav-item">
-                    <RouterLink class="nav-link" to="/">首頁</RouterLink>
-                </li>
-                <li class="nav-item">
-                    <RouterLink class="nav-link" to="#">商城/二手</RouterLink>
-                </li>
-                <!-- 搜尋列 -->
-                <form class="d-flex search-form d-none d-lg-flex mx-auto" role="search">
-                    <input class="form-control me-1 search-bar" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success search-button" type="submit">
-                    <font-awesome-icon icon="fa-solid fa-search" />
-                    </button>
-                </form>
-                <!-- 右側功能選單 -->
-                <li class="nav-item d-none d-lg-block">
-                    <RouterLink class="nav-link" to="#">
-                    <font-awesome-icon icon="fa-solid fa-comments" />
-                    </RouterLink>
-                </li>
-                <li class="nav-item d-none d-lg-block" @mouseover="showPopup" @mouseleave="hidePopup">
-                    <NotificationPop :popupVisible="popupVisible" />
-                </li>
-                <li class="nav-item" v-if="!user">
-                    <RouterLink class="nav-link" to="/secure/login">登入</RouterLink>
-                </li>
-                <li class="nav-item" v-if="!user">
-                    <RouterLink class="nav-link" to="/secure/registerOne">註冊</RouterLink>
-                </li>
-                <li class="nav-item" v-if="user">
-                    <span class="nav-link">{{ user?.username }}</span>
-                </li>
-                <li class="nav-item" v-if="user">
-                    <button class="nav-link active" @click="logout">登出</button>
-                </li>
-                <li class="nav-item">
-                    <RouterLink class="nav-link" :to="{path:'/secure/member'}">會員中心</RouterLink>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    會員相關
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
-                        <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/profile')">會員基本資料</RouterLink></li>
-                        <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/buyer/buyerorder')">買家訂單</RouterLink></li>
-                        <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller-orders')">賣家訂單</RouterLink></li>
-                        <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller/sellermanageproduct')">賣家商品管理</RouterLink></li>
-                        <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/add-product')">上架商品</RouterLink></li>
-                    </ul>
-                </li>        
-                </ul>        
-            </div>
-            </div>
-        </nav>
-    <!-- </div> -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+        <!-- 網站LOGO -->
+        <RouterLink class="navbar-brand" to="/">
+            <img src="@/img/logo.png" alt="Logo" class="logo navbar-brand">
+        </RouterLink>
+        <!-- 漢堡選單按鈕 -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mb-2 mb-lg-0 w-100">
+            <!-- 左側導航連結 -->
+            <li class="nav-item">
+                <RouterLink class="nav-link" to="/">首頁</RouterLink>
+            </li>
+            <li class="nav-item">
+                <RouterLink class="nav-link" to="#">商城/二手</RouterLink>
+            </li>
+            <!-- 搜尋列 -->
+            <form class="d-flex search-form d-none d-lg-flex mx-auto" role="search">
+                <input class="form-control me-1 search-bar" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success search-button" type="submit">
+                <font-awesome-icon icon="fa-solid fa-search" />
+                </button>
+            </form>
+            <!-- 右側功能選單 -->
+            <li class="nav-item d-none d-lg-block">
+                <RouterLink class="nav-link" to="#">
+                <font-awesome-icon icon="fa-solid fa-comments" />
+                </RouterLink>
+            </li>
+            <li class="nav-item d-none d-lg-block" @mouseover="showPopup" @mouseleave="hidePopup">
+                <NotificationPop :popupVisible="popupVisible" />
+            </li>
+            <li class="nav-item" v-if="!user">
+                <RouterLink class="nav-link" to="/secure/login">登入</RouterLink>
+            </li>
+            <li class="nav-item" v-if="!user">
+                <RouterLink class="nav-link" to="/secure/registerOne">註冊</RouterLink>
+            </li>
+            <li class="nav-item" v-if="user">
+                <span class="nav-link">{{ user?.username }}</span>
+            </li>
+            <li class="nav-item" v-if="user">
+                <button class="nav-link active" @click="logout">登出</button>
+            </li>
+            <li class="nav-item">
+                <RouterLink class="nav-link" :to="{path:'/secure/member'}">會員中心</RouterLink>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                會員相關
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+                    <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/profile')">會員基本資料</RouterLink></li>
+                    <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/buyer/buyerorder')">買家訂單</RouterLink></li>
+                    <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller-orders')">賣家訂單</RouterLink></li>
+                    <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller/sellermanageproduct')">賣家商品管理</RouterLink></li>
+                    <li><RouterLink class="dropdown-item" to="#" @click="checkAuth('/pages/productUploadPage')">上架商品</RouterLink></li>
+                </ul>
+            </li>        
+            </ul>        
+        </div>
+        </div>
+    </nav>
 </template>
     
     <script setup>
