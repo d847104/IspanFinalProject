@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -90,10 +91,8 @@ public class Products {
         }
     }
 	
-	
-
 	@JsonIgnoreProperties("products") // 防止無限遞歸
-	@JsonIdentityReference(alwaysAsId = true)
+	@JsonIncludeProperties({"specOneName","specOne","specTwoName","specTwo"})
 	@OneToMany(mappedBy = "product")
 	private List<ProductSpec> productSpecs;
 
