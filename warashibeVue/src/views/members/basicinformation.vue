@@ -1,13 +1,13 @@
 <template>
     <!-- 會員照及照片修改未完成 -->
+    <br><br><br><br><br>
     <div v-if="selectedMember" class="container">
-        <h3 style="color:#CCEEFF;">會員基本資料</h3>
-        <a>HI~{{ memberID }}</a>
+        <h3 style="color:#ECFFFF;">會員基本資料</h3>
         <div class="row">
             <div class="col-md-8">
                 <div class="alert alert-light" role="alert">
                     <h5>關於我</h5>
-
+                    <a>HI~{{ memberID }}</a>
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label text-end">會員ID</label>
                         <div class="col-sm-7">
@@ -94,8 +94,10 @@
                                 :value="selectedMember.lastLogin" disabled>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-light" @click="cancelEdit">取消</button>
-                    <button type="button" class="btn btn-light" @click="saveChanges">儲存</button>
+                    <div class="d-flex justify-content-center">
+                        <button type="button" class="btn btn-outline-secondary mx-2" @click="cancelEdit">取消</button>
+                        <button type="button" class="btn btn-outline-secondary" @click="saveChanges">儲存</button>
+                    </div>
                 </div>
             </div>
 
@@ -123,7 +125,7 @@ import axiosapi from '@/plugins/axios';
 
 const member = ref({});
 const members = ref([]);
-const memberID = ref(sessionStorage.getItem("memberID") || 1);
+const memberID = ref(sessionStorage.getItem("memberID"));
 const selectedMember = ref(null);
 const isEditing = ref({ username: false, account: false, mobile: false }); // 編輯狀態
 const originalMemberData = ref({});
@@ -141,9 +143,8 @@ function findByMemberID(memberID) {
     });
 
     axiosapi.get(`/ajax/members/${memberID}`).then(function (response) {
-        console.log('Response data:', response.data.list[0]);
         selectedMember.value = response.data.list[0];
-
+        originalMemberData.value = { ...response.data.list[0] };
         setTimeout(function () {
             Swal.close();
         }, 500);

@@ -1,8 +1,7 @@
 <template>
-    <br>
-    <h3 style="color:#6C6C6C;">購物訂單管理</h3>
-    <!-- 訂單明細按鈕功能、訂單狀態未完成 -->
-    <!-- 顯示選擇的訂單 -->
+    <br><br><br><br><br>
+    <h3 style="color:#ECFFFF;">購物訂單管理</h3>
+    <!-- 訂單明細按鈕漂亮的彈出視窗資料無法顯示、訂單狀態按鈕功能未寫入資料庫 -->
     <div v-if="selectedOrder">
         <div class="alert alert-dark" role="alert">
             <div class="row gx-5">
@@ -24,23 +23,34 @@
             </div>
         </div>
 
-        <h5 style="color:#6C6C6C;">訂單狀態: {{ selectedOrder.orderStatus }}</h5>
+        <h5 style="color:#ECFFFF;">訂單狀態: {{ progressText }}</h5>
         <div class="alert alert-secondary" role="alert">
             <div class="container overflow-hidden text-center">
                 <div class="row gx-5 align-items-center">
                     <div class="col-md-10">
                         <div class="p-3">
-                            <div class="progress" role="progressbar" aria-label="Example 20px high" aria-valuenow="25"
+                            <div class="progress" role="progressbar" aria-label="Order progress" aria-valuenow="25"
                                 aria-valuemin="0" aria-valuemax="100" style="height: 20px">
-                                <div class="progress-bar" :style="{ width: progressWidth }">{{ progressText }}</div>
+                                <div class="progress-bar" :style="{ width: progressWidth }">
+                                    {{ progressText }}
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="p-3">
-                            <a href="#" class="btn btn-secondary btn-sm d-block mb-2">完成訂單</a>
-                            <a href="#" class="btn btn-outline-secondary btn-sm d-block mb-2">取消訂單</a>
-                            <a href="#" class="btn btn-outline-secondary btn-sm d-block mb-2">我要退貨</a>
+                            <a v-if="['newOrder', 'paid', 'confirmed'].includes(selectedOrder?.orderStatus)" href="#"
+                                class="btn btn-outline-secondary btn-sm d-block mb-2" @click="cancelOrder">取消訂單</a>
+                            <a v-if="['shipped', 'completed'].includes(selectedOrder?.orderStatus)" href="#"
+                                class="btn btn-outline-secondary btn-sm d-block mb-2" @click="requestReturn">我要退貨</a>
+                            <a v-if="['shipped', 'completed'].includes(selectedOrder?.orderStatus)" href="#"
+                                class="btn btn-outline-secondary btn-sm d-block mb-2" @click="completeOrder">完成訂單</a>
+                            <a v-if="selectedOrder?.orderStatus === 'returned'" href="#"
+                                class="btn btn-secondary btn-sm d-block mb-2"
+                                style="pointer-events: none; opacity: 0.6;">退貨中</a>
+                            <a v-if="selectedOrder?.orderStatus === 'canceled'" href="#"
+                                class="btn btn-secondary btn-sm d-block mb-2"
+                                style="pointer-events: none; opacity: 0.6;">已取消</a>
                         </div>
                     </div>
                 </div>
@@ -48,7 +58,7 @@
         </div>
     </div>
     <div v-else>
-        <p>目前沒有訂單</p>
+        <h5 style="color:#6C6C6C;">目前沒有訂單</h5>
     </div>
 
     <!-- 顯示訂單列表 -->
@@ -59,8 +69,8 @@
                     <div class="col-md-10">
                         <h5>HI:{{ BuyerID }}</h5>
                         <h5 style="color:#6C6C6C;">賣家：{{ order.seller }}</h5>
-                        <div class="card mb-3 ">
-                            <div class="row g-0 " style="max-width: 1200x;">
+                        <div class="card mb-3">
+                            <div class="row g-0" style="max-width: 1200px;">
                                 <div class="col-md-4 image-container">
                                     <img :src="productImgMap[order.orderID] || '/path/to/default/image.png'"
                                         alt="產品圖片" />
@@ -84,7 +94,13 @@
                     </div>
                     <div class="col-md-2">
                         <div class="p-4">
-                            <a href="#" class="btn btn-outline-secondary btn-sm d-block mb-2">訂單明細</a>
+                            <!-- <a href="#" class="btn btn-outline-secondary btn-sm d-block mb-2"
+                                :title="orderTooltipContent[order.orderID]"
+                                @mouseover="loadOrderTooltip(order.orderID)">訂單明細</a> -->
+                            <a href="#" class="btn btn-outline-secondary btn-sm d-block mb-2"
+                                @click="openOrderDetailsModal(order.orderID)">
+                                訂單明細
+                            </a>
                             <a v-if="!order.isRated" href="#" class="btn btn-outline-secondary btn-sm d-block mb-2"
                                 @click="openRatingModal(order.orderID)">
                                 評價
@@ -94,9 +110,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div v-else>
-        <p>目前沒有訂單</p>
     </div>
 
     <!-- 評價彈出視窗 -->
@@ -117,6 +130,16 @@
         </div>
     </div>
 
+    <!-- 訂單明細彈出視窗 -->
+    <div v-if="showOrderDetailsModal" class="order-details-modal">
+        <div class="order-details-container">
+            <h5>訂單明細</h5>
+            <pre> {{ orderTooltipContent[currentOrderID.value] }}</pre>
+
+            <button @click="closeOrderDetailsModal" class="btn btn-outline-secondary btn-sm d-block">關閉</button>
+        </div>
+    </div>
+
 
 </template>
 
@@ -126,22 +149,25 @@ import Swal from 'sweetalert2';
 import axiosapi from '@/plugins/axios';
 import { format } from 'date-fns';
 import axios from 'axios';
-const apiUrl = import.meta.env.VITE_API_URL;
 
 let BuyerID = sessionStorage.getItem("memberID");
 
+const apiUrl = import.meta.env.VITE_API_URL;
 const selectedOrder = ref(null);
 const orders = ref([]);
-const productNameMap = ref({}); // 用於存儲每個訂單的產品名稱
-const productDescriptionMap = ref({});
+const productNameMap = ref({}); // 存產品名稱
+const productDescriptionMap = ref({});// 存訂單描述
 const productImgMap = ref({});
 const showRatingModal = ref(false);
 const rating = ref(0);
 const ratingMessage = ref('');
 const currentOrderID = ref(null);
+const orderTooltipContent = ref({});
+const showOrderDetailsModal = ref(false);
 
 onMounted(() => {
     fetchOrders(BuyerID);
+
 });
 
 async function fetchOrders(buyerID) {
@@ -160,7 +186,7 @@ async function fetchOrders(buyerID) {
             orders.value = fetchedOrders.sort((a, b) => b.orderID - a.orderID);
             // 讀取每個訂單的評價狀態
             orders.value.forEach(order => {
-                // 檢查本地儲存中的評價狀態
+                // 檢查本機儲存中的評價狀態
                 const isRated = localStorage.getItem(`order-${order.orderID}-rated`) === 'true';
                 order.isRated = isRated;
             });
@@ -192,14 +218,10 @@ async function fetchOrderProducts(orderID) {
         if (products.length > 0) {
             const productID = products[0].product; // 確保提取到正確的產品 ID
             productNameMap.value[orderID] = products[0].productName || '產品名稱未提供';
-            productImgMap.value[orderID] = products[0].productName || '產品圖未提供';
-            // 設置產品描述
+            // 查詢產品描述和圖片
             if (productID) {
                 await fetchProductDescription(productID, orderID);
                 await findProductImg(productID, orderID);
-                orders.value = orders.value.map(order =>
-                    order.orderID === orderID ? { ...order, productID } : order
-                ); // 更新 orders 中的 productID
             } else {
                 productDescriptionMap.value[orderID] = '產品描述未提供';
                 productImgMap.value[orderID] = '產品圖未提供';
@@ -222,10 +244,7 @@ async function fetchProductDescription(productID, orderID) {
     try {
         const response = await axiosapi.get(`/api/products/${productID}`);
         const productData = response.data || {};
-        // 設置產品描述
         productDescriptionMap.value[orderID] = productData.description || '產品描述未提供';
-        // 調試語句
-        console.log('Product Description for Order ID', orderID, ':', productDescriptionMap.value[orderID]);
     } catch (error) {
         console.log("Error fetching product description:", error);
         Swal.fire({
@@ -239,21 +258,15 @@ async function findProductImg(productID, orderID) {
     try {
         const response = await axiosapi.get(`/api/productImg/product/${productID}`);
         const imgData = response.data || {};
-        // 調試語句，檢查 imgData 的結構
-        console.log('Raw image data:', imgData);
         if (Array.isArray(imgData.list) && imgData.list.length > 0) {
             const image = imgData.list.find(item => item.product === productID);
             if (image) {
-                // 確保 img 包含正確的 MIME 類型前綴
                 productImgMap.value[orderID] = `data:image/png;base64,${image.img}`; // 假設圖片格式為 PNG
-                console.log('Found image data for Order ID', orderID, ':', productImgMap.value[orderID]); // 顯示找到的圖片數據
             } else {
                 productImgMap.value[orderID] = '';
-                console.log('No image found for productID:', productID);
             }
         } else {
             productImgMap.value[orderID] = '';
-            console.log('Image data list is empty or invalid:', imgData);
         }
     } catch (error) {
         console.log("Error fetching product image:", error);
@@ -264,23 +277,24 @@ async function findProductImg(productID, orderID) {
     }
 }
 
-
 function formatDateTime(isoDateString) {
     const date = new Date(isoDateString);
     return format(date, 'yyyy-MM-dd HH:mm:ss');
 }
 
-// 計算訂單進度
+// 訂單進度star
 const progressWidth = computed(() => {
     if (!selectedOrder.value) return '0%';
     switch (selectedOrder.value.orderStatus) {
-        case '已送出':
-            return '25%';
-        case '已處理':
-            return '50%';
-        case '已出貨':
-            return '75%';
-        case '完成':
+        case 'newOrder':
+            return '20%';
+        case 'paid':
+            return '40%';
+        case 'confirmed':
+            return '60%';
+        case 'shipped':
+            return '80%';
+        case 'completed':
             return '100%';
         default:
             return '0%';
@@ -289,10 +303,27 @@ const progressWidth = computed(() => {
 
 const progressText = computed(() => {
     if (!selectedOrder.value) return '未開始';
-    return selectedOrder.value.orderStatus;
+    switch (selectedOrder.value.orderStatus) {
+        case 'newOrder':
+            return '新訂單';
+        case 'paid':
+            return '已付款';
+        case 'confirmed':
+            return '賣家接單';
+        case 'shipped':
+            return '已出貨';
+        case 'completed':
+            return '已到貨';
+        case 'returned':
+            return '已退貨';
+        case 'canceled':
+            return '已取消';
+        default:
+            return '未知狀態';
+    }
 });
+// 訂單進度end
 
-/* 評分STAR */
 function openRatingModal(orderID) {
     showRatingModal.value = true;
     currentOrderID.value = orderID;
@@ -306,7 +337,6 @@ function closeRatingModal() {
 
 function hoverStar(n) {
     // 可以根據需要顯示星星的 hover 效果
-    // 例如，將星星顏色設置為黃色
 }
 
 function resetStar() {
@@ -344,16 +374,12 @@ async function submitRating() {
             member: BuyerID,
             rankmsg: ratingMessage.value
         });
-        // 更新訂單狀態為已評價
         currentOrder.isRated = true;
-
-        // 在本地儲存評價狀態，避免重整後顯示評價按鈕
         localStorage.setItem(`order-${currentOrderID.value}-rated`, 'true');
         Swal.fire({
             text: '評價提交成功',
             icon: 'success'
         });
-
         closeRatingModal();
     } catch (error) {
         console.log("Error submitting rating:", error);
@@ -363,7 +389,118 @@ async function submitRating() {
         });
     }
 }
-/* 評分END */
+
+async function cancelOrder() {
+    if (!selectedOrder.value) return;
+
+    Swal.fire({
+        title: '確定取消訂單？',
+        text: "取消後無法恢復訂單",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '確認',
+        cancelButtonText: '取消'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            console.log("取消訂單的 orderID:", selectedOrder.value.orderID); // 確保 orderID 正確
+            try {
+                const response = await axiosapi.put(`/private/pages/orders/modify`, {
+                    orderID: selectedOrder.value.orderID,
+                    orderProducts: 'canceled'
+                });
+                console.log("伺服器響應:", response); // 確保 response 正確
+                selectedOrder.value.orderStatus = 'canceled';
+                orders.value = orders.value.map(order =>
+                    order.orderID === selectedOrder.value.orderID ? { ...order, orderStatus: 'canceled' } : order
+                );
+                Swal.fire({
+                    text: '訂單已取消',
+                    icon: 'success'
+                });
+            } catch (error) {
+                console.log("更新訂單狀態時發生錯誤:", error);
+                Swal.fire({
+                    text: "取消訂單失敗：" + error.message,
+                    icon: "error"
+                });
+            }
+        }
+    });
+}
+
+
+async function requestReturn() {
+    if (!selectedOrder.value) return;
+    Swal.fire({
+        title: '確定要求退貨？',
+        text: "退貨後無法恢復訂單",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '確認',
+        cancelButtonText: '取消'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                const updatedOrder = {
+                    ...selectedOrder.value,
+                    orderID: selectedOrder.value.orderID,
+                    orderStatus: 'returned'
+                };
+                await axiosapi.put(`/private/pages/orders/modify`, updatedOrder);
+                selectedOrder.value.orderStatus = 'returned';
+                orders.value = orders.value.map(order =>
+                    order.orderID === selectedOrder.value.orderID ? { ...order, orderStatus: 'returned' } : order
+                );
+                Swal.fire({
+                    text: '退貨申請已提交',
+                    icon: 'success'
+                });
+            } catch (error) {
+                console.log("Error updating order status:", error);
+                Swal.fire({
+                    text: "要求退貨失敗：" + error.message,
+                    icon: "error"
+                });
+            }
+        }
+    });
+}
+
+// 顯示訂單明細
+function openOrderDetailsModal(orderID) {
+    showOrderDetailsModal.value = true;
+    currentOrderID.value = orderID;
+    loadOrderTooltip(orderID);
+}
+
+function closeOrderDetailsModal() {
+    showOrderDetailsModal.value = false;
+    currentOrderID.value = null;
+}
+
+async function loadOrderTooltip(orderID) {
+    try {
+        const response = await axiosapi.get(`/private/pages/orders/${orderID}`);
+        const products = response.data.list || [];
+        if (products.length > 0) {
+            const productID = products[0].orderID;
+            const productResponse = await axiosapi.get(`/private/pages/orderProducts/order/${productID}`);
+            console.log('Product Response:', productResponse.data.list); // 確認 productResponse.data 內容
+            const productData = productResponse.data.list || [];
+            orderTooltipContent.value[orderID] = productData.map(product => `
+                商品名稱: ${product.productName || '未提供'}\n
+                規格: ${product.specOneName || '未提供'}\n
+                數量價格: ${product.quantityPrice || '未提供'}
+            `).join('\n');
+        } else {
+            orderTooltipContent.value[orderID] = '無產品資料';
+        }
+    } catch (error) {
+        console.log("error", error);
+        orderTooltipContent.value[orderID] = '無法加載訂單詳細信息';
+    }
+    console.log('Updated orderTooltipContent (stringified):', JSON.stringify(orderTooltipContent.value));
+}
 
 
 </script>
@@ -373,16 +510,11 @@ async function submitRating() {
 .image-container {
     display: flex;
     justify-content: center;
-    /* 將圖片居中 */
     align-items: center;
-    /* 垂直居中圖片 */
     max-width: 150px;
     max-height: 150px;
     border: none;
-    /* 移除容器邊框 */
-
     background-color: transparent;
-    /* 設置背景色為透明 */
 }
 
 .image-container img {
@@ -391,9 +523,7 @@ async function submitRating() {
     width: auto;
     height: auto;
     border: none;
-    /* 移除圖片邊框 */
     display: block;
-    /* 確保圖片顯示為塊級元素 */
 }
 
 /* 評分STAR */
@@ -437,22 +567,34 @@ textarea {
     margin: 10px 0;
 }
 
-button {
-    margin: 5px;
-}
-
-/* 評分END */
-
-
 .button-container {
     display: flex;
     justify-content: center;
     gap: 10px;
-    /* 調整按鈕間距 */
 }
 
 button {
     margin: 0;
-    /* 移除按鈕的外邊距 */
+}
+
+/* 訂單明細彈出視窗 */
+.order-details-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.order-details-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
 }
 </style>

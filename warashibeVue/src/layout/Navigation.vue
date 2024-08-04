@@ -1,7 +1,10 @@
 <template>
     <!-- <div class="container"> -->
+    <!-- navbar黑色 -->
+    <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top"> -->
+    <!-- navbar透明 -->
+    <nav class="navbar navbar-expand-lg sticky-top">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
         <div class="container-fluid">
             <!-- 網站LOGO -->
             <RouterLink class="navbar-brand" to="/">
@@ -17,7 +20,7 @@
                 <ul class="navbar-nav mb-2 mb-lg-0 w-100">
                     <!-- 左側導航連結 -->
                     <li class="nav-item">
-                        <RouterLink class="nav-link" to="/">首頁</RouterLink>
+                        <RouterLink class="nav-link" to="/"><font-awesome-icon icon="fa-solid fa-house" /></RouterLink>
                     </li>
                     <li class="nav-item">
                         <RouterLink class="nav-link" to="#">商城/二手</RouterLink>
@@ -40,16 +43,19 @@
                         <NotificationPop :popupVisible="popupVisible" />
                     </li>
                     <li class="nav-item" v-if="!user">
-                        <RouterLink class="nav-link" to="/secure/login">登入</RouterLink>
+                        <RouterLink class="nav-link" to="/secure/login"><font-awesome-icon
+                                :icon="['fas', 'right-to-bracket']" /></RouterLink>
                     </li>
                     <li class="nav-item" v-if="!user">
-                        <RouterLink class="nav-link" to="/secure/registerOne">註冊</RouterLink>
+                        <RouterLink class="nav-link" to="/secure/registerOne"><font-awesome-icon
+                                icon="fa-solid fa-user-plus" /></RouterLink>
                     </li>
                     <li class="nav-item" v-if="user">
                         <span class="nav-link">{{ user?.username }}</span>
                     </li>
                     <li class="nav-item" v-if="user">
-                        <button class="nav-link active" @click="logout">登出</button>
+                        <button class="nav-link active" @click="logout"><font-awesome-icon
+                                icon="fa-solid fa-right-from-bracket" /></button>
                     </li>
                     <li class="nav-item">
                         <RouterLink class="nav-link" :to="{ path: '/secure/member' }">會員中心</RouterLink>
@@ -57,7 +63,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            會員相關
+                            <font-awesome-icon icon="fa-solid fa-user" />
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
                             <li>
@@ -131,10 +137,15 @@ const checkAuth = (path) => {
 
 <style scoped>
 .navbar {
-    padding: 5px 15px;
-    background-color: #343a40;
-    border-bottom: 1px solid #e7e7e7;
-    font-size: 1.5rem;
+    position: fixed; /* 固定在視窗中的位置 */
+    top: 0; /* 距離視窗頂部 0 像素 */
+    left: 50px; /* 距離視窗左邊 0 像素 */
+    width: 92.85%; /* 設定寬度跟category一樣*/
+    background-color: #FCFCFC; /* 背景顏色 */
+    font-size: 1.5rem; /* 字體大小 */
+    box-sizing: border-box; /* 確保 padding 不會超出容器 */
+    z-index: 1000; /* 確保在其他內容之上 */
+    /* padding: 5px 15px; */
 }
 
 .logo {
@@ -145,7 +156,7 @@ const checkAuth = (path) => {
 .nav-item {
     margin: 0 5px;
     text-decoration: none;
-    color: #fff;
+    /* color: #fff; */
 }
 
 .nav-link {

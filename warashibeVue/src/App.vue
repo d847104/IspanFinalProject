@@ -54,16 +54,11 @@
 </script>
 
 <style>
-.background {
-  background-image: url('/src/img/bg01.jpg');
+body {
+  background: url('/src/img/bg02.jpg') no-repeat center center fixed;
   background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed; /* 背景圖固定，滾動時不移動 */
-  width: 100%;
-  height: 100%;
-  min-height: 100vh; /* 確保背景圖佔滿整個可視區域 */
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
 }
+/* .background{
+  background-color: rgba(255, 255, 255, 0.6);
+} */
 </style>

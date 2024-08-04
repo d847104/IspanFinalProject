@@ -6,8 +6,8 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
-
 createApp(App)
     .use(router)
     .component('font-awesome-icon', FontAwesomeIcon)
     .mount('#app');
+
