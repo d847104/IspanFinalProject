@@ -55,7 +55,7 @@ const profileImgUrl = ref(null);
 
 onMounted(function () {
     loadProductsFromLocalStorage();
-    callProduct(19);
+    callProduct(1);
 
 });
 

@@ -118,7 +118,8 @@ public class MemberService {
 		String username = obj.isNull("username") ? optional.get().getUsername() : obj.getString("username");
 		String mobile = obj.isNull("mobile") ? optional.get().getMobile() : obj.getString("mobile");
 		String gender = obj.isNull("gender") ? optional.get().getGender() : obj.getString("gender");
-		String profileImg = obj.isNull("profileImg") ? "./images/default-person.png" : obj.getString("profileImg");
+		byte[] profileImg = obj.isNull("profileImg") ? 
+			    img : obj.getString("profileImg").getBytes();
 		String intro = obj.isNull("intro") ? optional.get().getIntro() : obj.getString("intro");
 		String createTime = obj.isNull("createTime") ? optional.get().getCreateTime().toString() : obj.getString("createTime");
 		String lastLogin = obj.isNull("lastLogin") ? optional.get().getLastLogin().toString() : obj.getString("lastLogin");
@@ -131,7 +132,7 @@ public class MemberService {
 			update.setUsername(username);
 			update.setMobile(mobile);
 			update.setGender(gender);
-			update.setProfileImg(profileImg.getBytes());
+			update.setProfileImg(profileImg);
 			update.setIntro(intro);
 			update.setCreateTime(DatetimeConverter.parse(createTime, "yyyy-MM-dd"));
 			update.setLastLogin(DatetimeConverter.parse(lastLogin, "yyyy-MM-dd"));

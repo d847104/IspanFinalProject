@@ -48,11 +48,12 @@
                                         </div>
                                         <div class="col-xl-3 col-md-3 col-sm-5">
                                             <div class="d-flex flex-row align-items-center mb-1">
-                                                <h4 class="mb-1 me-1">{{ item.price }}</h4>
+                                                <h4 class="mb-1 me-1">NT$ {{ item.price }}</h4>
                                                 <!-- <span class="text-danger"><s>NT$1,500</s></span> -->
                                             </div>
                                             <!-- <h6 class="text-success">Free shipping</h6> -->
                                             <div class="mt-4">
+                                                <a href="#"><font-awesome-icon :icon="['fas', 'cart-plus']" size="2x" pull="left" /></a>
                                                 <button class="btn btn-primary shadow-0" type="button">直接購買</button>
                                                 <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover">
                                                     <font-awesome-icon
@@ -77,9 +78,21 @@ import { ref, onMounted } from 'vue';
 import axiosapi from '@/plugins/axios.js';
 const props = defineProps(["item"])
 const photoPath = import.meta.env.VITE_API_PHOTO;
-
 // 定義一個 ref 來存儲圖片來源
 const imageSrc = ref(null);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // 定義一個函數來獲取圖片數據
 const fetchImage = async () => {
@@ -95,7 +108,6 @@ const fetchImage = async () => {
         }else {
             imageSrc.value = "../../src/assets/images/no-image.jpg";
         }
-
     } catch (error) {
         console.error('讀取圖片失敗:', error);
         imageSrc.value = "../../src/assets/images/no-image.jpg";
