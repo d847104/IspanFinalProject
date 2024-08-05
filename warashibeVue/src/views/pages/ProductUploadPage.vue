@@ -298,8 +298,6 @@ async function uploadSpec(formData) {
     }
 }
 
-
-
 // 處理上傳圖片功能
 async function imagePost(productID) {
     const formData = new FormData();

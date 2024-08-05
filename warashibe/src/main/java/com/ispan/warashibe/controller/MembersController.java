@@ -1,5 +1,6 @@
 package com.ispan.warashibe.controller;
 
+import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
 
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ispan.warashibe.model.Members;
 import com.ispan.warashibe.model.PageRequestDTO;
@@ -76,7 +79,14 @@ public class MembersController {
         JSONArray array = new JSONArray();
         List<Members> allMem = memberService.findAllMem();
 		if(allMem != null && !allMem.isEmpty()) {
+			
 			for (Members member : allMem) {
+	            // 將二進制圖片數據轉換為Base64編碼
+	            String base64Image = "";
+	            if (member.getProfileImg() != null) {
+	                base64Image = Base64.getEncoder().encodeToString(member.getProfileImg());
+	                System.out.println(base64Image);
+	            }
 	            JSONObject item = new JSONObject()
 	                    .put("id", member.getMemberID())
 	                    .put("account", member.getAccount())
@@ -84,7 +94,7 @@ public class MembersController {
 	                    .put("username", member.getUsername())
 	                    .put("mobile", member.getMobile())
 	                    .put("gender", member.getGender())
-	                    .put("profileImg", member.getProfileImg())
+	                    .put("profileImg", base64Image)
 	                    .put("into", member.getIntro())
 	                    .put("createTime", member.getCreateTime())
 	                    .put("lastLogin", member.getLastLogin())
@@ -101,7 +111,7 @@ public class MembersController {
 	
 	//修改單筆會員資料 
     @PutMapping("/members/update/{id}")
-    public String modify(@PathVariable(name = "id") Integer id, @RequestBody String body) {
+    public String modify(@PathVariable(name = "id") Integer id,@RequestParam(value = "image", required = false) MultipartFile image, @RequestParam String body) throws IOException {
     	
     	
         JSONObject responseBody = new JSONObject();
@@ -113,7 +123,7 @@ public class MembersController {
                 responseBody.put("success", false);
                 responseBody.put("message", "Id不存在");
             } else {
-                Members member = memberService.modify(body);
+                Members member = memberService.modify(body, image);
                 if (member == null) {
                     responseBody.put("success", false);
                     responseBody.put("message", "修改失敗");

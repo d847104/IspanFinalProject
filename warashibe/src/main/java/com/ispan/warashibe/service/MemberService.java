@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ispan.warashibe.model.Members;
 import com.ispan.warashibe.repository.MembersRepository;
@@ -107,7 +108,7 @@ public class MemberService {
 	} // end of insert
 	
 	// 修改單筆
-	public Members modify(String json) {
+	public Members modify(String json, MultipartFile image) throws IOException {
 		JSONObject obj = new JSONObject(json);
 
 		Integer memberID = obj.isNull("id") ? null : obj.getInt("id");
@@ -118,8 +119,7 @@ public class MemberService {
 		String username = obj.isNull("username") ? optional.get().getUsername() : obj.getString("username");
 		String mobile = obj.isNull("mobile") ? optional.get().getMobile() : obj.getString("mobile");
 		String gender = obj.isNull("gender") ? optional.get().getGender() : obj.getString("gender");
-		byte[] profileImg = obj.isNull("profileImg") ? 
-			    img : obj.getString("profileImg").getBytes();
+//		byte[] profileImg = obj.isNull("profileImg") ? img : obj.getString("profileImg").getBytes();
 		String intro = obj.isNull("intro") ? optional.get().getIntro() : obj.getString("intro");
 		String createTime = obj.isNull("createTime") ? optional.get().getCreateTime().toString() : obj.getString("createTime");
 		String lastLogin = obj.isNull("lastLogin") ? optional.get().getLastLogin().toString() : obj.getString("lastLogin");
@@ -132,7 +132,11 @@ public class MemberService {
 			update.setUsername(username);
 			update.setMobile(mobile);
 			update.setGender(gender);
-			update.setProfileImg(profileImg);
+			if(image.isEmpty()) {
+				update.setProfileImg(img);
+			}else {
+				update.setProfileImg(image.getBytes());	
+			}
 			update.setIntro(intro);
 			update.setCreateTime(DatetimeConverter.parse(createTime, "yyyy-MM-dd"));
 			update.setLastLogin(DatetimeConverter.parse(lastLogin, "yyyy-MM-dd"));
