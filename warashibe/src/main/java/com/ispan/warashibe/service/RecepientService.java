@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
 
 import com.ispan.warashibe.model.Members;
 import com.ispan.warashibe.model.Recepient;

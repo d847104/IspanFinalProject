@@ -17,15 +17,19 @@
                                                 {{ product.wishItem }}</div>
                                         
                                         <!-- 規格(若存在) -->
-                                        <div class="row" v-if="product.productSpecs[0]">
+                                        <div class="row" v-if="product.specs">
                                                 <!-- 規格一 -->
-                                                <div class="col">
-                                                        <label for="">{{ specOneName }}</label>
-                                                </div>
+                                                <select class="form-select" v-model="selectedSpecOne" @change="specOneChange">
+                                                        <option value="" disabled selected>請選擇{{ product.specs.specOneName }}</option>
+                                                        <option v-for="specOne in product.specs.specOnes" :key="specOne.specOneID" :value="specOne.specOneID">{{ specOne.specOne }}</option>
+                                                </select>
                                                 <!-- 規格二(若存在) -->
-                                                <div class="col" v-if="product.productSpecs.specTwo">
-                                                        <label for="">{{ specTwoName }}</label>
-                                                </div>
+                                                 <template v-if="filteredSpecTwos.length">
+                                                        <select class="form-select" v-model="selectedSpecTwo">
+                                                        <option value="" disabled selected>請選擇{{ filteredSpecTwoName }}</option>
+                                                        <option v-for="specTwo in filteredSpecTwos" :key="specTwo.specTwo" :value="specTwo.specTwoID">{{ specTwo.specTwo }}</option>
+                                                        </select>
+                                                 </template>
                                         </div>
 
                                         <div class="row mt-2">
@@ -82,10 +86,28 @@
                 }
         })
 
-        const specOneName = ref([]);
-        const specOne = ref([]);
-        const specTwoName = ref([]);
-        const specTwo = ref([]);
+        // 用於選擇的規格一
+        const selectedSpecOne = ref("");
+
+        // 用於選擇的規格二
+        const selectedSpecTwo = ref("");
+
+        // 計算屬性：過濾出符合選擇的規格一的規格二清單
+        const filteredSpecTwos = computed(() => {
+                const specOne = props.product.specs.specOnes.find((specOne) => specOne.specOneID === selectedSpecOne.value);
+                return specOne && specOne.specTwoNames.length ? specOne.specTwoNames[0]?.specTwos : [];
+        });
+
+        // 計算屬性：過濾出符合選擇的規格一的規格二名字
+        const filteredSpecTwoName = computed(() => {
+                const specOne = props.product.specs.specOnes.find((specOne) => specOne.specOneID === selectedSpecOne.value);
+                return specOne && specOne.specTwoNames.length ? specOne.specTwoNames[0]?.specTwoName : null;
+        })
+
+        // 當規格一改變時
+        function specOneChange(){
+                selectedSpecTwo.value = null; // 清空選擇的規格二
+        }
 
         // 元件渲染完畢後初始化 Boottrap tooltip; 計算規格下拉式清單
         onMounted(function(){
@@ -93,33 +115,6 @@
                 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                         return new Tooltip(tooltipTriggerEl)
                 })
-
-                // 取得規格(若有規格)
-                if(props.product.productSpecs[0]){
-                        let specData = JSON.parse(JSON.stringify(props.product.productSpecs));
-                        let arrSpecName = new Array();
-                        let arrSpec = new Array();
-                        for(let i = 0; i < specData.length; i++) {
-                                arrSpecName.push(specData[i].specOneName);
-                                arrSpec.push(specData[i].specOne);
-                        }
-                        specOneName.value = Array.from(new Set(arrSpecName))[0];
-                        specOne.value = arrSpec;
-
-                // 若規格二存在
-                        // if(props.product.productSpecs[0].specTwo){
-                        //         let specData = JSON.parse(JSON.stringify(props.product.productSpecs));
-                        //         let arrSpecName = new Array();
-                        //         let arrSpec = new Array();
-                        //         for(let i = 0; i < specData.length; i++) {
-                        //                 arrSpecName.push(specData[i].specTwoName);
-                        //                 arrSpec.push(specData[i].specTwo);
-                        //         }
-                        //         specTwoName.value = Array.from(new Set(arrSpecName))[0];
-                        //         specTwo.value = arrSpec;
-                        //         console.log(arrSpec)
-                        // }
-                }
         })
 
         // 預設 Bootstrap tooltip 商品庫存訊息
