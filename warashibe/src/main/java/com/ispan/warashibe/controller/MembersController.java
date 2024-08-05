@@ -1,5 +1,6 @@
 package com.ispan.warashibe.controller;
 
+import java.util.Base64;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -43,6 +44,12 @@ public class MembersController {
         JSONArray array = new JSONArray();
         Members member = memberService.findById(id);
         if (member != null) {
+            // 將二進制圖片數據轉換為Base64編碼
+            String base64Image = "";
+            if (member.getProfileImg() != null) {
+                base64Image = Base64.getEncoder().encodeToString(member.getProfileImg());
+                System.out.println(base64Image);
+            }
 //            String make = DatetimeConverter.toString(product.getMake(), "yyyy-MM-dd");
             JSONObject item = new JSONObject()
                     .put("id", member.getMemberID())
@@ -51,7 +58,7 @@ public class MembersController {
                     .put("username", member.getUsername())
                     .put("mobile", member.getMobile())
                     .put("gender", member.getGender())
-                    .put("profileImg", member.getProfileImg())
+                    .put("profileImg", base64Image)
                     .put("intro", member.getIntro())
                     .put("createTime", member.getCreateTime())
                     .put("lastLogin", member.getLastLogin())

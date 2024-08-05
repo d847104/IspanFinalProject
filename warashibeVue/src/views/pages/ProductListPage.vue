@@ -147,7 +147,7 @@ function callSearch(page) {
         "start": start.value,
         "max": rows.value,
         "dir": false,
-        "order": "productName",
+        "order": "productID",
         "name": ""
     };
 

@@ -49,9 +49,9 @@
                                         <div class="col-xl-3 col-md-3 col-sm-5">
                                             <div class="d-flex flex-row align-items-center mb-1">
                                                 <h4 class="mb-1 me-1">{{ item.price }}</h4>
-                                                <span class="text-danger"><s>NT$1,500</s></span>
+                                                <!-- <span class="text-danger"><s>NT$1,500</s></span> -->
                                             </div>
-                                            <h6 class="text-success">Free shipping</h6>
+                                            <!-- <h6 class="text-success">Free shipping</h6> -->
                                             <div class="mt-4">
                                                 <button class="btn btn-primary shadow-0" type="button">直接購買</button>
                                                 <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover">
