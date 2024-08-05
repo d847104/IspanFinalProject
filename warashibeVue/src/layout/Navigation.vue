@@ -51,7 +51,7 @@
                                 icon="fa-solid fa-user-plus" /></RouterLink>
                     </li>
                     <li class="nav-item" v-if="user">
-                        <span class="nav-link">{{ user?.username }}</span>
+                        <span class="nav-link">HI~{{ user?.username }}</span>
                     </li>
                     <li class="nav-item" v-if="user">
                         <button class="nav-link active" @click="logout"><font-awesome-icon

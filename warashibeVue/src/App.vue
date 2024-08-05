@@ -55,7 +55,7 @@
 
 <style>
 body {
-  background: url('/src/img/bg02.jpg') no-repeat center center fixed;
+  background: url('/src/img/bg01.jpg') no-repeat center center fixed;
   background-size: cover;
 }
 /* .background{

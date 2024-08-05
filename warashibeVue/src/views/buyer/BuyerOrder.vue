@@ -1,7 +1,6 @@
 <template>
     <br><br><br><br><br>
     <h3 style="color:#ECFFFF;">購物訂單管理</h3>
-    <!-- 訂單明細按鈕漂亮的彈出視窗資料無法顯示、訂單狀態按鈕功能未寫入資料庫 -->
     <div v-if="selectedOrder">
         <div class="alert alert-dark" role="alert">
             <div class="row gx-5">
@@ -134,7 +133,7 @@
     <div v-if="showOrderDetailsModal" class="order-details-modal">
         <div class="order-details-container">
             <h5>訂單明細</h5>
-            <pre> {{ orderTooltipContent[currentOrderID.value] }}</pre>
+            <pre> {{ orderTooltipContent[currentOrderID] }}</pre>
 
             <button @click="closeOrderDetailsModal" class="btn btn-outline-secondary btn-sm d-block">關閉</button>
         </div>
@@ -406,7 +405,18 @@ async function cancelOrder() {
             try {
                 const response = await axiosapi.put(`/private/pages/orders/modify`, {
                     orderID: selectedOrder.value.orderID,
-                    orderProducts: 'canceled'
+                    orderStatus: 'canceled',
+                    seller: selectedOrder.value.seller,
+                    delivery: selectedOrder.value.delivery,
+                    deliveryFee: selectedOrder.value.deliveryFee,
+                    orderTime: selectedOrder.value.orderTime,
+                    payMethod: selectedOrder.value.payMethod,
+                    total: selectedOrder.value.total,
+                    orderProducts: [],
+                    orderUpdate: selectedOrder.value.orderUpdate,
+                    notificationID: [],
+                    secondHand: selectedOrder.value.secondHand,
+                    buyer: selectedOrder.value.buyer
                 });
                 console.log("伺服器響應:", response); // 確保 response 正確
                 selectedOrder.value.orderStatus = 'canceled';
@@ -444,7 +454,18 @@ async function requestReturn() {
                 const updatedOrder = {
                     ...selectedOrder.value,
                     orderID: selectedOrder.value.orderID,
-                    orderStatus: 'returned'
+                    orderStatus: 'returned',
+                    seller: selectedOrder.value.seller,
+                    delivery: selectedOrder.value.delivery,
+                    deliveryFee: selectedOrder.value.deliveryFee,
+                    orderTime: selectedOrder.value.orderTime,
+                    payMethod: selectedOrder.value.payMethod,
+                    total: selectedOrder.value.total,
+                    orderProducts: [],
+                    orderUpdate: selectedOrder.value.orderUpdate,
+                    notificationID: [],
+                    secondHand: selectedOrder.value.secondHand,
+                    buyer: selectedOrder.value.buyer
                 };
                 await axiosapi.put(`/private/pages/orders/modify`, updatedOrder);
                 selectedOrder.value.orderStatus = 'returned';
