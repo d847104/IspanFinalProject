@@ -7,9 +7,9 @@
         <div class="card-body">
             <h5 class="card-title">訂單相關</h5>
             <p class="card-text">查看和管理訂單。</p>
-            <button @click="navigateTo('/orders')" class="btn btn-primary">訂單查詢</button>
-            <button @click="navigateTo('/reviews')" class="btn btn-primary mt-2">評價訂單</button>
-            <button @click="navigateTo('/favorites')" class="btn btn-primary mt-2">收藏訂單</button>
+            <button @click="navigateTo('/buyer/buyerorder')" class="btn btn-primary">買家訂單查詢</button>
+            <button @click="navigateTo('/seller-orders')" class="btn btn-primary mt-2">賣家訂單查詢</button>
+            <button @click="navigateTo('/secure/favorite')" class="btn btn-primary mt-2">收藏訂單</button>
         </div>
         </div>
     </div>
@@ -22,7 +22,7 @@
             <p class="card-text">管理個人帳戶資訊。</p>
             <button @click="navigateTo('/profile')" class="btn btn-primary">個人資訊管理</button>
             <button @click="navigateTo('/change-password')" class="btn btn-primary mt-2">密碼管理</button>
-            <button @click="navigateTo('/wallet')" class="btn btn-primary mt-2">錢包管理</button>
+            <!-- <button @click="navigateTo('/wallet')" class="btn btn-primary mt-2">錢包管理</button> -->
             <button @click="navigateTo('/bank-accounts')" class="btn btn-primary mt-2">銀行帳戶管理</button>
         </div>
         </div>
@@ -46,7 +46,7 @@
         <div class="card-body">
             <h5 class="card-title">瀏覽記錄</h5>
             <p class="card-text">查看和管理瀏覽過的商品。</p>
-            <button @click="navigateTo('/history')" class="btn btn-primary">瀏覽記錄</button>
+            <button @click="navigateTo('/secure/browseHistory')" class="btn btn-primary">瀏覽記錄</button>
         </div>
         </div>
     </div>
@@ -55,7 +55,6 @@
 </template>
 
 <script setup>
-    import Navbar from '../../layout/Navigation.vue';
     import { useRouter } from 'vue-router';
 
     const router = useRouter()

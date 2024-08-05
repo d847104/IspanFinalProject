@@ -6,16 +6,23 @@
             <h5 class="card-title">{{ product.productName }}</h5>
             <p class="card-text text-danger text-end">NT$ {{ product.price }}</p>
         </div>
+        <div class="mt-3">
+                <a href="#"><font-awesome-icon :icon="['fas', 'cart-plus']" size="2x" pull="left" /></a>
+                <a href="#"><font-awesome-icon :icon="['far', 'heart']" size="2x" beat style="color:lightcoral;--fa-beat-scale: 1.0" pull="right" @mouseover="(e)=>{e.target.style.setProperty('--fa-beat-scale',1.3)}" @mouseout="(e)=>{e.target.style.setProperty('--fa-beat-scale',1.0)}" @click="addToFavorite" /></a>
+        </div>
     </div>
 </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, inject } from 'vue';
 import { useRouter } from 'vue-router';
+import axiosapi from '@/plugins/axios';
+import Swal from 'sweetalert2';
 
 const props = defineProps(["product"]);
 const router = useRouter();
+const user = inject("user");
 
 const productImageSrc = computed(() => {
 return props.product.productImgs && props.product.productImgs.length
@@ -25,6 +32,20 @@ return props.product.productImgs && props.product.productImgs.length
 
 const viewProductDetail = () => {
     router.push(`/pages/productpage?productID=${props.product.productID}`);
+};
+
+const addToFavorite = async () => {
+    try {
+        await axiosapi.post('/ajax/favorite/insert', {
+            memberID: user.value.id,
+            productID: props.product.productID,
+            sellerID: props.product.member
+        });
+        Swal.fire('成功', '已將該商品加入最愛', 'success');
+    } catch (error) {
+        console.error('加入最愛失敗', error);
+        Swal.fire('失敗', '加入最愛失敗', 'error');
+    }
 };
 </script>
 

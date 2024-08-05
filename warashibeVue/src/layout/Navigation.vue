@@ -37,7 +37,7 @@
                         </RouterLink>
                     </li>
                     <li class="nav-item d-none d-lg-block">
-                        <RouterLink class="nav-link" to="#">
+                        <RouterLink class="nav-link" :to="{ name: 'messenger' }">
                             <font-awesome-icon icon="fa-solid fa-comments" />
                         </RouterLink>
                     </li>
@@ -56,15 +56,19 @@
                     <li class="nav-item" v-if="user">
                         <button class="nav-link active" @click="logout">登出</button>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <RouterLink class="nav-link" :to="{ path: '/secure/member' }">會員中心</RouterLink>
-                    </li>
+                    </li> -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            會員相關
+                            會員
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+                            <li>
+                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/secure/member')">會員中心
+                                </RouterLink>
+                            </li>
                             <li>
                                 <RouterLink class="dropdown-item" to="#" @click="checkAuth('/profile')">會員基本資料
                                 </RouterLink>

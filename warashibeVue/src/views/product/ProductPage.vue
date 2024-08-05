@@ -59,11 +59,11 @@
             <input type="number" v-model="quantity" />
             <button @click="increaseQuantity">+</button>
         </div>
-        <form>
+        <div>
             <button class="btn btn-success" @click="addToFavorite">加入最愛</button>&nbsp;
             <button class="btn btn-primary" @click="addToCart">加入購物車</button>&nbsp;
             <button class="btn btn-danger" @click="buyNow">直接購買</button>
-        </form>
+        </div>
         </div>
     </div>
     <!-- 查看更多 -->
@@ -83,12 +83,14 @@
 <script setup>
 import { ref, onMounted, watch, inject } from 'vue';
 import axiosapi from '@/plugins/axios';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import RelatedCard from '@/components/RelatedCard.vue';
 import Paginate from 'vuejs-paginate-next';
+import Swal from 'sweetalert2';
 
 const user = inject("user");
 const route = useRoute();
+const router = useRouter();
 const productID = ref(route.query.productID);
 const product = ref({});
 const productImages = ref([]);
@@ -123,6 +125,26 @@ const fetchProduct = async () => {
     await fetchProductSpecs(data.productSpecs);
     combineImages();
     await fetchRelatedProducts(data.subCategory);
+    
+    // 记录浏览历史
+    await recordBrowsingHistory();
+};
+
+const recordBrowsingHistory = async () => {
+    if (user.value && user.value.id && product.value.productID) {
+        const history = {
+            member: user.value.id,
+            product: product.value.productID,
+            browseTime: new Date().toISOString()
+        };
+
+        try {
+            await axiosapi.post('/api/browsing-history', history);
+            console.log('Browsing history recorded successfully.');
+        } catch (error) {
+            console.error('Failed to record browsing history:', error);
+        }
+    }
 };
 
 const fetchRelatedProducts = async (subCategoryID) => {
@@ -252,17 +274,33 @@ const updateCurrentImage = (image) => {
 };
 
 const selectSpecOne = (spec, image) => {
-    selectedSpecOne.value = spec;
-    selectedSpecImage.value = image || ''; // 保存选择的规格图片
-    console.log(selectedSpecOne.value);
-    console.log(selectedSpecImage.value);
+    if (selectedSpecOne.value === spec) {
+        selectedSpecOne.value = '';
+        selectedSpecImage.value = '';
+    } else {
+        selectedSpecOne.value = spec;
+        selectedSpecImage.value = image || ''; // 保存选择的规格图片
+    }
+    filterSpecs();
 };
 
-const selectSpecTwo = (spec, image) => {
-    selectedSpecTwo.value = spec;
-    selectedSpecImage.value = image || ''; // 保存选择的规格图片
-    console.log(selectedSpecTwo.value);
-    console.log(selectedSpecImage.value);
+const selectSpecTwo = (spec) => {
+    if (selectedSpecTwo.value === spec) {
+        selectedSpecTwo.value = '';
+    } else {
+        selectedSpecTwo.value = spec;
+    }
+    filterSpecs();
+};
+
+const filterSpecs = () => {
+    const filteredSpecs = productSpecs.value.filter(spec => {
+        const matchesSpecOne = selectedSpecOne.value ? spec.specOne === selectedSpecOne.value : true;
+        const matchesSpecTwo = selectedSpecTwo.value ? spec.specTwo === selectedSpecTwo.value : true;
+        return matchesSpecOne && matchesSpecTwo;
+    });
+
+    groupSpecs(filteredSpecs);
 };
 
 const decreaseQuantity = () => {
@@ -270,15 +308,32 @@ const decreaseQuantity = () => {
 };
 
 const increaseQuantity = () => {
-    quantity.value += 1;
+    if (selectedSpecOne.value || selectedSpecTwo.value) {
+        const selectedSpec = productSpecs.value.find(spec => {
+            const matchesSpecOne = selectedSpecOne.value ? spec.specOne === selectedSpecOne.value : true;
+            const matchesSpecTwo = selectedSpecTwo.value ? spec.specTwo === selectedSpecTwo.value : true;
+            return matchesSpecOne && matchesSpecTwo;
+        });
+        if (quantity.value < selectedSpec.specQt) {
+            quantity.value += 1;
+        }
+    } else {
+        quantity.value += 1;
+    }
 };
 
 const addToFavorite = async () => {
+    let data = {
+            memberID: user.value.id,
+            productID: product.value.productID,
+            sellerID: product.value.member
+        }
+    console.log(data);
     try {
         await axiosapi.post('/ajax/favorite/insert', {
             memberID: user.value.id,
             productID: product.value.productID,
-            sellerID: product.value.sellerID
+            sellerID: product.value.member
         });
         Swal.fire('成功', '已將該商品加入最愛', 'success');
     } catch (error) {
@@ -289,10 +344,16 @@ const addToFavorite = async () => {
 
 const addToCart = async () => {
     try {
+        const selectedSpec = productSpecs.value.find(spec => {
+            const matchesSpecOne = selectedSpecOne.value ? spec.specOne === selectedSpecOne.value : true;
+            const matchesSpecTwo = selectedSpecTwo.value ? spec.specTwo === selectedSpecTwo.value : true;
+            return matchesSpecOne && matchesSpecTwo;
+        });
+
         await axiosapi.post('/private/pages/cart/create', {
             member: user.value.id,
             product: product.value.productID,
-            productSpec: selectedSpecOne.value || selectedSpecTwo.value, // 选一个已选规格
+            productSpec: selectedSpec.specID,
             seller: product.value.sellerID,
             quantity: quantity.value
         });
@@ -305,10 +366,16 @@ const addToCart = async () => {
 
 const buyNow = async () => {
     try {
+        const selectedSpec = productSpecs.value.find(spec => {
+            const matchesSpecOne = selectedSpecOne.value ? spec.specOne === selectedSpecOne.value : true;
+            const matchesSpecTwo = selectedSpecTwo.value ? spec.specTwo === selectedSpecTwo.value : true;
+            return matchesSpecOne && matchesSpecTwo;
+        });
+
         await axiosapi.post('/private/pages/cart/create', {
             member: user.value.id,
             product: product.value.productID,
-            productSpec: selectedSpecOne.value || selectedSpecTwo.value, // 选一个已选规格
+            productSpec: selectedSpec.specID,
             seller: product.value.sellerID,
             quantity: quantity.value
         });
