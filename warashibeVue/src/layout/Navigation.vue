@@ -70,7 +70,7 @@
                                 </RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/profile')">會員基本資料
+                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/members/basicinformation')">會員基本資料
                                 </RouterLink>
                             </li>
                             <li>
