@@ -42,7 +42,7 @@
 <script setup>
 import compCard from '@/components/compCard.vue';
 import axiosapi from '@/plugins/axios';
-import { ref, onMounted, inject } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 const SellerProducts = ref([]);
 const seller = ref([]);
 const productTotal = ref(0);
@@ -50,13 +50,9 @@ const averageRanking = ref(0);
 const profileImg = ref(null);
 const profileImgUrl = ref(null);
 
-// const user = inject('user');
-
-
 onMounted(function () {
     loadProductsFromLocalStorage();
     callProduct(1);
-
 });
 
 // 从本地存储加载数据
@@ -118,7 +114,6 @@ async function getSellerInfo(sellerID) {
         seller.value = response.data.list;
         if (seller.value[0] && seller.value[0].profileImg) {
             profileImgUrl.value = `data:image/png;base64,${seller.value[0].profileImg}`;
-            console.log(profileImgUrl.value);
         } else {
             profileImgUrl.value = '/default-person.png';
         }

@@ -30,7 +30,7 @@
                                         <div class="col-xl-6 col-md-5 col-sm-7">
                                             <h5>{{ item.productName }}</h5>
                                             <div class="d-flex flex-row">
-                                                <div class="text-warning mb-1 me-2">
+                                                <!-- <div class="text-warning mb-1 me-2">
                                                     <font-awesome-icon icon="fa fa-star"></font-awesome-icon>
                                                     <font-awesome-icon icon="fa fa-star"></font-awesome-icon>
                                                     <font-awesome-icon icon="fa fa-star"></font-awesome-icon>
@@ -39,7 +39,7 @@
                                                     <span class="ms-1">
                                                         4.5
                                                     </span>
-                                                </div>
+                                                </div> -->
                                                 <span class="text-muted">數量{{ item.stock }}</span>
                                             </div>
                                             <p class="text mb-4 mb-md-0">
@@ -80,18 +80,6 @@ const props = defineProps(["item"])
 const photoPath = import.meta.env.VITE_API_PHOTO;
 // 定義一個 ref 來存儲圖片來源
 const imageSrc = ref(null);
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // 定義一個函數來獲取圖片數據

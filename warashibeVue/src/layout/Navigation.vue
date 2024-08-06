@@ -21,11 +21,11 @@
                     <RouterLink class="nav-link" to="#">商城/二手</RouterLink>
                 </li>
                 <!-- 搜尋列 -->
-                <form class="d-flex search-form d-none d-lg-flex mx-auto" role="search">
-                    <input class="form-control me-1 search-bar" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success search-button" type="submit">
-                    <font-awesome-icon icon="fa-solid fa-search" />
-                    </button>
+                <form class="d-flex search-form d-none d-lg-flex mx-auto" role="search" @submit.prevent="search">
+                    <input v-model="keyword" class="form-control me-1 search-bar" type="search" placeholder="Search" aria-label="Search"></input>
+                    <div @click="search" class="btn btn-outline-success search-button" type="submit">
+                        <font-awesome-icon icon="fa-solid fa-search" />
+                    </div>
                 </form>
                 <!-- 右側功能選單 -->
                 <li class="nav-item d-none d-lg-block">
@@ -75,7 +75,8 @@
     import { useRouter } from 'vue-router'
     import NotificationPop from '@/components/NotificationPop.vue';
     import axiosapi from '@/plugins/axios';
-    
+    import Swal from 'sweetalert2';
+    import emitter from '@/plugins/events';
     const router = useRouter();
     
     // 登入相關
@@ -108,6 +109,40 @@
             router.push(path);
         }
     }
+
+
+    // 搜尋相關
+    const keyword = ref("");
+    async function search() {
+        
+        
+        let requestSearch = {
+            "name": keyword.value,
+            "start": 0,
+            "max": 100,
+            "order": "productName",
+            "dir": false
+        }
+        try {
+            console.log(keyword.value);
+                let response = await axiosapi.post(`/api/products/search`, requestSearch);
+                router.push("/pages/productListPage").then(() => {
+                        emitter.emit("result", response.data.list);
+                });
+        } catch (error) {
+                console.log("Error search", error);
+                Swal.fire({
+                        icon: "error",
+                        text: "Error search: " + error.message,
+                        allowOutsideClick: false,
+                });
+        }
+        
+
+
+    }
+
+
     </script>
     
     <style scoped>

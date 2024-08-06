@@ -36,7 +36,9 @@ import ProductList from '@/components/ProductList.vue';
 import axiosapi from '@/plugins/axios.js';
 import swal from 'sweetalert2';
 import { ref, onMounted,  onUnmounted} from 'vue';
+import { nextTick } from 'vue';
 import emitter from '@/plugins/events';
+import { timers } from 'jquery';
 
 const products = ref([]);
 const showPopular = ref(false); // 狀態變量用於切換顯示的產品列表
@@ -48,17 +50,24 @@ const rows = ref(30)
 const showDir = ref(false)
 const lastPageRows = ref(0)
 const findName = ref(""); //模糊查詢搜尋字串
+const receivedEvent = ref(false); // 增加的狀態變量
 
+onMounted(async() => {
+    emitter.on('result', receiveMessage);
+    await nextTick();
+    if (!receivedEvent.value) {
+        callSearch();
+    }
+});
 const receiveMessage = (msg) => {
+    console.log("收到的訊息",msg);
     products.value = msg;
+    receivedEvent.value = true; // 接收到事件时设置为 true
+
 };
 
-onMounted(function () {
-    callSearch();
-    emitter.on('sub', receiveMessage);
-});
 onUnmounted(() => {
-    emitter.off('sub', receiveMessage);
+    emitter.off('result', receiveMessage);
 });
 
 
