@@ -20,6 +20,15 @@
                 <ProductList v-if="!showPopular" v-for="item in products" :key="item.productID" :item="item"></ProductList>
                 <ProductList v-if="showPopular" v-for="item in products" :key="item.productID" :item="item"></ProductList>
             </div>
+            <div>
+                <Paginate :first-last-button="true" first-button-text="&lt;&lt;" last-button-text="&gt;&gt;"
+                prev-text="&lt;" next-text="&gt;"
+                :page-count="pages"
+                :initial-page="current"
+                v-model = "current"
+                :click-handler="callSearch(1)">
+            </Paginate>
+            </div>
         </div>
     </div>
 
@@ -38,7 +47,7 @@ import swal from 'sweetalert2';
 import { ref, onMounted,  onUnmounted} from 'vue';
 import { nextTick } from 'vue';
 import emitter from '@/plugins/events';
-import { timers } from 'jquery';
+import Paginate from 'vuejs-paginate-next';
 
 const products = ref([]);
 const showPopular = ref(false); // 狀態變量用於切換顯示的產品列表
@@ -46,7 +55,7 @@ const total = ref(0)
 const current = ref(1)
 const pages = ref(0)
 const start = ref(0)
-const rows = ref(30)
+const rows = ref(10)
 const showDir = ref(false)
 const lastPageRows = ref(0)
 const findName = ref(""); //模糊查詢搜尋字串
@@ -101,6 +110,7 @@ function sortProducts(event) {
 
 
 function callSearch(page) {
+    
     if (findName.value === "") {
         findName.value = null;
     }

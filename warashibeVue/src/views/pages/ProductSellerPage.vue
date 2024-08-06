@@ -47,7 +47,6 @@ const SellerProducts = ref([]);
 const seller = ref([]);
 const productTotal = ref(0);
 const averageRanking = ref(0);
-const profileImg = ref(null);
 const profileImgUrl = ref(null);
 
 onMounted(function () {
@@ -73,7 +72,7 @@ async function callProduct(sellerID) {
             getSellerInfo(products[0].member);
             getSellerProductsRank(products[0].member);
             for (let product of products) {
-                product.isEditing = false; // 默认不可编辑
+                product.isEditing = false; // 預設不可編輯
                 if (product.productImgs.length > 0) {
                     const imgID = product.productImgs[0];
                     product.imageUrl = fetchProductImage(imgID);

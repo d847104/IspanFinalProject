@@ -33,14 +33,22 @@ public class FavoriteController {
 	
 	// 查詢單筆是否已收藏
 	@GetMapping("/favorite/match")
-	public boolean findById(@RequestBody String body) throws JsonProcessingException {
+	public String findById(@RequestBody String body) throws JsonProcessingException {
+		JSONObject responseBody = new JSONObject();
         JSONObject obj = new JSONObject(body);
         FavoriteID favId = obj.isNull("memberID") || obj.isNull("productID") ? 
         		null : new FavoriteID(obj.getInt("memberID"),obj.getInt("productID")); 
         if(favId != null) {
-        	return favoriteService.exists(favId);
+        	if(favoriteService.exists(favId)) {
+        		responseBody.put("match", true);
+        		responseBody.put("message", "已收藏過");
+        	}else {
+        		responseBody.put("match", false);
+        		responseBody.put("message", "尚未收藏");
+        	}
+        	return responseBody.toString();
         }
-        return false;
+        return null;
 	}
 	
 	// 查詢全部

@@ -15,17 +15,17 @@
         </div>
         <h2 class="lh-lg">熱門商品</h2>
         <div class="row">
-            <compCard v-for="product in productsPopular" :key="product.productID" :product="product"></compCard>
+            <compCard v-for="product in productsPopular" :key="product.productID" :product="product" @add-cart="addCart"></compCard>
         </div>
         <br>
         <h2 class="lh-lg">隨機精選</h2>
         <div class="row">
-            <compCard v-for="product in productsRandom" :key="product.productID" :product="product"></compCard>
+            <compCard v-for="product in productsRandom" :key="product.productID" :product="product" @add-cart="addCart"></compCard>
         </div>
         <br>
         <h2 class="lh-lg">物換心儀</h2>
         <div class="row">
-            <compCard v-for="product in productsSecHand" :key="product.productID" :product="product"></compCard>
+            <compCard v-for="product in productsSecHand" :key="product.productID" :product="product" @add-cart="addCart"></compCard>
         </div>
     </div>
 </template>
@@ -36,6 +36,7 @@
         import callPopular from '@/plugins/products/product_popular.js';
         import callSecondHand from '@/plugins/products/product_secondhand.js';
         import callRandom from '@/plugins/products/product_random';
+        import addCartApi from '@/plugins/cart_add';
 
         const productsPopular = ref([]);
         const startPopular = ref(0);
@@ -66,13 +67,20 @@
             callRandom(productsRandom, startRandom, rowsRandom, currentPageRandom, totalPagesRandom, totalRandom, lastPageRowsRandom);
             callSecondHand(productsSecHand, startSecHand, rowsSecHand, currentPageSecHand, totalPagesSecHand, totalSecHand, lastPageRowsSecHand);
         })
+
+        // 這邊先 Hard Code 會員ID, 待加入登入功能後應實際從 httpSession 取得
+        const memberId = 4;
+
+        function addCart(productId,sellerId,specOne,specTwo,quantity){
+            addCartApi(memberId,productId,sellerId,specOne,specTwo,quantity);
+        }
 </script>
 
 <style scoped>
     .carousel {
-        width: 80vw;
-        /* 設定輪播寬度為螢幕寬度的80% */
-        height: 50vh;
+        width: 90%;
+        /* 設定輪播寬度為容器的90% */
+        height: 40vh;
         /* 設定輪播高度為螢幕高度的50% */
         margin: auto;
         /* 使輪播居中 */

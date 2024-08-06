@@ -5,14 +5,12 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ispan.warashibe.model.Cart;
 import com.ispan.warashibe.repository.CartRepository;
 
 @Service
-@Transactional
 public class CartService {
 	@Autowired
 	private ObjectMapper objMapper;
@@ -30,17 +28,35 @@ public class CartService {
 				List<Cart> listSameMember = cartRepo.findByMemberId(item.getMember().getMemberID());
 				if(!listSameMember.isEmpty()) {	// 存在同會員Cart資料
 					for(Cart itemSameMember:listSameMember) {	// 若同會員Cart資料存在同產品及規格,視為修改原DB資料的數量
-						if(item.getProductSpec()!=null && itemSameMember.getProductSpec()!=null) {
-							if(item.getProductSpec().getSpecID() == itemSameMember.getProductSpec().getSpecID()) {
+						Integer itemSpecOne = item.getSpecOne()!=null ? item.getSpecOne().getSpecOneID() : null;
+						Integer itemSpecOneSM = itemSameMember.getSpecOne()!=null ? itemSameMember.getSpecOne().getSpecOneID() : null;
+						Integer itemSpecTwo = item.getSpecTwo()!=null ? item.getSpecTwo().getSpecTwoID() : null;
+						Integer itemSpecTwoSM = itemSameMember.getSpecTwo()!=null ? itemSameMember.getSpecTwo().getSpecTwoID() : null;
+						Integer itemProduct = item.getProduct()!=null ? item.getProduct().getProductID() : null;
+						Integer itemProductSM = itemSameMember.getProduct()!=null? itemSameMember.getProduct().getProductID() : null;
+						if(itemSpecOne!=null && itemSpecOneSM!=null	// 產品ID,規格一,規格二都相同
+								&& itemSpecTwo!=null && itemSpecTwoSM!=null) {
+							if(itemSpecOne == itemSpecOneSM 
+									&& itemSpecTwo == itemSpecTwoSM
+									&& itemProduct == itemProductSM) {
 								item.setCartID(itemSameMember.getCartID());
 								item.setQuantity(item.getQuantity() + itemSameMember.getQuantity());
 							}
 						}
-						if(itemSameMember.getProduct().getProductID() == item.getProduct().getProductID()
-								&& item.getProductSpec() == null 
-								&& itemSameMember.getProductSpec() == null) {	// 有(無規格的)同產品ID
-							item.setCartID(itemSameMember.getCartID());
-							item.setQuantity(item.getQuantity() + itemSameMember.getQuantity());
+						if(itemSpecOne!=null && itemSpecOneSM!=null	// 沒有規格二且產品ID,規格一相同
+								&& itemSpecTwo == null && itemSpecTwoSM == null) {
+							if(itemSpecOne == itemSpecOneSM 
+									&& itemProduct == itemProductSM) {
+								item.setCartID(itemSameMember.getCartID());
+								item.setQuantity(item.getQuantity() + itemSameMember.getQuantity());
+							}
+						}
+						if(itemSpecOne == null && itemSpecOneSM == null	// 沒有規格一,規格二但產品ID相同
+								&& itemSpecTwo == null && itemSpecTwoSM == null) {
+							if(itemProduct == itemProductSM) {
+								item.setCartID(itemSameMember.getCartID());
+								item.setQuantity(item.getQuantity() + itemSameMember.getQuantity());
+							}
 						}
 					}
 				} return cartRepo.save(item);

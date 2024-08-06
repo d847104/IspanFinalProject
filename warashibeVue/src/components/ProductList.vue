@@ -30,17 +30,15 @@
                                         <div class="col-xl-6 col-md-5 col-sm-7">
                                             <h5>{{ item.productName }}</h5>
                                             <div class="d-flex flex-row">
-                                                <!-- <div class="text-warning mb-1 me-2">
+                                                <div class="text-warning mb-1 me-2">
+                                                    <!-- <font-awesome-icon icon="fa fa-star"></font-awesome-icon>
                                                     <font-awesome-icon icon="fa fa-star"></font-awesome-icon>
                                                     <font-awesome-icon icon="fa fa-star"></font-awesome-icon>
                                                     <font-awesome-icon icon="fa fa-star"></font-awesome-icon>
-                                                    <font-awesome-icon icon="fa fa-star"></font-awesome-icon>
-                                                    <font-awesome-icon icon="fas fa-star-half-alt"></font-awesome-icon>
-                                                    <span class="ms-1">
-                                                        4.5
-                                                    </span>
-                                                </div> -->
-                                                <span class="text-muted">數量{{ item.stock }}</span>
+                                                    <font-awesome-icon icon="fas fa-star-half-alt"></font-awesome-icon> -->
+                                                    <span class="ms-1">評價：{{ productRank }}</span>
+                                                </div> 
+                                                <span class="text-muted">數量：{{ item.stock }}</span>
                                             </div>
                                             <p class="text mb-4 mb-md-0">
                                                 {{ item.description }}
@@ -76,11 +74,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axiosapi from '@/plugins/axios.js';
-const props = defineProps(["item"])
+const props = defineProps(["item"]);
 const photoPath = import.meta.env.VITE_API_PHOTO;
 // 定義一個 ref 來存儲圖片來源
 const imageSrc = ref(null);
-
+const productRank = ref(0);
 
 // 定義一個函數來獲取圖片數據
 const fetchImage = async () => {
@@ -105,7 +103,35 @@ const fetchImage = async () => {
 // 當組件掛載時調用 fetchImage 函數
 onMounted(() => {
     fetchImage();
+    getProductsRank();
 });
+
+
+
+
+async function getProductsRank() {
+    try {
+        const response = await axiosapi.get(`/api/ranks/product/${props.item.productID}`);
+        const rankingList = Array.isArray(response.data.list) ? response.data.list : [];
+        if (rankingList.length > 0) {
+            // 提取 ranking 數值並計算總和
+            const totalRanking = rankingList.reduce((sum, item) => sum + item.ranking, 0);
+            // 計算平均值
+            productRank.value = totalRanking / rankingList.length;
+        } else {
+            productRank.value = 0; // 如果沒有資料，設置平均值為 0 或其他適當值
+        }
+    } catch (error) {
+        console.error('Error getting products rank:', error);
+        productRank.value = 0; // 在錯誤情況下，設置平均值為 0 或其他適當值
+    }
+}
+
+
+
+
+
+
 
 
 </script>

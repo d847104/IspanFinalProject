@@ -12,7 +12,7 @@
                 <div v-for="seller in sellerList">
                         <h3>賣家 {{ seller.username }}</h3>
                         <template v-for="cart in cartList">
-                                <compCartList v-if="cart.seller.memberID === seller.memberID" :key="cart.cardID" :cart="cart" @update-cart="updateCart">
+                                <compCartList v-if="cart.seller.memberID === seller.memberID" :key="cart.cartID" :cart="cart" @update-cart="updateCart" @remove-cart="removeCart">
                                 </compCartList>
                         </template>
                 </div>
@@ -34,8 +34,9 @@
                 cartList.value = callCart(memberId);
         })
 
+        // 依會員 ID 呼叫購物車清單
         function callCart(memberId){
-                axiosapi.get("/private/pages/cart/member/"+memberId)
+                axiosapi.get("/api/cart/member/"+memberId)
                 .then(function(response){
                         cartList.value =  response.data.list;
                         let arr = new Array();
@@ -60,9 +61,63 @@
                 })
 
         }
+        
+        // 監聽子元件 compCartList.vue 修改購物車 TABLE
+        function updateCart(cart) {
+                let request = {
+                        "cartID": cart.cartID,
+                        "member": cart.member,
+                        "product": cart.product.productID,
+                        "seller": cart.seller.memberID,
+                        "quantity": cart.quantity,
+                        "specOne": cart.specOne!=null ? cart.specOne.specOneID : null,
+                        "specTwo": cart.specTwo!=null ? cart.specTwo.specTwoID : null
+                }
+                axiosapi.put("/api/cart/modify",request)
+                .then(function(result){
+                        if(result.data.success){
+                                console.log("購物車修改成功");
+                        }else{
+                                Swal.fire({
+                                        icon: "error",
+                                        text: "錯誤"+error.message,
+                                        allowOutsideClick: false,
+                                })
+                        }
+                })
+                .catch(function(error){
+                        console.log("error",error)
+                        Swal.fire({
+                                icon: "error",
+                                text: "錯誤"+error.message,
+                                allowOutsideClick: false,
+                        })
+                })
+        }
 
-        function updateCart(memberId) {
-                cartList.value = callCart(memberId);
+        // 監聽子元件 compCartList.vue 刪除購物車 TABLE 資料一筆
+        function removeCart(cartId){
+                axiosapi.delete("/api/cart/delete/"+cartId)
+                .then(function(result){
+                        if(result.data.success){
+                                console.log("購物車商品移除成功");
+                                callCart(memberId)
+                        }else{
+                                Swal.fire({
+                                        icon: "error",
+                                        text: "錯誤"+error.message,
+                                        allowOutsideClick: false,
+                                })
+                        }
+                })
+                .catch(function(error){
+                        console.log("error",error)
+                        Swal.fire({
+                                icon: "error",
+                                text: "錯誤"+error.message,
+                                allowOutsideClick: false,
+                        })
+                })
         }
 </script>
 

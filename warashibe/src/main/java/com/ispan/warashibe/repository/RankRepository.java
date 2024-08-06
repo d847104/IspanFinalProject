@@ -13,4 +13,5 @@ import com.ispan.warashibe.model.Rank;
 public interface RankRepository extends JpaRepository<Rank, Integer> {
     List<Rank> findByRanking(Integer ranking, Pageable pageable);
     List<Rank> findByMember_MemberID(Integer memberID);
+    List<Rank> findByProduct_ProductID(Integer memberID);
 }

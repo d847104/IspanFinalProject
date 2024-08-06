@@ -1,5 +1,5 @@
 <template>
-  <div class="background">
+  <div class="background container p-4">
     <Navigation></Navigation>
     <categoryBar></categoryBar>
     <RouterView></RouterView>
@@ -15,9 +15,9 @@
     import 'flatpickr/dist/flatpickr.css'
     import { RouterView } from 'vue-router';
     import { provide, ref, onMounted } from 'vue';
-    import Navigation from './layout/Navigation.vue'
+    import Navigation from '@/layout/Navigation.vue'
     import categoryBar from '@/layout/categoryBar.vue';
-    import axiosapi from './plugins/axios';
+    import axiosapi from '@/plugins/axios';
 
     const user = ref(null);
 
@@ -54,16 +54,10 @@
 </script>
 
 <style>
-.background {
-  background-image: url('');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed; /* 背景圖固定，滾動時不移動 */
-  width: 100%;
-  height: 100%;
-  min-height: 100vh; /* 確保背景圖佔滿整個可視區域 */
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+body {
+  background: url('/src/img/bg01.jpg') no-repeat fixed;
+}
+.background{
+  background-color: rgba(255, 255, 255, 0.6);
 }
 </style>
