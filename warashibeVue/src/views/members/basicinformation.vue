@@ -69,12 +69,9 @@
                                 'btn-outline-secondary': selectedMember.gender !== 'female'
                             }" disabled>女</button>
                             <button type="button" class="btn mx-2" :class="{
-                                'btn-secondary': !selectedMember.gender || selectedMember.gender === '',
-                                'btn-outline-secondary': selectedMember.gender && selectedMember.gender !== ''
+                                'btn-secondary': !selectedMember.gender || selectedMember.gender === 'other',
+                                'btn-outline-secondary': selectedMember.gender && selectedMember.gender !== 'other'
                             }" disabled>不願透露</button>
-                            <!-- <button type="button" class="col-sm-1 btn btn-outline-secondary"
-                                :class="isEditing.gender ? 'btn-outline-secondary' : 'btn-outline-secondary'"
-                                @click="toggleEdit('gender')"><font-awesome-icon icon="fa-solid fa-pencil" /></button> -->
                         </div>
                     </div>
                     <!-- gender判斷END -->
@@ -103,23 +100,27 @@
 
             <div class="col-md-4 ">
                 <div class="card" style="width: 18rem;">
-                    <img :src="selectedMember.profileImg || '/src/img/預設圖片.jpg'" class="card-img-top" alt="...">
+                    <img :src="getProfileImgUrl" class="card-img-top" alt="Profile Image">
                     <div class="card-body">
                         <h5 class="card-title">{{ selectedMember.username }}</h5>
                         <p class="card-text">帳號：{{ selectedMember.account }}</p>
                         <a href="#" class="btn btn-secondary float-end"><font-awesome-icon
-                                icon="fa-solid fa-repeat" /></a>
+                            icon="fa-solid fa-repeat" /></a>
+                        <!-- <a href="#" class="btn btn-secondary float-end" @click.prevent="toggleFileInput">
+                            <font-awesome-icon icon="fa-solid fa-repeat" /> -->
+                        <!-- </a> -->
                     </div>
                 </div>
             </div>
 
+   
 
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import Swal from 'sweetalert2';
 import axiosapi from '@/plugins/axios';
 
@@ -156,6 +157,13 @@ function findByMemberID(memberID) {
         });
     });
 }
+
+// 計算屬性，動態獲取圖片 BASE64 URL
+const getProfileImgUrl = computed(() => {
+    return selectedMember.value && selectedMember.value.profileImg
+        ? `data:image/png;base64,${selectedMember.value.profileImg}` // 假設 BASE64 編碼的圖片是 PNG 格式
+        : '../src/img/海綿寶.png'; // 如果沒有圖片，顯示預設圖片
+});
 
 function toggleEdit(field) {
     isEditing.value[field] = !isEditing.value[field]; // 切換編輯狀態
@@ -208,7 +216,6 @@ function saveChanges() {
         });
     });
 }
-
 
 </script>
 

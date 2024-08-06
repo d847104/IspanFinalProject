@@ -134,8 +134,7 @@
         <div class="order-details-container">
             <h5>訂單明細</h5>
             <pre> {{ orderTooltipContent[currentOrderID] }}</pre>
-
-            <button @click="closeOrderDetailsModal" class="btn btn-outline-secondary btn-sm d-block">關閉</button>
+            <button @click="closeOrderDetailsModal" class="btn btn-outline-secondary btn-sm d-block close-button">關閉</button>
         </div>
     </div>
 
@@ -613,9 +612,19 @@ button {
 }
 
 .order-details-container {
+    position: relative; /* 關閉鈕定位 */
     background-color: white;
     padding: 20px;
     border-radius: 8px;
-    text-align: center;
+    text-align: left;
 }
+.close-button {
+    position: absolute; /* 絕對定位 */
+    bottom: 10px; /* 距離容器底部 10 像素 */
+    right: 10px; /* 距離容器右邊 10 像素 */
+    border: none; /* 移除預設邊框 */
+    background: transparent; /* 背景透明 */
+    cursor: pointer; /* 鼠標懸停時顯示手型 */
+}
+
 </style>

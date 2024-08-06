@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.ispan.warashibe.model.Products;
 import com.ispan.warashibe.model.Rank;
 import com.ispan.warashibe.repository.RankRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -57,4 +58,9 @@ public class RankService {
     public List<Rank> searchRanksByRanking(Integer ranking, Pageable pageable) {
         return rankRepository.findByRanking(ranking, pageable);
     }
+    
+    public List<Rank> getRanksByMemberID(Integer memberID) {
+        return rankRepository.findByMember_MemberID(memberID);
+    }
+    
 }

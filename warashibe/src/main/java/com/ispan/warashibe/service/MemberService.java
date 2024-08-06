@@ -1,5 +1,9 @@
 package com.ispan.warashibe.service;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,10 +13,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ispan.warashibe.model.Members;
 import com.ispan.warashibe.repository.MembersRepository;
 import com.ispan.warashibe.util.DatetimeConverter;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class MemberService {
@@ -45,6 +52,26 @@ public class MemberService {
 		return membersRepo.findAll();
 	}
 	
+	private byte[] img = null;
+	@PostConstruct
+	public void initialize() throws IOException {
+		byte[] buffer = new byte[8192];
+		ClassLoader classLoader = getClass().getClassLoader();
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		BufferedInputStream is = new BufferedInputStream(
+				classLoader.getResourceAsStream("static/images/default-person.png"));
+		int len = is.read(buffer);
+		while (len != -1) {
+			os.write(buffer, 0, len);
+			len = is.read(buffer);
+		}
+		is.close();
+		this.img = os.toByteArray();
+	}
+	
+	
+	
+	
 	//新增單筆(註冊)
 	public Members insert(String json) {
 		JSONObject obj = new JSONObject(json);
@@ -55,7 +82,8 @@ public class MemberService {
 		String username = obj.isNull("username") ? null : obj.getString("username");
 		String mobile = obj.isNull("mobile") ? null : obj.getString("mobile");
 		String gender = obj.isNull("gender") ? null : obj.getString("gender");
-		String profileImg = obj.isNull("profileImg") ? "./images/default-person.png" : obj.getString("profileImg");
+		byte[] profileImg = obj.isNull("profileImg") ? 
+			    img : obj.getString("profileImg").getBytes();
 		String intro = obj.isNull("intro") ? null : obj.getString("intro");
 //		String createTime = obj.isNull("createTime") ? null : obj.getString("createTime");
 //		String lastLogin = obj.isNull("lastLogin") ? null : obj.getString("lastLogin");
@@ -69,7 +97,7 @@ public class MemberService {
 			newMember.setUsername(username);
 			newMember.setMobile(mobile);
 			newMember.setGender(gender);
-			newMember.setProfileImg(profileImg.getBytes());
+			newMember.setProfileImg(profileImg);
 			newMember.setIntro(intro);
 //			newMember.setCreateTime(null);
 //			newMember.setLastLogin(DatetimeConverter.parse(lastLogin, "yyyy-MM-dd"));
@@ -80,7 +108,7 @@ public class MemberService {
 	} // end of insert
 	
 	// 修改單筆
-	public Members modify(String json) {
+	public Members modify(String json, MultipartFile image) throws IOException {
 		JSONObject obj = new JSONObject(json);
 
 		Integer memberID = obj.isNull("id") ? null : obj.getInt("id");
@@ -91,7 +119,7 @@ public class MemberService {
 		String username = obj.isNull("username") ? optional.get().getUsername() : obj.getString("username");
 		String mobile = obj.isNull("mobile") ? optional.get().getMobile() : obj.getString("mobile");
 		String gender = obj.isNull("gender") ? optional.get().getGender() : obj.getString("gender");
-		String profileImg = obj.isNull("profileImg") ? "./images/default-person.png" : obj.getString("profileImg");
+//		byte[] profileImg = obj.isNull("profileImg") ? img : obj.getString("profileImg").getBytes();
 		String intro = obj.isNull("intro") ? optional.get().getIntro() : obj.getString("intro");
 		String createTime = obj.isNull("createTime") ? optional.get().getCreateTime().toString() : obj.getString("createTime");
 		String lastLogin = obj.isNull("lastLogin") ? optional.get().getLastLogin().toString() : obj.getString("lastLogin");
@@ -104,7 +132,11 @@ public class MemberService {
 			update.setUsername(username);
 			update.setMobile(mobile);
 			update.setGender(gender);
-			update.setProfileImg(profileImg.getBytes());
+			if(image.isEmpty()) {
+				update.setProfileImg(img);
+			}else {
+				update.setProfileImg(image.getBytes());	
+			}
 			update.setIntro(intro);
 			update.setCreateTime(DatetimeConverter.parse(createTime, "yyyy-MM-dd"));
 			update.setLastLogin(DatetimeConverter.parse(lastLogin, "yyyy-MM-dd"));

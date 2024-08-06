@@ -60,6 +60,9 @@
                     <li class="nav-item">
                         <RouterLink class="nav-link" :to="{ path: '/secure/member' }">會員中心</RouterLink>
                     </li>
+                    <li class="nav-item">
+                        <RouterLink class="nav-link" :to="{ name: 'pages-checkout-link' }">結帳</RouterLink>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
@@ -67,8 +70,8 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
                             <li>
-                                <RouterLink class="dropdown-item" :to="{ name: 'members-basicinformation-link' }">會員基本資料
-                                </RouterLink>
+                                <RouterLink class="dropdown-item" to="#"
+                                    @click="checkAuth('/members/basicinformation')">會員基本資料</RouterLink>
                             </li>
                             <li>
                                 <RouterLink class="dropdown-item" to="#" @click="checkAuth('/buyer/buyerorder')">買家訂單
@@ -83,8 +86,8 @@
                                     @click="checkAuth('/seller/sellermanageproduct')">賣家商品管理</RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/add-product')">上架商品
-                                </RouterLink>
+                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/pages/productUploadPage')">
+                                    上架商品</RouterLink>
                             </li>
                         </ul>
                     </li>
@@ -137,14 +140,22 @@ const checkAuth = (path) => {
 
 <style scoped>
 .navbar {
-    position: fixed; /* 固定在視窗中的位置 */
-    top: 0; /* 距離視窗頂部 0 像素 */
-    left: 50px; /* 距離視窗左邊 0 像素 */
-    width: 92.85%; /* 設定寬度跟category一樣*/
-    background-color: #FCFCFC; /* 背景顏色 */
-    font-size: 1.5rem; /* 字體大小 */
-    box-sizing: border-box; /* 確保 padding 不會超出容器 */
-    z-index: 1000; /* 確保在其他內容之上 */
+    position: fixed;
+    /* 固定在視窗中的位置 */
+    top: 0;
+    /* 距離視窗頂部 0 像素 */
+    left: 50px;
+    /* 距離視窗左邊 0 像素 */
+    width: 92.85%;
+    /* 設定寬度跟category一樣*/
+    background-color: #FCFCFC;
+    /* 背景顏色 */
+    font-size: 1.5rem;
+    /* 字體大小 */
+    box-sizing: border-box;
+    /* 確保 padding 不會超出容器 */
+    z-index: 1000;
+    /* 確保在其他內容之上 */
     /* padding: 5px 15px; */
 }
 
