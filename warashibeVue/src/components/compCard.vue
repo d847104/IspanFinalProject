@@ -29,7 +29,7 @@
                                                         <option value="" disabled selected>請選擇{{ filteredSpecTwoName }}</option>
                                                         <option v-for="specTwo in filteredSpecTwos" :key="specTwo.specTwo" :value="specTwo.specTwoID">{{ specTwo.specTwo }}</option>
                                                         </select>
-                                                 </template>
+                                                </template>
                                         </div>
 
                                         <div class="row mt-2">

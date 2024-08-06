@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ispan.warashibe.model.Products;
 import com.ispan.warashibe.model.SubCategory;
 import com.ispan.warashibe.service.CategoryService;
@@ -39,6 +40,9 @@ public class ProductController {
 
     @Autowired
     private CategoryService categoryService;
+    
+    @Autowired
+    private ObjectMapper objMapper;
     
     @PostMapping("/search")
     public String searchProductsByName(@RequestBody String request) throws JSONException, JsonProcessingException, ParseException {
@@ -99,8 +103,8 @@ public class ProductController {
     @GetMapping("/{id}")
     public String getProductById(@PathVariable int id) throws JsonProcessingException, JSONException {
     	Products product = productService.getProductById(id);
-    	String item = JsonUtil.toJson(product);
-        return item;
+//    	String item = JsonUtil.toJson(product);
+        return objMapper.writeValueAsString(product);
     }
 
     @PostMapping
@@ -179,22 +183,16 @@ public class ProductController {
 
     private String createResponse(List<Products> products) throws JSONException, JsonProcessingException, ParseException {
         JSONObject responseBody = new JSONObject();
+        JSONArray arry = new JSONArray();
         responseBody.put("count", products.size());  // 添加產品數量
-        
-        JSONArray productList = new JSONArray();  // 創建 JSON 陣列來存放產品資料
         for (Products product : products) {
-            // 將 Products 對象轉換為 JSON 字符串
-            String item = JsonUtil.toJson(product);
-            // 將 JSON 字符串轉換為 JSONObject
-            JSONObject jsonObject = JsonUtil.toJSONObject(item);
-            productList.put(jsonObject);  // 將產品 JSON 對象添加到陣列中
+        	arry.put(new JSONObject(objMapper.writeValueAsString(product)));
         }
-        
-        responseBody.put("list", productList);  // 將產品陣列添加到主體 JSON 對象中
-        return responseBody.toString()
-        		.replace("\\", "")
-        		.replace("\"[\"", "[")
-        		.replace("}\",\"{", "},{")
-        		.replace("\"]\"", "]"); // 防呆
+        responseBody.put("list", arry);  // 將產品陣列添加到主體 JSON 對象中
+        return responseBody.toString();
+//        		.replace("\\", "")
+//        		.replace("\"[\"", "[")
+//        		.replace("}\",\"{", "},{")
+//        		.replace("\"]\"", "]"); // 防呆
     }
 }

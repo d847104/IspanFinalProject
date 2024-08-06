@@ -15,8 +15,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,7 +41,7 @@ public class SpecOneNames {
 	@JsonIncludeProperties({"specOneID","specOne","specOneQt","specOneImg","specTwoNames"})
 	private List<SpecOnes> specOnes;
 	
-	@OneToOne
+	@ManyToOne
 	@JsonIdentityReference(alwaysAsId = true)
 	@JoinColumn(name = "productID", nullable = false)
 	private Products product;
