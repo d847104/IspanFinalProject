@@ -1,5 +1,4 @@
 <template>
-    <!-- 會員照及照片修改未完成 -->
     <br><br><br><br><br>
     <div v-if="selectedMember" class="container">
         <h3 style="color:#ECFFFF;">會員基本資料</h3>
@@ -98,22 +97,31 @@
                 </div>
             </div>
 
-            <div class="col-md-4 ">
+            <div class="col-md-4">
                 <div class="card" style="width: 18rem;">
                     <img :src="getProfileImgUrl" class="card-img-top" alt="Profile Image">
                     <div class="card-body">
                         <h5 class="card-title">{{ selectedMember.username }}</h5>
                         <p class="card-text">帳號：{{ selectedMember.account }}</p>
-                        <a href="#" class="btn btn-secondary float-end"><font-awesome-icon
-                            icon="fa-solid fa-repeat" /></a>
-                        <!-- <a href="#" class="btn btn-secondary float-end" @click.prevent="toggleFileInput">
-                            <font-awesome-icon icon="fa-solid fa-repeat" /> -->
-                        <!-- </a> -->
+                        <!-- <a href="#" class="btn btn-secondary float-end"><font-awesome-icon
+                                icon="fa-solid fa-repeat" /></a> -->
+                        <a href="#" class="btn btn-secondary float-end" @click="showFileInput = true">
+                            <font-awesome-icon icon="fa-solid fa-repeat" />
+                        </a>
                     </div>
+                </div>
+                <br>
+                <!-- <div class="col-md-10">
+                    <label for="formFile" class="form-label" style="color:#ECFFFF;">請選擇圖片</label>
+                    <input class="form-control" type="file" id="formFile">
+                </div> -->
+                <div v-if="showFileInput" class="col-md-10">
+                    <label for="formFile" class="form-label" style="color:#ECFFFF;">請選擇圖片</label>
+                    <input class="form-control" type="file" id="formFile" @change="onFileChange">
                 </div>
             </div>
 
-   
+
 
         </div>
     </div>
@@ -130,7 +138,7 @@ const memberID = ref(sessionStorage.getItem("memberID"));
 const selectedMember = ref(null);
 const isEditing = ref({ username: false, account: false, mobile: false }); // 編輯狀態
 const originalMemberData = ref({});
-
+const showFileInput = ref(false);
 
 onMounted(() => {
     findByMemberID(memberID.value);
@@ -216,6 +224,63 @@ function saveChanges() {
         });
     });
 }
+
+const onFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('image', file); // 添加圖片文件
+    formData.append('body', JSON.stringify({ id: selectedMember.value.id })); // 添加 body 參數
+
+    try {
+        const response = await axiosapi.put(`/ajax/members/update/${selectedMember.value.id}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+
+        if (response.data.success) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                // 設定 Base64 編碼圖片，去掉前綴的 data:image/png;base64,
+                selectedMember.value.profileImg = reader.result.split(',')[1];
+                Swal.fire({
+                    icon: 'success',
+                    text: '修改成功'
+                }).then(() => {
+                    showFileInput.value = false;
+                });
+            };
+            reader.readAsDataURL(file);
+        } else {
+            Swal.fire({
+                icon: 'error',
+                text: `修改失敗: ${response.data.message}`
+            });
+        }
+    } catch (error) {
+        // 詳細的錯誤處理
+        if (error.response) {
+            Swal.fire({
+                icon: 'error',
+                text: `上傳過程中發生錯誤: ${error.response.data.message || error.response.statusText}`
+            });
+        } else if (error.request) {
+            Swal.fire({
+                icon: 'error',
+                text: '上傳過程中發生錯誤: 未收到服務器響應'
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                text: `上傳過程中發生錯誤: ${error.message}`
+            });
+        }
+    }
+};
+
+
 
 </script>
 
