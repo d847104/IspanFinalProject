@@ -38,7 +38,7 @@ public class SpecTwoNames {
 	private String specTwoName;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "specTwoName")
-	@JsonIncludeProperties({"specTwo","specTwoQt","specTwoImg"})
+	@JsonIncludeProperties({"specTwoID","specTwo","specTwoQt","specTwoImg"})
 	private List<SpecTwos> specTwos;
 	
 	@ManyToOne

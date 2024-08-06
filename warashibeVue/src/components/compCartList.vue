@@ -13,19 +13,19 @@
                                         <h4 class="card-title">{{ cart.product.productName }}</h4>
                                         <p class="card-text text-end fs-4">
                                                 <!-- 商品規格(若存在) -->
-                                                <template v-if="cart.productSpec">
+                                                <template v-if="cart.specOne">
                                                         <!-- 商品規格一 -->
-                                                        <div class="row mt-2" v-if="cart.productSpec.specOneName">
-                                                                <span class="col">{{ cart.productSpec.specOneName }}</span>
+                                                        <div class="row mt-2" v-if="cart.specOne">
+                                                                <span class="col">{{ cart.specOne.specOneName.specOneName }}</span>
                                                                 <div class="input-group col justify-content-center">
-                                                                        {{ cart.productSpec.specOne }}
+                                                                        {{ cart.specOne.specOne }}
                                                                 </div>
                                                         </div>
                                                         <!-- 商品規格二 -->
-                                                        <div class="row mt-2" v-if="cart.productSpec.specTwoName">
-                                                                <span class="col"> {{ cart.productSpec.specTwoName }}</span>
+                                                        <div class="row mt-2" v-if="cart.specTwo">
+                                                                <span class="col"> {{ cart.specTwo.specTwoName.specTwoName }}</span>
                                                                 <div class="input-group col justify-content-center">
-                                                                        {{ cart.productSpec.specTwo }}
+                                                                        {{ cart.specTwo.specTwo }}
                                                                 </div>
                                                         </div>
                                                 </template>
@@ -101,8 +101,19 @@
                 }
         })
 
+        // 計算該規格的產品庫存量
+        const stock = computed(() => {
+                if (props.cart.specTwo) {
+                        return props.cart.specTwo.specTwoQt;
+                } else if (props.cart.specOne){
+                        return props.cart.specOne.specOneQt;
+                } else {
+                        return props.cart.product.stock;
+                }
+        })
+
         // 預設 Bootstrap tooltip 商品庫存訊息
-        const alert = `該產品庫存剩餘${props.cart.product.stock}件`;
+        const alert = ref(`該產品庫存剩餘${stock.value}件`);
 
         // 使用 ref 綁定數量 INPUT DOM 物件
         const quantityDOM = ref(null);
@@ -126,8 +137,8 @@
                 if(!Number.isInteger(cartQt) || cartQt <1){
                         quantity.value = focusQt;
                         return;
-                }else if(cartQt > props.cart.product.stock){
-                        quantity.value = props.cart.product.stock;
+                }else if(cartQt > stock.value){
+                        quantity.value = stock.value;
                         exceed.value = true;
                         Tooltip.getInstance(quantityDOM.value).show();
                         setTimeout(()=>Tooltip.getInstance(quantityDOM.value).hide(),1200);
@@ -141,11 +152,11 @@
         function addOne(){
                 exceed.value = false;
                 let cartQt = parseInt(quantity.value);
-                if(cartQt < props.cart.product.stock){
+                if(cartQt < stock.value){
                         cartQt++
                         quantity.value = cartQt;
                 }else{
-                        quantity.value = props.cart.product.stock;
+                        quantity.value = stock.value;
                         exceed.value = true;
                         Tooltip.getInstance(quantityDOM.value).show();
                         setTimeout(()=>Tooltip.getInstance(quantityDOM.value).hide(),1200);

@@ -47,12 +47,12 @@ public class SpecOnes {
 	private SpecImg specOneImg;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "specOne")
-	@JsonIncludeProperties({"specTwoName","specTwos"})
+	@JsonIncludeProperties({"specTwoNameID","specTwoName","specTwos"})
 	private List<SpecTwoNames> specTwoNames;
 	
 	@ManyToOne
-	@JsonIdentityReference(alwaysAsId = true)
 	@JoinColumn(name = "specOneNameID", nullable = false)
+	@JsonIncludeProperties({"specOneName","specOneNameID"})
 	private SpecOneNames specOneName;
 	
 	@JsonProperty("specOneName")
@@ -66,4 +66,8 @@ public class SpecOnes {
 		this.specOneImg = new SpecImg();
 		this.specOneImg.setSpecImgID(specOneImgId);
 	}
+	
+	@OneToMany(mappedBy = "specOne")
+	@JsonIdentityReference(alwaysAsId = true)
+	private List<Cart> cart;
 }

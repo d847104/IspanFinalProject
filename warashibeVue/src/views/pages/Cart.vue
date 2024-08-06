@@ -36,7 +36,7 @@
 
         // 依會員 ID 呼叫購物車清單
         function callCart(memberId){
-                axiosapi.get("/private/pages/cart/member/"+memberId)
+                axiosapi.get("/api/cart/member/"+memberId)
                 .then(function(response){
                         cartList.value =  response.data.list;
                         let arr = new Array();
@@ -68,11 +68,12 @@
                         "cartID": cart.cartID,
                         "member": cart.member,
                         "product": cart.product.productID,
-                        "productSpec": cart.productSpec!=null ? cart.productSpec.specID : null,
                         "seller": cart.seller.memberID,
-                        "quantity": cart.quantity
+                        "quantity": cart.quantity,
+                        "specOne": cart.specOne!=null ? cart.specOne.specOneID : null,
+                        "specTwo": cart.specTwo!=null ? cart.specTwo.specTwoID : null
                 }
-                axiosapi.put("/private/pages/cart/modify",request)
+                axiosapi.put("/api/cart/modify",request)
                 .then(function(result){
                         if(result.data.success){
                                 console.log("購物車修改成功");
@@ -96,7 +97,7 @@
 
         // 監聽子元件 compCartList.vue 刪除購物車 TABLE 資料一筆
         function removeCart(cartId){
-                axiosapi.delete("/private/pages/cart/delete/"+cartId)
+                axiosapi.delete("/api/cart/delete/"+cartId)
                 .then(function(result){
                         if(result.data.success){
                                 console.log("購物車商品移除成功");

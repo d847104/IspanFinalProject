@@ -1,16 +1,17 @@
 import axiosapi from "@/plugins/axios.js";
 import Swal from "sweetalert2";
 
-function addCart(memberId,productId,productSpecId,sellerId,quantity){
+function addCartApi(memberId,productId,sellerId,specOne,specTwo,quantity){
         let request = {
                 "member": memberId,
                 "product": productId,
-                "productSpec": productSpecId,
                 "seller": sellerId,
+                "specOne": specOne,
+                "specTwo": specTwo,
                 "quantity": quantity
         }
 
-        axiosapi.put("/private/pages/cart/create",request)
+        axiosapi.post("/api/cart/create",request)
         .then(function(result){
                 if(result.data.success){
                         console.log("購物車新增成功")
@@ -33,4 +34,4 @@ function addCart(memberId,productId,productSpecId,sellerId,quantity){
 
 }
 
-export default addCart;
+export default addCartApi;

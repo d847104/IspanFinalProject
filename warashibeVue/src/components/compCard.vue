@@ -19,13 +19,13 @@
                                         <!-- 規格(若存在) -->
                                         <div class="row" v-if="product.specs">
                                                 <!-- 規格一 -->
-                                                <select class="form-select" v-model="selectedSpecOne" @change="specOneChange">
+                                                <select class="form-select" v-model="selectedSpecOne" @change="specOneChange" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="manual" :title="alartSpec" ref="specDOM">
                                                         <option value="" disabled selected>請選擇{{ product.specs.specOneName }}</option>
                                                         <option v-for="specOne in product.specs.specOnes" :key="specOne.specOneID" :value="specOne.specOneID">{{ specOne.specOne }}</option>
                                                 </select>
                                                 <!-- 規格二(若存在) -->
                                                  <template v-if="filteredSpecTwos.length">
-                                                        <select class="form-select" v-model="selectedSpecTwo">
+                                                        <select class="form-select" v-model="selectedSpecTwo" @change="specTwoChange">
                                                         <option value="" disabled selected>請選擇{{ filteredSpecTwoName }}</option>
                                                         <option v-for="specTwo in filteredSpecTwos" :key="specTwo.specTwo" :value="specTwo.specTwoID">{{ specTwo.specTwo }}</option>
                                                         </select>
@@ -34,8 +34,11 @@
 
                                         <div class="row mt-2">
                                                 <!-- 加入購物車 -->
-                                                <div class="col-2">
-                                                        <a href="#"><font-awesome-icon :icon="['fas', 'cart-plus']" size="2x" pull="left" /></a>
+                                                <div class="col-3">
+                                                        <button type="button" class="btn btn-link btn-sm" @click="addCart">
+                                                                <font-awesome-icon :icon="['fas', 'cart-plus']" size="2x" pull="left" />
+                                                        </button>
+                                                        <a href="#"></a>
                                                 </div>
                                                 
                                                 <!-- 數量按鈕群組 -->
@@ -46,7 +49,7 @@
                                                         </button>
                 
                                                         <!-- 數量 -->
-                                                        <input type="text" class="form-control text-center" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="manual" :title="alert" ref="quantityDOM" v-model="quantity" @change="checkQt" @focus="focus">
+                                                        <input type="text" class="form-control text-center" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="manual" :title="alertQt" ref="quantityDOM" v-model="quantity" @change="checkQt" @focus="focus">
                                                         
                                                         <!-- 數量增加按鈕 -->
                                                         <button class="btn btn-outline-secondary" type="button" @click="addOne" :disabled="exceed">
@@ -70,12 +73,14 @@
 </template>
 
 <script setup>
-        import { computed, onMounted, ref, toRaw } from 'vue';
+        import { computed, onMounted, ref, watch, nextTick } from 'vue';
         import { RouterLink } from 'vue-router';
         import { Tooltip } from 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
         // 接收父元件資料
         const props = defineProps(["product"]);
+
+        const emits = defineEmits(["addCart"]);
 
         // 若商品有圖片則選擇第一張的 ImgID 以網址 {id} 方式秀出圖片,否則使用 comingsoon
         const path = computed(() => {
@@ -104,34 +109,99 @@
                 return specOne && specOne.specTwoNames.length ? specOne.specTwoNames[0]?.specTwoName : null;
         })
 
-        // 當規格一改變時
-        function specOneChange(){
-                selectedSpecTwo.value = null; // 清空選擇的規格二
-        }
-
-        // 元件渲染完畢後初始化 Boottrap tooltip; 計算規格下拉式清單
-        onMounted(function(){
-                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                        return new Tooltip(tooltipTriggerEl)
-                })
-        })
-
-        // 預設 Bootstrap tooltip 商品庫存訊息
-        const alert = `該產品庫存剩餘${props.product.stock}件`;
+        
+        // 依據選取規格計算庫存量
+        const stock = computed(() => {
+                if (props.product.specs) {
+                        if (selectedSpecTwo.value != null && selectedSpecTwo.value !== "") {
+                                const specOne = props.product.specs.specOnes.find(specOne => specOne.specOneID === selectedSpecOne.value);
+                                if (specOne) {
+                                        const specTwo = specOne.specTwoNames[0].specTwos.find(specTwo => specTwo.specTwoID === selectedSpecTwo.value);
+                                        return specTwo ? specTwo.specTwoQt : 0;
+                                }
+                        } else if (filteredSpecTwos.value.length !== 0) {
+                                const specOne = props.product.specs.specOnes.find(specOne => specOne.specOneID === selectedSpecOne.value);
+                                if (specOne) {
+                                        return specOne.specTwoNames.reduce((acc, specTwoName) => {
+                                                return acc + specTwoName.specTwos.reduce((subAcc, specTwo) => subAcc + specTwo.specTwoQt, 0);
+                                        }, 0);
+                                }
+                        } else {
+                                const specOne = props.product.specs.specOnes.find(specOne => specOne.specOneID === selectedSpecOne.value);
+                                return specOne ? specOne.specOneQt : 0;
+                        }
+                }
+                return props.product.stock;
+        });
+        
+        // 庫存提示訊息
+        const alertQt = computed(() => `該產品庫存剩餘${stock.value}件`);
+        
+        // 預設 Bootstrap tooltip 提示規格訊息 & 綁定要提式的下拉選單
+        const alartSpec = ref("請先選擇規格");
+        const specDOM = ref(null);
         
         // 使用 ref 綁定數量 INPUT DOM 物件
         const quantityDOM = ref(null);
-
+        
         // 雙向綁定數量 INPUT,預設值為 1
         const quantity = ref(1)
-
+        
         // 自定義 switch flag 存放數量 INPUT 是否超過商品庫存量,預設 false
         const exceed = ref(false);
+
+        // 當規格一改變時
+        function specOneChange(){
+                selectedSpecTwo.value = null; // 清空選擇的規格二
+                quantity.value = 1;     // 初始化數量
+                exceed.value = false;
+        }
+
+        function specTwoChange(){
+                quantity.value = 1;     // 初始化數量
+                exceed.value = false;
+        }
+
+        // 初始化 Boottrap tooltip
+        function initializeTooltips() {
+                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.forEach(tooltipTriggerEl => {new Tooltip(tooltipTriggerEl);});
+        }
+
+        // 元件渲染完畢後初始化 Boottrap tooltip; 計算規格下拉式清單
+        onMounted(async() => {
+                await nextTick(); // 等待 DOM 更新
+                initializeTooltips();
+        })
+
+        // 更新 tooltips 內容
+        watch(alertQt, () => {
+                nextTick(() => {
+                        const tooltip = Tooltip.getInstance(quantityDOM.value);
+                        if (tooltip) {
+                                tooltip.setContent({ '.tooltip-inner': alertQt.value });
+                        }
+                });
+        });
         
         // 數量 INPUT 被鎖定時先取得修改前的值
         var focusQt;
-        function focus(){
+        function focus(event){
+                if(props.product.specs){
+                        if (selectedSpecOne.value == "" || selectedSpecOne.value == null){
+                                event.target.blur();
+                                Tooltip.getInstance(specDOM.value).show();
+                                setTimeout(()=>Tooltip.getInstance(specDOM.value).hide(),1200);
+                                event.preventDefault();
+                        } else if (filteredSpecTwos.value.length != 0){
+                                if (selectedSpecTwo.value == "" || selectedSpecTwo.value == null){
+                                        event.target.blur();
+                                        Tooltip.getInstance(specDOM.value).show();
+                                        setTimeout(()=>Tooltip.getInstance(specDOM.value).hide(),1200);
+                                        event.preventDefault();
+                                }
+                        }
+                }
                 focusQt = quantity.value;
         }
 
@@ -142,8 +212,8 @@
                 if(!Number.isInteger(newQt) || newQt <1){
                         quantity.value = focusQt;
                         return;
-                }else if(newQt > props.product.stock){
-                        quantity.value = props.product.stock;
+                }else if(newQt > stock.value){
+                        quantity.value = stock.value;
                         exceed.value = true;
                         Tooltip.getInstance(quantityDOM.value).show();
                         setTimeout(()=>Tooltip.getInstance(quantityDOM.value).hide(),1200);
@@ -154,13 +224,26 @@
 
         // 數量增加按鈕
         function addOne(){
+                if(props.product.specs){
+                        if (selectedSpecOne.value == "" || selectedSpecOne.value == null){
+                                Tooltip.getInstance(specDOM.value).show();
+                                setTimeout(()=>Tooltip.getInstance(specDOM.value).hide(),1200);
+                                return;
+                        } else if (filteredSpecTwos.value.length != 0){
+                                if (selectedSpecTwo.value == "" || selectedSpecTwo.value == null){
+                                        Tooltip.getInstance(specDOM.value).show();
+                                        setTimeout(()=>Tooltip.getInstance(specDOM.value).hide(),1200);
+                                        return;
+                                }
+                        }
+                }
                 exceed.value = false;
                 let newQt = parseInt(quantity.value);
-                if(newQt < props.product.stock){
+                if(newQt < stock.value){
                         newQt++
                         quantity.value = newQt;
                 }else{
-                        quantity.value = props.product.stock;
+                        quantity.value = stock.value;
                         exceed.value = true;
                         Tooltip.getInstance(quantityDOM.value).show();
                         setTimeout(()=>Tooltip.getInstance(quantityDOM.value).hide(),1200);
@@ -175,6 +258,29 @@
                         newQt--;
                         quantity.value = newQt;
                 }
+        }
+
+        // 加入購物車
+        function addCart(){
+                if(props.product.specs){
+                        if (selectedSpecOne.value == "" || selectedSpecOne.value == null){
+                                Tooltip.getInstance(specDOM.value).show();
+                                setTimeout(()=>Tooltip.getInstance(specDOM.value).hide(),1200);
+                                return;
+                        } else if (filteredSpecTwos.value.length != 0){
+                                if (selectedSpecTwo.value == "" || selectedSpecTwo.value == null){
+                                        Tooltip.getInstance(specDOM.value).show();
+                                        setTimeout(()=>Tooltip.getInstance(specDOM.value).hide(),1200);
+                                        return;
+                                }
+                        }
+                }
+                emits("addCart",
+                props.product.productID,props.
+                product.member,
+                selectedSpecOne.value == null || selectedSpecOne.value == "" ? null : selectedSpecOne.value,
+                selectedSpecTwo.value == null || selectedSpecTwo.value == "" ? null : selectedSpecTwo.value,
+                quantity.value)
         }
 </script>
 
