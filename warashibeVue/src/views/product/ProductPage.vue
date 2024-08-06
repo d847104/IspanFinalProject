@@ -5,7 +5,7 @@
         <!-- 左侧商品图片区域 -->
         <div class="col-md-7">
             <div class="product-image">
-            <img :src="currentImage" class="main-image" alt="Product Image" />
+                <img :src="currentImage" class="main-image" alt="Product Image" />
                 <div class="image-thumbnails-wrapper">
                     <button v-if="imageIndex > 0" @click="prevImages" class="carousel-control-prev">
                         <span class="carousel-control-prev-icon">&lt;</span>
@@ -28,52 +28,54 @@
         </div>
         <!-- 右侧商品信息区域 -->
         <div class="col-md-5">
-        <h1>{{ product.productName }}</h1>
-        <p class="price">NT$ {{ product.price }}</p>
-        <p class="description">{{ product.description }}</p>
-        <div class="specs">
-            <div v-for="(specs, specName) in groupedSpecs" :key="specName" class="spec">
-                <h5 style="margin-top:15px;">{{ specName }}</h5>
-                <div v-for="spec in specs" :key="spec.specOne || spec.specTwo" style="display:inline-block; margin-right: 10px;">
-                    <button 
-                        v-if="spec.specOne" 
-                        class="btn btn-outline-secondary" 
-                        @click="selectSpecOne(spec.specOne, spec.specImg)"
-                        @mouseover="updateCurrentImage(spec.specImg)"
-                    >
-                        {{ spec.specOne }}
-                    </button>
-                    <button 
-                        v-if="spec.specTwo" 
-                        class="btn btn-outline-secondary" 
-                        @click="selectSpecTwo(spec.specTwo, spec.specImg)"
-                        @mouseover="updateCurrentImage(spec.specImg)"
-                    >
-                        {{ spec.specTwo }}
-                    </button>
+            <h1>{{ product.productName }}</h1>
+            <p class="price">NT$ {{ product.price }}</p>
+            <p class="description">{{ product.description }}</p>
+            <div class="specs">
+                <div v-for="(specs, specName) in groupedSpecs" :key="specName" class="spec">
+                    <h5 style="margin-top:15px;">{{ specName }}</h5>
+                    <div v-for="spec in specs" :key="spec.specOne || spec.specTwo" style="display:inline-block; margin-right: 10px;">
+                        <button 
+                            v-if="spec.specOne" 
+                            class="btn btn-outline-secondary" 
+                            @click="selectSpecOne(spec.specOne, spec.specImg)"
+                            @mouseover="updateCurrentImage(spec.specImg)"
+                            :class="{ active: selectedSpecOne.value === spec.specOne }"
+                        >
+                            {{ spec.specOne }}
+                        </button>
+                        <button 
+                            v-if="spec.specTwo" 
+                            class="btn btn-outline-secondary" 
+                            @click="selectSpecTwo(spec.specTwo, spec.specImg)"
+                            @mouseover="updateCurrentImage(spec.specImg)"
+                            :class="{ active: selectedSpecTwo.value === spec.specTwo }"
+                        >
+                            {{ spec.specTwo }}
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="quantity">
-            <button @click="decreaseQuantity">-</button>
-            <input type="number" v-model="quantity" />
-            <button @click="increaseQuantity">+</button>
-        </div>
-        <div>
-            <button class="btn btn-success" @click="addToFavorite">加入最愛</button>&nbsp;
-            <button class="btn btn-primary" @click="addToCart">加入購物車</button>&nbsp;
-            <button class="btn btn-danger" @click="buyNow">直接購買</button>
-        </div>
+            <div class="quantity">
+                <button @click="decreaseQuantity">-</button>
+                <input type="number" v-model="quantity" />
+                <button @click="increaseQuantity">+</button>
+            </div>
+            <div>
+                <button class="btn btn-success" @click="addToFavorite">加入最愛</button>&nbsp;
+                <button class="btn btn-primary" @click="addToCart">加入購物車</button>&nbsp;
+                <button class="btn btn-danger" @click="buyNow">直接購買</button>
+            </div>
         </div>
     </div>
     <!-- 查看更多 -->
     <div class="row mt-4">
         <div class="col-md-12">
-        <h3>查看更多</h3>
-        <div class="row">
-            <RelatedCard v-for="product in relatedProducts" :key="product.productID" :product="product" />
-        </div>
-        <Paginate :page-count="pages" :click-handler="callFind" :prev-text="'&lt;'" :next-text="'&gt;'" />
+            <h3>查看更多</h3>
+            <div class="row">
+                <RelatedCard v-for="product in relatedProducts" :key="product.productID" :product="product" />
+            </div>
+            <Paginate :page-count="pages" :click-handler="callFind" :prev-text="'&lt;'" :next-text="'&gt;'" />
         </div>
     </div>
     </div>
@@ -284,11 +286,13 @@ const selectSpecOne = (spec, image) => {
     filterSpecs();
 };
 
-const selectSpecTwo = (spec) => {
+const selectSpecTwo = (spec, image) => {
     if (selectedSpecTwo.value === spec) {
         selectedSpecTwo.value = '';
+        selectedSpecImage.value = '';
     } else {
         selectedSpecTwo.value = spec;
+        selectedSpecImage.value = image || ''; // 保存选择的规格图片
     }
     filterSpecs();
 };

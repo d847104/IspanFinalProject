@@ -7,7 +7,6 @@
 </template>
 
 <script setup>
-<<<<<<< HEAD
 import 'bootstrap/dist/css/bootstrap.min.css'
 // import 'bootstrap-vue/dist/bootstrap-vue.min.css'
 import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
@@ -19,19 +18,6 @@ import { provide, ref, onMounted } from 'vue';
 import Navigation from './layout/Navigation.vue'
 import categoryBar from '@/layout/categoryBar.vue';
 import axiosapi from './plugins/axios';
-=======
-    import 'bootstrap/dist/css/bootstrap.min.css'
-    // import 'bootstrap-vue/dist/bootstrap-vue.min.css'
-    import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
-    import 'bootstrap/dist/js/bootstrap.bundle.min.js'
-    import 'sweetalert2/dist/sweetalert2.min.css'
-    import 'flatpickr/dist/flatpickr.css'
-    import { RouterView } from 'vue-router';
-    import { provide, ref, onMounted } from 'vue';
-    import Navigation from '@/layout/Navigation.vue'
-    import categoryBar from '@/layout/categoryBar.vue';
-    import axiosapi from '@/plugins/axios';
->>>>>>> origin/Angel
 
 const user = ref(null);
 
@@ -68,26 +54,10 @@ provide('setUser', (newUser, token) => {
 </script>
 
 <style>
-<<<<<<< HEAD
-.background {
-  background-image: url('/src/img/bluesky.jpg');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  /* 背景圖固定，滾動時不移動 */
-  width: 100%;
-  height: 100%;
-  min-height: 100vh;
-  /* 確保背景圖佔滿整個可視區域 */
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-=======
 body {
   background: url('/src/img/bg01.jpg') no-repeat fixed;
 }
 .background{
   background-color: rgba(255, 255, 255, 0.6);
->>>>>>> origin/Angel
 }
 </style>
