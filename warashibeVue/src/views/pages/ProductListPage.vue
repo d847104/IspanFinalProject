@@ -26,7 +26,7 @@
                 :page-count="pages"
                 :initial-page="current"
                 v-model = "current"
-                :click-handler="callSearch(1)">
+                :click-handler="callSearch">
             </Paginate>
             </div>
         </div>
