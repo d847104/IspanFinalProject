@@ -162,7 +162,7 @@ function findByMemberID(memberID) {
 const getProfileImgUrl = computed(() => {
     return selectedMember.value && selectedMember.value.profileImg
         ? `data:image/png;base64,${selectedMember.value.profileImg}` // 假設 BASE64 編碼的圖片是 PNG 格式
-        : '../src/img/海綿寶.png'; // 如果沒有圖片，顯示預設圖片
+        : '/src/img/海棉寶.png'; // 如果沒有圖片，顯示預設圖片
 });
 
 function toggleEdit(field) {
