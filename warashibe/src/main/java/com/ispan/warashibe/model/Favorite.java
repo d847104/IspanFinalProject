@@ -35,12 +35,12 @@ public class Favorite implements Serializable {
 	@JsonIdentityReference(alwaysAsId = true)
 	private Members member;
 	
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "productID", nullable = false, insertable = false, updatable = false)
 	@JsonIdentityReference(alwaysAsId = true)
 	private Products product;
 	
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "sellerID", nullable = false)
 	@JsonIdentityReference(alwaysAsId = true)
 	private Members seller;
