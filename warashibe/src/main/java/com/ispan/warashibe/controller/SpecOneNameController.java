@@ -1,7 +1,5 @@
 package com.ispan.warashibe.controller;
 
-import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,66 +14,71 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ispan.warashibe.model.Cart;
-import com.ispan.warashibe.service.CartService;
+import com.ispan.warashibe.model.SpecOneNames;
+import com.ispan.warashibe.service.SpecOneNameService;
 
 @RestController
-@RequestMapping("/api/cart")
+@RequestMapping("/api/spec")
 @CrossOrigin
-public class CartController {
+public class SpecOneNameController {
 	@Autowired
-	private CartService cartServ;
+	private SpecOneNameService specOneNameServ;
 	@Autowired
 	private ObjectMapper objMapper;
-	
-	@PostMapping("/create")	// 新增一筆
+
+	@PostMapping("/onename/create")	// 建立一筆
 	public String create(@RequestBody String body) {
 		JSONObject responseBody = new JSONObject();
-		Cart product = cartServ.create(body);
-		return product!=null ?
-				responseBody.put("success", true).put("message", "新增成功").toString() :
-					responseBody.put("success", false).put("message", "新增失敗").toString();
+		SpecOneNames specOneName = specOneNameServ.create(body);
+		return specOneName != null ? responseBody.put("success", true).put("message", "新增成功").toString()
+				: responseBody.put("success", false).put("message", "新增失敗").toString();
 	}
-	
-	@PutMapping("/modify")	// 修改一筆
+
+	@PutMapping("/onename/modify")	// 修改一筆
 	public String modify(@RequestBody String body) {
 		JSONObject responseBody = new JSONObject();
-		Cart product = cartServ.modify(body);
-		if(product!=null) {
+		SpecOneNames specOneName = specOneNameServ.modify(body);
+		if (specOneName != null) {
 			return responseBody.put("success", true).put("message", "修改成功").toString();
-		} return responseBody.put("success", false).put("message", "修改失敗").toString();
+		}
+		return responseBody.put("success", false).put("message", "修改失敗").toString();
 	}
-	
-	@GetMapping("/{id}")	// 查詢一筆
+
+	@GetMapping("/onename/{id}")	// 查詢一筆
 	public String findById(@PathVariable Integer id) {
 		JSONObject responseBody = new JSONObject();
 		JSONArray array = new JSONArray();
-		Cart product = cartServ.findById(id);
-		if(product!=null) {
-			try {array.put(new JSONObject(objMapper.writeValueAsString(product)));
-			} catch (Exception e) {e.printStackTrace();}
+		SpecOneNames specOneName = specOneNameServ.findById(id);
+		if (specOneName != null) {
+			try {
+				array.put(new JSONObject(objMapper.writeValueAsString(specOneName)));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		responseBody.put("list", array);
 		return responseBody.toString();
 	}
-	
-	@DeleteMapping("/delete/{id}")	// 刪除一筆
+
+	@DeleteMapping("/onename/delete/{id}")	// 刪除一筆
 	public String delete(@PathVariable Integer id) {
 		JSONObject responseBody = new JSONObject();
-		if(cartServ.deleteById(id)) {
+		if (specOneNameServ.deleteById(id)) {
 			return responseBody.put("success", true).put("message", "刪除成功").toString();
-		} return responseBody.put("success", false).put("message", "刪除失敗").toString();
+		}
+		return responseBody.put("success", false).put("message", "刪除失敗").toString();
 	}
-	
-	@GetMapping("/member/{id}")	// 以買家ID查詢多筆
+
+	@GetMapping("onename/product/{id}")	// 以產品ID查詢一筆
 	public String findByBuyerId(@PathVariable Integer id) {
 		JSONObject responseBody = new JSONObject();
 		JSONArray array = new JSONArray();
-		List<Cart> result = cartServ.findByMemberId(id);
-		for(Cart product : result) {
-			if(product!=null) {
-				try {array.put(new JSONObject(objMapper.writeValueAsString(product)));
-				} catch (Exception e) {e.printStackTrace();}
+		SpecOneNames result = specOneNameServ.findByProdductId(id);
+		if (result != null) {
+			try {
+				array.put(new JSONObject(objMapper.writeValueAsString(result)));
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		responseBody.put("list", array);

@@ -70,9 +70,9 @@
 
 <style scoped>
     .carousel {
-        width: 80vw;
-        /* 設定輪播寬度為螢幕寬度的80% */
-        height: 50vh;
+        width: 90%;
+        /* 設定輪播寬度為容器的90% */
+        height: 40vh;
         /* 設定輪播高度為螢幕高度的50% */
         margin: auto;
         /* 使輪播居中 */
