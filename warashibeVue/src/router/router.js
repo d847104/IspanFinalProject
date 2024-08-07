@@ -2,16 +2,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import Login from '@/views/secure/Login.vue';
-import SecondHand from '@/views/SecondHand.vue';
-import infiniteTest from '@/views/infiniteTest.vue';
-import Cart from '@/views/pages/Cart.vue';
 import Messenger from '@/views/pages/Messenger.vue';
 import Cart from '@/views/orders/Cart.vue';
-import Cart from '@/views/orders/Cart.vue';
-import Messenger from '@/views/pages/Messenger.vue';
 
 //1. 引用元件
-import NotFound from "../views/NotFound.vue";
+import NotFound from "@/views/NotFound.vue";
 import routerBuyer from '@/views/buyer/router-buyer.js';
 import routerMembers from '@/views/members/router-members.js';
 import routerSecure from '@/views/secure/router-secure.js';
