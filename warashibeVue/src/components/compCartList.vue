@@ -66,7 +66,7 @@
                         <!-- 選取商品 CHECKBOX -->
                         <div class="card-body col-md-1 align-self-stretch d-flex align-items-center justify-content-center" style="background-color: var(--bs-light);">
                                 <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" style="width:2em; height:2em;" value="" :id="cart.cartID" v-model="isSelected" :disabled="chbdisabled">
+                                        <input class="form-check-input" type="checkbox" style="width:2em; height:2em;" value="" :id="cart.cartID" v-model="isSelected" :disabled="chbdisabled" @change="emits('upddateChb',isSelected,cart.seller.memberID)">
                                 </div>
                         </div>
                 </div>
@@ -90,7 +90,7 @@
         // 接收從 cart.vue 取得使用者在資料庫的cart資料 以及是否勾選
         const props = defineProps(["cart","isChecked"]);
         // 修改數量及刪除須回傳 cart.vue 重新渲染
-        const emits = defineEmits(["updateCart","removeCart","selectCart"]);
+        const emits = defineEmits(["updateCart","removeCart","selectCart","upddateChb"]);
         // 雙向綁定 cart.vue 是否勾選
         const isSelected = defineModel("isChecked")
         const chbdisabled = defineModel("isDisabled")
