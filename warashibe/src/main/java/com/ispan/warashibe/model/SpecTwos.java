@@ -40,8 +40,7 @@ public class SpecTwos {
 	@Column(name = "specTwoQt", nullable = false)
 	private Integer specTwoQt;
 	
-	@OneToOne
-	@JoinColumn(name = "specTwoImg", nullable = true)
+	@OneToOne(mappedBy = "specTwo")
 	@JsonIdentityReference(alwaysAsId = true)
 	private SpecImg specTwoImg;
 	
