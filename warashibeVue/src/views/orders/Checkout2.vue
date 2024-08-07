@@ -1,6 +1,5 @@
 <template>
     <!-- 結帳商品未完成、總金額欄位、收件資料等要寫進資料庫(便利商店分店選擇還要寫API，以宅配DEMO) -->
-    <br><br><br><br><br>
     <h3 style="color: azure;">結帳</h3>
     <!-- 顯示訂單列表 -->
     <div>
