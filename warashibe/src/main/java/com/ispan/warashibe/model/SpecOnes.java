@@ -47,7 +47,7 @@ public class SpecOnes {
 	private SpecImg specOneImg;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "specOne")
-	@JsonIncludeProperties({"specTwoName","specTwos"})
+	@JsonIncludeProperties({"specTwoNameID","specTwoName","specTwos"})
 	private List<SpecTwoNames> specTwoNames;
 	
 	@ManyToOne
