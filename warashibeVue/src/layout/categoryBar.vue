@@ -1,21 +1,21 @@
 <template>
-        <nav class="navbar navbar-expand-lg bg-body-tertiary container">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary container fixed-nav">
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                         <ul class="navbar-nav w-100 justify-content-evenly">
-                                <template v-for="mainCategory in mainCategories">
-                                        <li class="nav-item" v-if="mainCategory.subCategories.length == 0">
+                                <template v-for="mainCategory in mainCategories" :key="mainCategory.mainCategoryID">
+                                        <li class="nav-item" v-if="mainCategory.subCategories.length === 0" >
                                                 <a class="nav-link fs-5" href="#">{{ mainCategory.mainCategory }}</a>
                                         </li>
-                                        <li class="nav-item dropdown" v-if="mainCategory.subCategories.length !== 0">
+                                        <li class="nav-item dropdown" v-if="mainCategory.subCategories.length !== 0" >
                                                 <a class="nav-link dropdown-toggle fs-5 fw-bold" href="#" role="button"
                                                         data-bs-toggle="dropdown" aria-expanded="false">{{
-                                                        mainCategory.mainCategory }}</a>
+                                                                mainCategory.mainCategory }}</a>
                                                 <ul class="dropdown-menu">
-                                                        <template v-for="subCategory in subCategories">
+                                                        <template v-for="subCategory in filteredSubCategories(mainCategory.mainCategoryID)" :key="subCategory.subCategoryID">
                                                                 <li
                                                                         v-if="subCategory.mainCategory == mainCategory.mainCategoryID">
                                                                         <a class="dropdown-item fs-5 fw-bold"
-                                                                                href="#">{{ subCategory.subCategory
+                                                                                @click="postSubcategory(subCategory.subCategoryID)">{{ subCategory.subCategory
                                                                                 }}</a>
                                                                 </li>
                                                         </template>
@@ -28,36 +28,62 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref,onMounted, nextTick } from 'vue';
 import axiosapi from '@/plugins/axios';
 import Swal from 'sweetalert2';
-
+import emitter from '@/plugins/events';
+import { useRouter } from 'vue-router'
 const mainCategories = ref([]);
 const subCategories = ref([]);
+const router = useRouter();
 
-axiosapi.get("/api/categories/mainCategory/all")
-        .then(function (response) {
-                mainCategories.value = response.data.list;
-        }).catch(function (error) {
-                console.log("navBar.vue: getMainCategory", error);
+onMounted(async () => {
+        try {
+                let mainCategoryResponse = await axiosapi.get("/api/categories/mainCategory/all");
+                mainCategories.value = mainCategoryResponse.data.list;
+
+                let subCategoryResponse = await axiosapi.get("/api/categories/subCategory/all");
+                subCategories.value = subCategoryResponse.data.list;
+        } catch (error) {
+                console.log("Error fetching categories", error);
                 Swal.fire({
                         icon: "error",
-                        text: "navBar.vue: getMainCategory() 錯誤" + error.message,
+                        text: "Error fetching categories: " + error.message,
                         allowOutsideClick: false,
-                })
-        });
+                });
+        }
+});
 
-axiosapi.get("/api/categories/subCategory/all")
-        .then(function (response) {
-                subCategories.value = response.data.list;
-        }).catch(function (error) {
-                console.log("navBar.vue: getSubCategory", error);
+function filteredSubCategories(mainCategoryID) {
+        return subCategories.value.filter(subCategory => subCategory.mainCategory == mainCategoryID);
+}
+async function postSubcategory(subcategoryID) {
+        console.log(subcategoryID);
+
+        let requestSubCategory = {
+                "start": 0,
+                "max": 30,
+                "dir": false,
+                "order": "productID"             
+        }
+
+        try {
+                let response = await axiosapi.post(`/api/products/category/${subcategoryID}`, requestSubCategory);
+                router.push("/pages/productListPage").then(() => {
+                        emitter.emit("result", response.data.list);
+                });
+
+
+        } catch (error) {
+                console.log("Error posting subcategory", error);
                 Swal.fire({
                         icon: "error",
-                        text: "navBar.vue: getSubCategory() 錯誤" + error.message,
+                        text: "Error posting subcategory: " + error.message,
                         allowOutsideClick: false,
-                })
-        });
+                });
+        }
+}
+
 </script>
 
 <style scoped>
@@ -68,5 +94,10 @@ axiosapi.get("/api/categories/subCategory/all")
 .dropdown>.dropdown-toggle:active {
         /*Without this, clicking will make it sticky*/
         pointer-events: none;
+}
+
+.fixed-nav {
+        background-color: #FCFCFC;
+        /* 設定背景顏色以匹配 .navbar */
 }
 </style>

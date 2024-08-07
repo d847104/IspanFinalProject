@@ -64,7 +64,9 @@ public class SpecOnes {
 	@JsonProperty("specOneImg")
 	public void setSpecOneImgById(Integer specOneImgId) {
 		this.specOneImg = new SpecImg();
-		this.specOneImg.setSpecImgID(specOneImgId);
+		if(specOneImgId!=null) {
+			this.specOneImg.setSpecImgID(specOneImgId);			
+		} else {this.specOneImg = null;}
 	}
 	
 	@OneToMany(mappedBy = "specOne")

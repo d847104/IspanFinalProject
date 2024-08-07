@@ -3,26 +3,44 @@
                 <div class="my-4">
                         <h2 class="fw-bold">購物車</h2>
                 </div>
-                <div class="mt-20">
-                        <div v-for="seller in sellerList">
-                                <div class="row">
-                                        <div class="col-10"><h3 class="fw-bold">賣家 {{ seller.username }}</h3></div>
-                                        <div class="col">
-                                                <span class="fs-4 fw-bold me-3">全選</span>
-                                                <input class="form-check-input" type="checkbox" style="width: 2em; height: 2em;" :checked="isAllSelected(seller.memberID)" @change="toggleSelectSeller(seller.memberID)">
+                <div v-for="seller in sellerList" class="container p-5">
+                        <div class="row">
+                                <div class="col-10"><h3 class="fw-bold">賣家 {{ seller.username }}</h3></div>
+                                <div class="col">
+                                        <label :for="'seller'+seller.memberID" class="fs-4 fw-bold me-3">全選</label>
+                                        <input class="form-check-input" type="checkbox" style="width: 2em; height: 2em;" :id="'seller'+seller.memberID"
+                                        :checked="isAllSelected(seller.memberID)" 
+                                        @change="toggleSelectSeller(seller.memberID,$event)" 
+                                        :disabled="disableSeller[seller.memberID]"
+                                        v-model="selectedSeller[seller.memberID]">
+                                </div>
+                        </div>
+                        <template v-for="cart in cartList" :key="cart.cartID">
+                                <compCartList v-if="cart.seller.memberID === seller.memberID" :cart="cart" 
+                                @update-cart="updateCart" 
+                                @remove-cart="removeCart" 
+                                :is-selected="selectedCarts[cart.cartID]" 
+                                v-model:isChecked="selectedCarts[cart.cartID]" 
+                                v-model:isDisabled="disabledCarts[cart.cartID]" 
+                                @upddate-chb="updateChb">
+                                </compCartList>
+                        </template>
+                        <template v-if="checkoutBtn[seller.memberID]">
+                                <div class="row d-flex justify-content-end">
+                                        <div class="col-10 text-end align-self-center">
+                                                <span class="fs-4 fw-bold">已選擇 {{ selectedItemCount }} 項商品</span>
+                                        </div>
+                                        <div class="col-2 d-flex justify-content-center">
+                                                <button type="button" class="btn btn-success btn-lg">結帳</button>
                                         </div>
                                 </div>
-                                <template v-for="cart in cartList" :key="cart.cartID">
-                                        <compCartList v-if="cart.seller.memberID === seller.memberID" :cart="cart" @update-cart="updateCart" @remove-cart="removeCart" :is-selected="selectedCarts[cart.cartID]" v-model:isChecked="selectedCarts[cart.cartID]" v-model:isDisabled="disabledCarts[cart.cartID]">
-                                        </compCartList>
-                                </template>
-                        </div>
+                        </template>
                 </div>
         </div>
 </template>
 
 <script setup>
-        import { onMounted, ref } from 'vue';
+        import { onMounted, ref, computed } from 'vue';
         import axiosapi from "@/plugins/axios.js";
         import Swal from "sweetalert2";
         import compCartList from '@/components/compCartList.vue';
@@ -34,16 +52,29 @@
         const sellerList = ref([]);
         const cartList = ref([]);
         const selectedCarts = ref({}); // 用於追蹤每個商品是否被選中
-        const disabledCarts = ref({}); // 用於管理是否能被選取
+        const disabledCarts = ref({}); // 用於管理商品是否能被選取
+        const disableSeller = ref({}); // 用於管理該賣家的商品是否能被全選
+        const selectedSeller = ref({})
+        const checkoutBtn = ref({}) // 用於管理該賣家的結帳按鈕是否顯示
+        const selectedItemCount = computed(() => { // 計算被選中的商品數量
+                return Object.values(selectedCarts.value).filter(isSelected => isSelected).length;
+        });
 
         // 點選賣家全選/取消全選
-        function toggleSelectSeller(sellerID) {
+        function toggleSelectSeller(sellerID,event) {
                 const isSelected = isAllSelected(sellerID);
                 cartList.value.forEach(cart => {
                         if (cart.seller.memberID === sellerID) {
                                 selectedCarts.value[cart.cartID] = !isSelected;
                         }
                 });
+                if(event.target.checked){
+                        updateChb(true,sellerID);
+                        checkoutBtn.value[sellerID] = true;
+                }else{
+                        enableAll();
+                        checkoutBtn.value[sellerID] = false;
+                }
         }
 
         // 判斷某賣家的商品是否全被選中
@@ -51,6 +82,45 @@
                 return cartList.value
                 .filter(cart => cart.seller.memberID === sellerID)
                 .every(cart => selectedCarts.value[cart.cartID]);
+        }
+
+        // 個別商品選取/取消選取,是否 Disabled 其他賣家的商品 checkbox 以及是否顯示結帳按鈕
+        function updateChb(isChecked,selectedSellerID){
+                if(isChecked){
+                        cartList.value.forEach(cart => {
+                                if (cart.seller.memberID !== selectedSellerID) {
+                                        disabledCarts.value[cart.cartID] = !selectedCarts.value[cart.cartID];
+                                        selectedCarts.value[cart.cartID] = false;
+                                }
+                        });
+                        sellerList.value.forEach(seller => {
+                                if(seller.memberID !== selectedSellerID) {
+                                        disableSeller.value[seller.memberID] = true;
+                                        selectedSeller.value[seller.memberID] = false
+                                }
+                        })
+                        checkoutBtn.value[selectedSellerID] = true;
+                }else{
+                        if(!isAnySelected()) {
+                                enableAll();
+                                checkoutBtn.value[selectedSellerID] = false;
+                        }
+                }
+        }
+
+        // 判定是否有任何商品被選取
+        function isAnySelected() {
+                return cartList.value.some(cart => selectedCarts.value[cart.cartID]);
+        }
+
+        // 使所有商品可以被選取
+        function enableAll() {
+                cartList.value.forEach(cart => {
+                        disabledCarts.value[cart.cartID] = false;
+                });
+                sellerList.value.forEach(seller => {
+                        disableSeller.value[seller.memberID] = false;
+                })
         }
 
         onMounted(function () {

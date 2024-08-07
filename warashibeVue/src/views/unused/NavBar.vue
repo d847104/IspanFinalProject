@@ -1,6 +1,3 @@
-<template> 
-        <nav class="navbar navbar-expand-lg fixed-top">
-            <div class="container-fluid">                 
 <template>
 
         <nav class="navbar navbar-expand-lg fixed-top">

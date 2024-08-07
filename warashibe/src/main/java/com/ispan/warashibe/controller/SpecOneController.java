@@ -30,7 +30,11 @@ public class SpecOneController {
 	public String create(@RequestBody String body) {
 		JSONObject responseBody = new JSONObject();
 		SpecOnes specOne = specOneServ.create(body);
-		return specOne != null ? responseBody.put("success", true).put("message", "新增成功").toString()
+		return specOne != null ? responseBody
+				.put("success", true)
+				.put("message", "新增成功")
+				.put("specOne", specOne.getSpecOneID())
+				.toString()
 				: responseBody.put("success", false).put("message", "新增失敗").toString();
 	}
 
