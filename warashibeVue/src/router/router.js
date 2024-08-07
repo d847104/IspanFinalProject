@@ -25,18 +25,10 @@ import routerPages from '@/views/pages/router-pages';
 const routes = [
     { name: "home", path: '/', component: Home },
     { name: "notfound-link", path: "/:pathMatch(.*)*", component: NotFound },
-<<<<<<< HEAD
     { name: "Login", path: '/login', component: Login },
-    { path: '/secondHand', component: SecondHand },
-    { path: '/infiniteTest', component: infiniteTest },
     { name: 'cart', path: '/cart', component: Cart },
     { name: 'messenger', path: '/messenger', component: Messenger },
-=======
     { path: '/login', component: Login },
-    { name: 'cart', path: '/cart', component: Cart},
->>>>>>> Angel
-    ...routerSecure,
-    ...routerPages,
     ...routerProduct,
     ...routerBuyer,
     ...routerSeller,
