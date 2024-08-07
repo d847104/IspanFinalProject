@@ -151,9 +151,6 @@
             <button type="button" @click="addSpec" class="btn btn-primary">新增規格</button>
 
 
-
-
-
             <div class="form-floating mb-3">
                 <div class="row justify-content-end">
                     <RouterLink :to="{ name: 'product-Upload-page-link' }" @click="upload"
@@ -164,8 +161,6 @@
             </div>
         </form>
     </div>
-
-
 </template>
 
 <script setup>
@@ -188,13 +183,6 @@ const payRequest3 = ref('');
 const delRequest1 = ref('');
 const delRequest2 = ref('');
 const delRequest3 = ref('');
-
-const spec1 = ref('');
-const spec2 = ref('');
-const specName1 = ref('');
-const specName2 = ref('');
-const specNum = ref(0);
-const specImage1 = ref({});
 
 const images = ref([]);
 const productName = ref('');
@@ -256,11 +244,9 @@ async function upload() {
         "member": user.value.id,
         "productStatus": true,
     }
-    console.log('商品擁有者', user.value.id);
     if (user.value) {
         try {
             const productResponse = await axiosapi.post("/api/products", requestProduct);
-            console.log(productResponse.data);
             if (productResponse.data.success) {
                 const productID = productResponse.data.productID;
                 await payPost(productID);
@@ -289,40 +275,56 @@ async function upload() {
 }
 
 
-
-
-
 // 處理規格圖片上傳功能
 async function specPost(productID) {
-
-    for (const spec of specs.value) {
-        const formData = new FormData();
-        formData.append('jsonProduct',
-            JSON.stringify({
-                specOne: spec.content,
-                specOneName: spec.name,
-                specTwo: '',
-                specTwoName: '',
-                specQt: spec.quantity,
-
-            }));
-        formData.set('productID', productID);
-        formData.append('image', spec.image.file.file);
-        await uploadSpec(formData);
-    }
+    await uploadSpec(productID);
 }
-
-async function uploadSpec(formData) {
+async function uploadSpec(productID) {
     try {
-        await axiosapi.post("/api/spec/create", formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
+        for (let index = 0; index < 1;   index++) {
+            let spec = specs.value[index];
+            let specOneNameRequest = {
+                "specOneName": spec.name,
+                "product": productID,
             }
-        }).then(function (response) {
-            console.log(response.data);
-        }).catch(function (error) {
-            console.log(error.message);
-        });
+            const specOneName = await axiosapi.post("/api/spec/onename/create",specOneNameRequest);
+
+            let specOneRequest = {
+                "specOne": spec.content,
+                "specOneQt": spec.quantity,
+                "specOneImg": null,
+                "specOneName": specOneName.data.specOneNameID,
+            }
+            const specOne = await axiosapi.post("/api/spec/one/create",specOneRequest);
+            if(specs.value.length != 1){
+                spec = specs.value[index+1];
+                let specTwoNameRequest = {
+                    "specTwoName": spec.name,
+                    "specOne": specOne.data.specOne,
+                }
+                const specTwoName = await axiosapi.post("/api/spec/twoname/create",specTwoNameRequest);
+
+                let specTwoRequest = {
+                    "specTwo": spec.content,
+                    "specTwoQt": spec.quantity,
+                    "specTwoImg": null,
+                    "specTwoName": specTwoName.data.specTwoName,
+                }
+                const specTwo = await axiosapi.post("/api/spec/two/create",specTwoRequest);
+                console.log("規格成功加入");
+                
+            }
+        }
+
+        // await axiosapi.post("/api/spec/create", formData, {
+        //     headers: {
+        //         'Content-Type': 'multipart/form-data'
+        //     }
+        // }).then(function (response) {
+        //     console.log(response.data);
+        // }).catch(function (error) {
+        //     console.log(error.message);
+        // });
     } catch (error) {
         console.error('Error uploading spec:', error);
         alert('規格上傳失敗');
@@ -356,21 +358,6 @@ async function uploadImage(formData) {
         alert('圖片上傳失敗');
     }
 }
-
-// 處理規格單張圖片上傳
-// const specImageChange = (event) => {
-//     const file = event.target.files[0];
-//     if (file) {
-//         const reader = new FileReader();
-//         reader.onload = (e) => {
-//             specImage1.value = { file: file, url: e.target.result };
-//         };
-//         reader.readAsDataURL(file);
-//     }
-// }
-// const removeSpecImage1 = () => {
-//     specImage1.value = {};
-// };
 
 // 處理圖片預覽(新增、刪除)
 const handleFileChange = (event) => {
@@ -408,13 +395,11 @@ async function uploadPayMethods(productID, payMethodID) {
         "payMethodID": payMethodID,
         "productID": productID
     };
-
     try {
         await axiosapi.post("/productPayMethod", requestPayMethod).then(function (response) {
         }).catch(function (error) {
             console.log(response.error);
         });
-
     } catch (error) {
         Swal.fire({
             icon: "error",
@@ -444,11 +429,12 @@ async function uploadDelivery(productID, deliveryID) {
         "deliveryID": deliveryID,
         "productID": productID
     };
+    
     try {
-        const response = axiosapi.post("/productDelivery", requestDelivery);
-        if (!response.data.success) {
-            throw new Error(response.data.message)
-        }
+        await axiosapi.post("/productDelivery", requestDelivery).then(function (response) {
+        }).catch(function (error) {
+            console.log(response.error);
+        });
     } catch (error) {
         Swal.fire({
             icon: "error",
@@ -464,7 +450,6 @@ function callCategory() {
     }).catch(function () {
         console.log("讀取主分類錯誤");
     });
-
     axiosapi.get("/api/categories/subCategory/all").then(function (response) {
         allSubCate.value = response.data.list;
         // console.log(allSubCate.value[0].subCategory);
