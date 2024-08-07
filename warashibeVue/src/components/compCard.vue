@@ -24,17 +24,16 @@
                                                         <option v-for="specOne in product.specs.specOnes" :key="specOne.specOneID" :value="specOne.specOneID">{{ specOne.specOne }}</option>
                                                 </select>
                                                 <!-- 規格二(若存在) -->
-<<<<<<< HEAD
                                                 <template v-if="filteredSpecTwos.length">
                                                         <select class="form-select" v-model="selectedSpecTwo">
                                                         <option value="" disabled selected>請選擇{{ filteredSpecTwoName }}</option>
                                                         <option v-for="specTwo in filteredSpecTwos" :key="specTwo.specTwo" :value="specTwo.specTwoID">{{ specTwo.specTwo }}</option>
-=======
+                                                        </select>
+                                                </template>
                                                  <template v-if="filteredSpecTwos.length">
                                                         <select class="form-select" v-model="selectedSpecTwo" @change="specTwoChange">
                                                                 <option value="" disabled selected>請選擇{{ filteredSpecTwoName }}</option>
                                                                 <option v-for="specTwo in filteredSpecTwos" :key="specTwo.specTwo" :value="specTwo.specTwoID">{{ specTwo.specTwo }}</option>
->>>>>>> origin/Angel
                                                         </select>
                                                 </template>
                                         </div>

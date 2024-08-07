@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.ispan.warashibe.model.Products;
 import com.ispan.warashibe.model.Rank;
 import com.ispan.warashibe.service.RankService;
 import com.ispan.warashibe.util.JsonUtil;
@@ -103,7 +104,19 @@ public class RankController {
         }
         return response.toString();
     }
-
+    
+    
+    @GetMapping("/member/{memberID}")
+    public String getRanksByMemberID(@PathVariable int memberID) throws JSONException, JsonProcessingException, ParseException {
+        List<Rank> ranks = rankService.getRanksByMemberID(memberID);
+        return createResponse(ranks);
+    }
+    @GetMapping("/product/{productID}")
+    public String getRanksByProductID(@PathVariable int productID) throws JSONException, JsonProcessingException, ParseException {
+        List<Rank> ranks = rankService.getRanksByProductID(productID);
+        return createResponse(ranks);
+    }
+ 
     private Pageable createPageRequest(JSONObject request) throws JSONException {
         int start = request.optInt("start", 0); // 默認值為0
         int max = request.optInt("max", 30); // 默認值為30

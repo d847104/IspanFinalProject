@@ -31,34 +31,34 @@
                                             <h5>{{ item.productName }}</h5>
                                             <div class="d-flex flex-row">
                                                 <div class="text-warning mb-1 me-2">
+                                                    <!-- <font-awesome-icon icon="fa fa-star"></font-awesome-icon>
                                                     <font-awesome-icon icon="fa fa-star"></font-awesome-icon>
                                                     <font-awesome-icon icon="fa fa-star"></font-awesome-icon>
                                                     <font-awesome-icon icon="fa fa-star"></font-awesome-icon>
-                                                    <font-awesome-icon icon="fa fa-star"></font-awesome-icon>
-                                                    <font-awesome-icon icon="fas fa-star-half-alt"></font-awesome-icon>
-                                                    <span class="ms-1">
-                                                        4.5
-                                                    </span>
-                                                </div>
-                                                <span class="text-muted">數量{{ item.stock }}</span>
+                                                    <font-awesome-icon icon="fas fa-star-half-alt"></font-awesome-icon> -->
+                                                    <span class="ms-1">評價：{{ productRank }}</span>
+                                                </div> 
+                                                <span class="text-muted">數量：{{ item.stock }}</span>
                                             </div>
-
                                             <p class="text mb-4 mb-md-0">
                                                 {{ item.description }}
                                             </p>
                                         </div>
                                         <div class="col-xl-3 col-md-3 col-sm-5">
                                             <div class="d-flex flex-row align-items-center mb-1">
-                                                <h4 class="mb-1 me-1">{{ item.price }}</h4>
-                                                <span class="text-danger"><s>NT$1,500</s></span>
+                                                <h4 class="mb-1 me-1">NT$ {{ item.price }}</h4>
+                                                <!-- <span class="text-danger"><s>NT$1,500</s></span> -->
                                             </div>
-                                            <h6 class="text-success">Free shipping</h6>
+                                            <!-- <h6 class="text-success">Free shipping</h6> -->
                                             <div class="mt-4">
+                                                <!-- <a href="#"><font-awesome-icon :icon="['fas', 'cart-plus']" size="2x" pull="left" /></a>
                                                 <button class="btn btn-primary shadow-0" type="button">直接購買</button>
                                                 <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover">
-                                                    <font-awesome-icon
-                                                        icon="fas fa-heart fa-lg px-1"></font-awesome-icon>
-                                                </a>
+                                                    <font-awesome-icon icon="fas fa-heart fa-lg px-1"></font-awesome-icon>
+                                                </a> -->
+                                                <button class="btn btn-success" @click="addToFavorite">加入最愛</button>&nbsp;
+                                                <!-- <button class="btn btn-primary" @click="addToCart">加入購物車</button>&nbsp; -->
+                                                <!-- <button class="btn btn-danger" @click="buyNow">直接購買</button> -->
                                             </div>
                                         </div>
                                     </div>
@@ -66,7 +66,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -75,20 +74,65 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, inject } from 'vue';
 import axiosapi from '@/plugins/axios.js';
-const props = defineProps(["item"])
-const photoPath = import.meta.env.VITE_API_PHOTO;
+const props = defineProps(["item"]);
+const imageSrc = ref(null); // 定義一個 ref 來存儲圖片來源
+const productRank = ref(0);
+const user = inject("user");
+import Swal from 'sweetalert2';
 
-// 定義一個 ref 來存儲圖片來源
-const imageSrc = ref(null);
+const addToFavorite = async () => {
+    let data = {
+            memberID: user.value.id,
+            productID: props.item.productID,
+            sellerID: props.item.memberID
+        }
+    console.log(data);
+    console.log(props.item);
+    try {
+        await axiosapi.post('/ajax/favorite/insert', {
+            memberID: user.value.id,
+            productID: props.item.productID,
+            sellerID: props.item.member
+        });
+        Swal.fire('成功', '已將該商品加入最愛', 'success');
+    } catch (error) {
+        console.error('加入最愛失敗', error);
+        Swal.fire('失敗', '加入最愛失敗', 'error');
+    }
+};
+
+// const addToCart = async () => {
+//     try {
+//         const selectedSpec = productSpecs.value.find(spec => {
+//             const matchesSpecOne = selectedSpecOne.value ? spec.specOne === selectedSpecOne.value : true;
+//             const matchesSpecTwo = selectedSpecTwo.value ? spec.specTwo === selectedSpecTwo.value : true;
+//             return matchesSpecOne && matchesSpecTwo;
+//         });
+
+//         await axiosapi.post('/private/pages/cart/create', {
+//             member: user.value.id,
+//             product: product.value.productID,
+//             productSpec: selectedSpec.specID,
+//             seller: product.value.sellerID,
+//             quantity: quantity.value
+//         });
+//         Swal.fire('成功', '已將該商品加入購物車', 'success');
+//     } catch (error) {
+//         console.error('加入購物車失敗', error);
+//         Swal.fire('失敗', '加入購物車失敗', 'error');
+//     }
+// };
+
+
 
 // 定義一個函數來獲取圖片數據
 const fetchImage = async () => {
     try {
         if (props.item && props.item.productImgs && props.item.productImgs.length > 0) {
-            const response = await axiosapi.get(`${photoPath}${props.item.productImgs[0]}`);
-            const base64Image = response.data.list.img;
+            const response = await axiosapi.get(`/api/productImg/product/${props.item.productID}`);            
+            const base64Image = response.data.list[0].img;
             if (base64Image) {
                 imageSrc.value = `data:image/png;base64,${base64Image}`;
             } else {
@@ -97,7 +141,6 @@ const fetchImage = async () => {
         }else {
             imageSrc.value = "../../src/assets/images/no-image.jpg";
         }
-
     } catch (error) {
         console.error('讀取圖片失敗:', error);
         imageSrc.value = "../../src/assets/images/no-image.jpg";
@@ -107,7 +150,35 @@ const fetchImage = async () => {
 // 當組件掛載時調用 fetchImage 函數
 onMounted(() => {
     fetchImage();
+    getProductsRank();
 });
+
+
+
+
+async function getProductsRank() {
+    try {
+        const response = await axiosapi.get(`/api/ranks/product/${props.item.productID}`);
+        const rankingList = Array.isArray(response.data.list) ? response.data.list : [];
+        if (rankingList.length > 0) {
+            // 提取 ranking 數值並計算總和
+            const totalRanking = rankingList.reduce((sum, item) => sum + item.ranking, 0);
+            // 計算平均值
+            productRank.value = totalRanking / rankingList.length;
+        } else {
+            productRank.value = 0; // 如果沒有資料，設置平均值為 0 或其他適當值
+        }
+    } catch (error) {
+        console.error('Error getting products rank:', error);
+        productRank.value = 0; // 在錯誤情況下，設置平均值為 0 或其他適當值
+    }
+}
+
+
+
+
+
+
 
 
 </script>
