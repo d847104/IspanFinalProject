@@ -292,11 +292,18 @@ async function uploadSpec(productID) {
             let specOneRequest = {
                 "specOne": spec.content,
                 "specOneQt": spec.quantity,
-                "specOneImg": null,
                 "specOneName": specOneName.data.specOneNameID,
             }
             const specOne = await axiosapi.post("/api/spec/one/create",specOneRequest);
-            if(specs.value.length != 1){
+            const formData = new FormData();
+            formData.set('image', spec.image.file);
+            axiosapi.post(`/api/specImg/create/specone/${specOne.data.specOne}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+
+            if(specs.value.length == 2){
                 spec = specs.value[index+1];
                 let specTwoNameRequest = {
                     "specTwoName": spec.name,
@@ -307,12 +314,18 @@ async function uploadSpec(productID) {
                 let specTwoRequest = {
                     "specTwo": spec.content,
                     "specTwoQt": spec.quantity,
-                    "specTwoImg": null,
                     "specTwoName": specTwoName.data.specTwoName,
                 }
                 const specTwo = await axiosapi.post("/api/spec/two/create",specTwoRequest);
+
+                const formData = new FormData();
+                formData.set('image', spec.image.file);
+                axiosapi.post(`/api/specImg/create/spectwo/${specTwo.data.specTwo}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
                 console.log("規格成功加入");
-                
             }
         }
 
