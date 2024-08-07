@@ -1,5 +1,5 @@
 <template>
-  <div class="background">
+  <div class="background container p-4">
     <Navigation></Navigation>
     <categoryBar></categoryBar>
     <RouterView></RouterView>

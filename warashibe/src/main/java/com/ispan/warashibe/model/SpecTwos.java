@@ -1,7 +1,10 @@
 package com.ispan.warashibe.model;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -12,6 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -42,8 +46,8 @@ public class SpecTwos {
 	private SpecImg specTwoImg;
 	
 	@ManyToOne
-	@JsonIdentityReference(alwaysAsId = true)
 	@JoinColumn(name = "specTwoNameID", nullable = false)
+	@JsonIncludeProperties({"specTwoName","specTwoNameID"})
 	private SpecTwoNames specTwoName;
 	
 	@JsonProperty("specTwoName")
@@ -57,4 +61,8 @@ public class SpecTwos {
 		this.specTwoImg = new SpecImg();
 		this.specTwoImg.setSpecImgID(specTwoImgId);
 	}
+	
+	@OneToMany(mappedBy = "specTwo")
+	@JsonIdentityReference(alwaysAsId = true)
+	private List<Cart> cart;
 }

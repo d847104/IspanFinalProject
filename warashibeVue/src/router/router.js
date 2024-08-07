@@ -2,10 +2,14 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import Login from '@/views/secure/Login.vue';
+<<<<<<< HEAD
 import SecondHand from '@/views/SecondHand.vue';
 import infiniteTest from '@/views/infiniteTest.vue';
 import Cart from '@/views/pages/Cart.vue';
 import Messenger from '@/views/pages/Messenger.vue';
+=======
+import Cart from '@/views/orders/Cart.vue';
+>>>>>>> origin/Angel
 
 //1. 引用元件
 import NotFound from "../views/NotFound.vue";
@@ -27,11 +31,16 @@ import routerPages from '@/views/pages/router-pages';
 const routes = [
     { name: "home", path: '/', component: Home },
     { name: "notfound-link", path: "/:pathMatch(.*)*", component: NotFound },
+<<<<<<< HEAD
     { name: "Login", path: '/login', component: Login },
     { path: '/secondHand', component: SecondHand },
     { path: '/infiniteTest', component: infiniteTest },
     { name: 'cart', path: '/cart', component: Cart },
     { name: 'messenger', path: '/messenger', component: Messenger },
+=======
+    { path: '/login', component: Login },
+    { name: 'cart', path: '/cart', component: Cart},
+>>>>>>> origin/Angel
     ...routerSecure,
     ...routerPages,
     ...routerProduct,

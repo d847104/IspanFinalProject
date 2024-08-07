@@ -13,19 +13,19 @@
                                         <h4 class="card-title">{{ cart.product.productName }}</h4>
                                         <p class="card-text text-end fs-4">
                                                 <!-- 商品規格(若存在) -->
-                                                <template v-if="cart.productSpec">
+                                                <template v-if="cart.specOne">
                                                         <!-- 商品規格一 -->
-                                                        <div class="row mt-2" v-if="cart.productSpec.specOneName">
-                                                                <span class="col">{{ cart.productSpec.specOneName }}</span>
+                                                        <div class="row mt-2" v-if="cart.specOne">
+                                                                <span class="col">{{ cart.specOne.specOneName.specOneName }}</span>
                                                                 <div class="input-group col justify-content-center">
-                                                                        {{ cart.productSpec.specOne }}
+                                                                        {{ cart.specOne.specOne }}
                                                                 </div>
                                                         </div>
                                                         <!-- 商品規格二 -->
-                                                        <div class="row mt-2" v-if="cart.productSpec.specTwoName">
-                                                                <span class="col"> {{ cart.productSpec.specTwoName }}</span>
+                                                        <div class="row mt-2" v-if="cart.specTwo">
+                                                                <span class="col"> {{ cart.specTwo.specTwoName.specTwoName }}</span>
                                                                 <div class="input-group col justify-content-center">
-                                                                        {{ cart.productSpec.specTwo }}
+                                                                        {{ cart.specTwo.specTwo }}
                                                                 </div>
                                                         </div>
                                                 </template>
@@ -66,7 +66,7 @@
                         <!-- 選取商品 CHECKBOX -->
                         <div class="card-body col-md-1 align-self-stretch d-flex align-items-center justify-content-center" style="background-color: var(--bs-light);">
                                 <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" style="width:2em; height:2em;" value="" :id="cart.product.productID+'ck'">
+                                        <input class="form-check-input" type="checkbox" style="width:2em; height:2em;" value="" :id="cart.cartID" v-model="isSelected" :disabled="chbdisabled">
                                 </div>
                         </div>
                 </div>
@@ -87,10 +87,13 @@
                 });
         })
         
-        // 接收從 cart.vue 取得使用者在資料庫的cart資料
-        const props = defineProps(["cart"]);
+        // 接收從 cart.vue 取得使用者在資料庫的cart資料 以及是否勾選
+        const props = defineProps(["cart","isChecked"]);
         // 修改數量及刪除須回傳 cart.vue 重新渲染
-        const emits = defineEmits(["updateCart","removeCart"]);
+        const emits = defineEmits(["updateCart","removeCart","selectCart"]);
+        // 雙向綁定 cart.vue 是否勾選
+        const isSelected = defineModel("isChecked")
+        const chbdisabled = defineModel("isDisabled")
 
         // 若商品有圖片則選擇第一張的 ImgID 以網址 {id} 方式秀出圖片,否則使用 comingsoon
         const path = computed(() => {
@@ -101,8 +104,19 @@
                 }
         })
 
+        // 計算該規格的產品庫存量
+        const stock = computed(() => {
+                if (props.cart.specTwo) {
+                        return props.cart.specTwo.specTwoQt;
+                } else if (props.cart.specOne){
+                        return props.cart.specOne.specOneQt;
+                } else {
+                        return props.cart.product.stock;
+                }
+        })
+
         // 預設 Bootstrap tooltip 商品庫存訊息
-        const alert = `該產品庫存剩餘${props.cart.product.stock}件`;
+        const alert = ref(`該產品庫存剩餘${stock.value}件`);
 
         // 使用 ref 綁定數量 INPUT DOM 物件
         const quantityDOM = ref(null);
@@ -126,8 +140,8 @@
                 if(!Number.isInteger(cartQt) || cartQt <1){
                         quantity.value = focusQt;
                         return;
-                }else if(cartQt > props.cart.product.stock){
-                        quantity.value = props.cart.product.stock;
+                }else if(cartQt > stock.value){
+                        quantity.value = stock.value;
                         exceed.value = true;
                         Tooltip.getInstance(quantityDOM.value).show();
                         setTimeout(()=>Tooltip.getInstance(quantityDOM.value).hide(),1200);
@@ -141,11 +155,11 @@
         function addOne(){
                 exceed.value = false;
                 let cartQt = parseInt(quantity.value);
-                if(cartQt < props.cart.product.stock){
+                if(cartQt < stock.value){
                         cartQt++
                         quantity.value = cartQt;
                 }else{
-                        quantity.value = props.cart.product.stock;
+                        quantity.value = stock.value;
                         exceed.value = true;
                         Tooltip.getInstance(quantityDOM.value).show();
                         setTimeout(()=>Tooltip.getInstance(quantityDOM.value).hide(),1200);
@@ -177,13 +191,6 @@
                 }).then((result) => {
                         if (result.isConfirmed) {
                                 emits("removeCart",props.cart.cartID)
-                                Swal.fire({
-                                        position: "center",
-                                        icon: "success",
-                                        title: "已移除",
-                                        showConfirmButton: false,
-                                        timer: 800
-                                });
                         }
                 });
         }

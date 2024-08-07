@@ -31,24 +31,29 @@ public class Cart {
 	private Integer cartID;
 	
 	@ManyToOne
-	@JoinColumn(name = "memberID", nullable = false)
+	@JoinColumn(name = "member", nullable = false)
 	@JsonIdentityReference(alwaysAsId = true)
 	private Members member;
 	
 	@ManyToOne
-	@JoinColumn(name = "productID", nullable = false)
+	@JoinColumn(name = "product", nullable = false)
 	@JsonIncludeProperties({"productID","productName","productImgs","stock","specOneName"})
 	private Products product;
 	
 	@ManyToOne
-	@JoinColumn(name = "specID", nullable = true)
-	@JsonIncludeProperties({"specID","specOneName","specOne","specTwoName","specTwo","specImg"})
-	private ProductSpec productSpec;
-	
-	@ManyToOne
-	@JoinColumn(name = "sellerID", nullable = false)
+	@JoinColumn(name = "seller", nullable = false)
 	@JsonIncludeProperties({"memberID","username"})
 	private Members seller;
+	
+	@ManyToOne
+	@JoinColumn(name = "specOne", nullable = true)
+	@JsonIncludeProperties({"specOneID","specOne","specOneQt","specOneImg","specOneName"})
+	private SpecOnes specOne;
+	
+	@ManyToOne
+	@JoinColumn(name = "specTwo", nullable = true)
+	@JsonIncludeProperties({"specTwoID","specTwo","specTwoQt","specTwoImg","specTwoName"})
+	private SpecTwos specTwo;
 	
 	@Column(name = "quantity", nullable = false)
 	private Integer quantity;
@@ -66,18 +71,26 @@ public class Cart {
 		this.product = new Products();
 		this.product.setProductID(productId);
 	}
-	
-	@JsonProperty("productSpec")
-	public void setSpecById(Object specId) {
-		this.productSpec = new ProductSpec();
-		if(specId!=null) {
-			this.productSpec.setSpecID((Integer)specId);
-		} else {this.productSpec = null;}
-	}	
-	
+		
 	@JsonProperty("seller")
 	public void setSellerById(Integer sellerId) {
 		this.seller = new Members();
 		this.seller.setMemberID(sellerId);
+	}
+	
+	@JsonProperty("specOne")
+	public void setSpecOneById(Integer specOneId) {
+		this.specOne = new SpecOnes();
+		if(specOneId!=null) {
+			this.specOne.setSpecOneID(specOneId);			
+		} else {this.specOne = null;}
+	}
+	
+	@JsonProperty("specTwo")
+	public void setSpecTwoById(Integer specTwoId) {
+		this.specTwo = new SpecTwos();
+		if(specTwoId!=null) {
+			this.specTwo.setSpecTwoID(specTwoId);			
+		} else {this.specTwo = null;}
 	}
 }
