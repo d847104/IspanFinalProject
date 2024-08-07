@@ -25,15 +25,6 @@
                                                 </select>
                                                 <!-- 規格二(若存在) -->
                                                 <template v-if="filteredSpecTwos.length">
-<<<<<<< HEAD
-=======
-                                                        <select class="form-select" v-model="selectedSpecTwo">
-                                                        <option value="" disabled selected>請選擇{{ filteredSpecTwoName }}</option>
-                                                        <option v-for="specTwo in filteredSpecTwos" :key="specTwo.specTwo" :value="specTwo.specTwoID">{{ specTwo.specTwo }}</option>
-                                                        </select>
-                                                </template>
-                                                 <template v-if="filteredSpecTwos.length">
->>>>>>> 0d2bb8b28ef975a21f731d8367912a5e71b0022f
                                                         <select class="form-select" v-model="selectedSpecTwo" @change="specTwoChange">
                                                                 <option value="" disabled selected>請選擇{{ filteredSpecTwoName }}</option>
                                                                 <option v-for="specTwo in filteredSpecTwos" :key="specTwo.specTwo" :value="specTwo.specTwoID">{{ specTwo.specTwo }}</option>

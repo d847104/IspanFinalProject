@@ -33,10 +33,7 @@
             </button>
             </div>
         </div>
-<<<<<<< HEAD
         </div>
-=======
->>>>>>> 0d2bb8b28ef975a21f731d8367912a5e71b0022f
         <!-- 右側商品資訊區域 -->
         <div class="col-md-5">
         <h1>{{ product.productName }}</h1>

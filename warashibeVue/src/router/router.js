@@ -2,13 +2,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import Login from '@/views/secure/Login.vue';
-<<<<<<< HEAD
 import Cart from '@/views/orders/Cart.vue';
 import Messenger from '@/views/pages/Messenger.vue';
-=======
-import Messenger from '@/views/pages/Messenger.vue';
-import Cart from '@/views/orders/Cart.vue';
->>>>>>> 0d2bb8b28ef975a21f731d8367912a5e71b0022f
 
 //1. 引用元件
 import NotFound from "@/views/NotFound.vue";
@@ -28,10 +23,6 @@ const routes = [
     { name: "Login", path: '/login', component: Login },
     { name: 'cart', path: '/cart', component: Cart },
     { name: 'messenger', path: '/messenger', component: Messenger },
-<<<<<<< HEAD
-=======
-    { path: '/login', component: Login },
->>>>>>> 0d2bb8b28ef975a21f731d8367912a5e71b0022f
     ...routerSecure,
     ...routerPages,
     ...routerProduct,
