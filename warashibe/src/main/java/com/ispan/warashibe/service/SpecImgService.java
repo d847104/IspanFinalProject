@@ -16,14 +16,16 @@ public class SpecImgService {
     @Autowired
     private SpecImgRepository specImgRepository;
 
-    public void saveSpecImg(SpecImg specImg, MultipartFile image) throws Exception {
+    public SpecImg saveSpecImg(MultipartFile image) throws Exception {
+    	SpecImg specImg = new SpecImg();
         if (image != null && !image.isEmpty()) {
             specImg.setSpecImg(image.getBytes());
         }
-        specImgRepository.save(specImg);
+        SpecImg save = specImgRepository.save(specImg);
+		return save;
     }
 
-    public void updateSpecImg(Integer id, SpecImg updatedSpecImg, MultipartFile image) throws Exception {
+    public void updateSpecImg(Integer id, MultipartFile image) throws Exception {
         SpecImg specImg = specImgRepository.findById(id)
                 .orElseThrow(() -> new Exception("SpecImg not found with ID " + id));
 
