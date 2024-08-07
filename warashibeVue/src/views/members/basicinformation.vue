@@ -184,30 +184,50 @@ function cancelEdit() {
 }
 
 function saveChanges() {
-
-    // 彈出處理中提示
     Swal.fire({
         text: "儲存中...",
         allowOutsideClick: false,
-        showConfirmButton: false,
-
+        showConfirmButton: false
     });
 
-    // 發送 PUT 請求更新會員資料
-    axiosapi.put(`/ajax/members/update/${selectedMember.value.id}`, {
+    const formData = new FormData();
+
+    // 確保文件已正確添加
+    const fileInput = document.querySelector('input[type="file"]');
+    if (fileInput && fileInput.files.length > 0) {
+        formData.append('image', fileInput.files[0]);
+    } else {
+        // 如果沒有新的文件，將原始圖片轉換為 Blob
+        if (selectedMember.value.profileImg) {
+            const base64Image = selectedMember.value.profileImg;
+            const blob = dataURLToBlob(`data:image/png;base64,${base64Image}`);
+            formData.append('image', blob, 'profile-image.png');
+        }
+    }
+
+    /// 將所有必要的欄位整合到一個 JSON 對象中
+    const body = {
         id: selectedMember.value.id,
         username: selectedMember.value.username,
         mobile: selectedMember.value.mobile,
         gender: selectedMember.value.gender
+    };
+
+    // 添加 JSON 對象到 FormData 中
+    formData.append('body', JSON.stringify(body));
+
+
+    axiosapi.put(`/ajax/members/update/${selectedMember.value.id}`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
     }).then(response => {
         if (response.data.success) {
             Swal.fire({
                 icon: "success",
                 text: response.data.message
             }).then(() => {
-                // 重新載入會員資料
                 findByMemberID(memberID.value);
-                // 恢復編輯狀態
                 cancelEdit();
             });
         } else {
@@ -216,14 +236,29 @@ function saveChanges() {
                 text: response.data.message
             });
         }
-    }).catch(function (error) {
-        console.log("error", error);
+    }).catch(error => {
+        console.error("error", error);
         Swal.fire({
             icon: "error",
-            text: "修改錯誤：" + error.message
+            text: "修改錯誤：" + (error.response?.data?.message || error.message)
         });
     });
 }
+
+// Helper function to convert Base64 to Blob
+function dataURLToBlob(dataURL) {
+    const [header, data] = dataURL.split(',');
+    const mime = header.split(':')[1].split(';')[0];
+    const bytes = atob(data);
+    const buffer = new ArrayBuffer(bytes.length);
+    const uint8Array = new Uint8Array(buffer);
+    for (let i = 0; i < bytes.length; i++) {
+        uint8Array[i] = bytes.charCodeAt(i);
+    }
+    return new Blob([uint8Array], { type: mime });
+}
+
+
 
 const onFileChange = async (event) => {
     const file = event.target.files[0];
