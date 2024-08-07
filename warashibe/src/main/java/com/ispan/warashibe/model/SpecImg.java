@@ -31,12 +31,12 @@ public class SpecImg {
 	@Lob
 	private byte[] specImg;
 	
-	@OneToOne(mappedBy = "specOneImg")
+	@OneToOne
 	@JsonIdentityReference(alwaysAsId = true)
 	@JoinColumn(name = "specOne")
 	private SpecOnes specOne;
 	
-	@OneToOne(mappedBy = "specTwoImg")
+	@OneToOne
 	@JsonIdentityReference(alwaysAsId = true)
 	@JoinColumn(name = "specTwo")
 	private SpecTwos specTwo;
