@@ -26,12 +26,14 @@
                         <RouterLink class="nav-link" to="#">商城/二手</RouterLink>
                     </li>
                     <!-- 搜尋列 -->
-                    <form class="d-flex search-form d-none d-lg-flex mx-auto" role="search">
-                        <input class="form-control me-1 search-bar" type="search" placeholder="Search"
-                            aria-label="Search">
-                        <button class="btn btn-outline-secondary search-button" type="submit">
+
+                    <form class="d-flex search-form d-none d-lg-flex mx-auto" role="search" @submit.prevent="search">
+                        <input v-model="keyword" class="form-control me-1 search-bar" 
+                            type="search" placeholder="Search" aria-label="Search">
+                        </input>
+                        <div @click="search" class="btn btn-outline-success search-button" type="submit">
                             <font-awesome-icon icon="fa-solid fa-search" />
-                        </button>
+                        </div>
                     </form>
                     <!-- 右側功能選單 -->
                     <li class="nav-item d-none d-lg-block">
@@ -145,8 +147,6 @@
     // 搜尋相關
     const keyword = ref("");
     async function search() {
-        
-        
         let requestSearch = {
             "name": keyword.value,
             "start": 0,

@@ -155,8 +155,6 @@
                 <div class="row justify-content-end">
                     <RouterLink :to="{ name: 'product-Upload-page-link' }" @click="upload"
                         class="btn btn-outline-primary col-md-3 rounded-pill ">送出</RouterLink>
-                    <RouterLink :to="{ name: 'product-Upload-page-link' }" @click="upload"
-                        class="btn btn-outline-primary col-md-3 rounded-pill ">新增下一筆</RouterLink>
                 </div>
             </div>
         </form>
@@ -274,14 +272,13 @@ async function upload() {
 
 }
 
-
 // 處理規格圖片上傳功能
 async function specPost(productID) {
     await uploadSpec(productID);
 }
 async function uploadSpec(productID) {
     try {
-        for (let index = 0; index < 1;   index++) {
+        for (let index = 0; index < 1; index++) {
             let spec = specs.value[index];
             let specOneNameRequest = {
                 "specOneName": spec.name,
