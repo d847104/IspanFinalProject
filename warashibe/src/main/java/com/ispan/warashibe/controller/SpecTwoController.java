@@ -30,7 +30,11 @@ public class SpecTwoController {
 	public String create(@RequestBody String body) {
 		JSONObject responseBody = new JSONObject();
 		SpecTwos specTwo = specTwoServ.create(body);
-		return specTwo != null ? responseBody.put("success", true).put("message", "新增成功").toString()
+		return specTwo != null ? responseBody
+				.put("success", true)
+				.put("message", "新增成功")
+				.put("specTwo", specTwo.getSpecTwoID())
+				.toString()
 				: responseBody.put("success", false).put("message", "新增失敗").toString();
 	}
 
