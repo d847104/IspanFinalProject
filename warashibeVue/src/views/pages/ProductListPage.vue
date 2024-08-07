@@ -114,7 +114,7 @@ function callSearch(page) {
     if (findName.value === "") {
         findName.value = null;
     }
-    console.log("page頁數", page);
+    // console.log("page頁數", page);
     if (page) {
         start.value = (page - 1) * rows.value;
         current.value = page;

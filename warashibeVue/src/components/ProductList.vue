@@ -51,12 +51,14 @@
                                             </div>
                                             <!-- <h6 class="text-success">Free shipping</h6> -->
                                             <div class="mt-4">
-                                                <a href="#"><font-awesome-icon :icon="['fas', 'cart-plus']" size="2x" pull="left" /></a>
+                                                <!-- <a href="#"><font-awesome-icon :icon="['fas', 'cart-plus']" size="2x" pull="left" /></a>
                                                 <button class="btn btn-primary shadow-0" type="button">直接購買</button>
                                                 <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover">
-                                                    <font-awesome-icon
-                                                        icon="fas fa-heart fa-lg px-1"></font-awesome-icon>
-                                                </a>
+                                                    <font-awesome-icon icon="fas fa-heart fa-lg px-1"></font-awesome-icon>
+                                                </a> -->
+                                                <button class="btn btn-success" @click="addToFavorite">加入最愛</button>&nbsp;
+                                                <!-- <button class="btn btn-primary" @click="addToCart">加入購物車</button>&nbsp; -->
+                                                <!-- <button class="btn btn-danger" @click="buyNow">直接購買</button> -->
                                             </div>
                                         </div>
                                     </div>
@@ -72,20 +74,65 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, inject } from 'vue';
 import axiosapi from '@/plugins/axios.js';
 const props = defineProps(["item"]);
-const photoPath = import.meta.env.VITE_API_PHOTO;
-// 定義一個 ref 來存儲圖片來源
-const imageSrc = ref(null);
+const imageSrc = ref(null); // 定義一個 ref 來存儲圖片來源
 const productRank = ref(0);
+const user = inject("user");
+import Swal from 'sweetalert2';
+
+const addToFavorite = async () => {
+    let data = {
+            memberID: user.value.id,
+            productID: props.item.productID,
+            sellerID: props.item.memberID
+        }
+    console.log(data);
+    console.log(props.item);
+    try {
+        await axiosapi.post('/ajax/favorite/insert', {
+            memberID: user.value.id,
+            productID: props.item.productID,
+            sellerID: props.item.member
+        });
+        Swal.fire('成功', '已將該商品加入最愛', 'success');
+    } catch (error) {
+        console.error('加入最愛失敗', error);
+        Swal.fire('失敗', '加入最愛失敗', 'error');
+    }
+};
+
+// const addToCart = async () => {
+//     try {
+//         const selectedSpec = productSpecs.value.find(spec => {
+//             const matchesSpecOne = selectedSpecOne.value ? spec.specOne === selectedSpecOne.value : true;
+//             const matchesSpecTwo = selectedSpecTwo.value ? spec.specTwo === selectedSpecTwo.value : true;
+//             return matchesSpecOne && matchesSpecTwo;
+//         });
+
+//         await axiosapi.post('/private/pages/cart/create', {
+//             member: user.value.id,
+//             product: product.value.productID,
+//             productSpec: selectedSpec.specID,
+//             seller: product.value.sellerID,
+//             quantity: quantity.value
+//         });
+//         Swal.fire('成功', '已將該商品加入購物車', 'success');
+//     } catch (error) {
+//         console.error('加入購物車失敗', error);
+//         Swal.fire('失敗', '加入購物車失敗', 'error');
+//     }
+// };
+
+
 
 // 定義一個函數來獲取圖片數據
 const fetchImage = async () => {
     try {
         if (props.item && props.item.productImgs && props.item.productImgs.length > 0) {
-            const response = await axiosapi.get(`${photoPath}${props.item.productImgs[0]}`);
-            const base64Image = response.data.list.img;
+            const response = await axiosapi.get(`/api/productImg/product/${props.item.productID}`);            
+            const base64Image = response.data.list[0].img;
             if (base64Image) {
                 imageSrc.value = `data:image/png;base64,${base64Image}`;
             } else {

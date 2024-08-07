@@ -43,15 +43,19 @@
 import compCard from '@/components/compCard.vue';
 import axiosapi from '@/plugins/axios';
 import { ref, onMounted, onUnmounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+const route = useRoute();
+const router = useRouter();
 const SellerProducts = ref([]);
 const seller = ref([]);
 const productTotal = ref(0);
 const averageRanking = ref(0);
 const profileImgUrl = ref(null);
+const sellerID = ref(route.query.sellerID);
 
 onMounted(function () {
     loadProductsFromLocalStorage();
-    callProduct(1);
+    callProduct(sellerID.value);
 });
 
 // 从本地存储加载数据
@@ -62,7 +66,6 @@ const loadProductsFromLocalStorage = () => {
 
 //sellerID
 async function callProduct(sellerID) {
-    // 暫時寫1號
     axiosapi.get(`/api/products/member/${sellerID}`).then(function (response) {
         //取得賣家資訊
         productTotal.value = response.data.count;

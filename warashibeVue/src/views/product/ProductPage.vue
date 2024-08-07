@@ -26,7 +26,7 @@
                 </div>
             </div>
         </div>
-        <!-- 右侧商品信息区域 -->
+        <!-- 右側商品資訊區域 -->
         <div class="col-md-5">
             <h1>{{ product.productName }}</h1>
             <p class="price">NT$ {{ product.price }}</p>
