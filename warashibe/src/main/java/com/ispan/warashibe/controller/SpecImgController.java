@@ -41,14 +41,13 @@ public class SpecImgController {
     private ObjectMapper objMapper;
 
     @PostMapping
-    public String saveSpecImg(@RequestParam("jsonSpecImg") String jsonSpecImg,
-                              @RequestParam(value = "image", required = false) MultipartFile image) throws JSONException {
+    public String saveSpecImg(@RequestParam(value = "image", required = false) MultipartFile image) throws JSONException {
         JSONObject responseBody = new JSONObject();
         try {
-            SpecImg specImg = objMapper.readValue(jsonSpecImg, SpecImg.class);
-            specImgService.saveSpecImg(specImg, image);
+            SpecImg saveSpecImg = specImgService.saveSpecImg(image);
             responseBody.put("success", true);
             responseBody.put("message", "新增成功");
+            responseBody.put("ImgID", saveSpecImg.getSpecImgID());
         } catch (Exception e) {
             responseBody.put("success", false);
             responseBody.put("message", "新增失敗: " + e.getMessage());
@@ -57,12 +56,11 @@ public class SpecImgController {
     }
 
     @PutMapping("/{id}")
-    public String updateSpecImg(@PathVariable Integer id, @RequestParam("jsonSpecImg") String jsonSpecImg,
+    public String updateSpecImg(@PathVariable Integer id,
                                 @RequestParam(value = "image", required = false) MultipartFile image) throws JSONException {
         JSONObject responseBody = new JSONObject();
         try {
-            SpecImg specImg = objMapper.readValue(jsonSpecImg, SpecImg.class);
-            specImgService.updateSpecImg(id, specImg, image);
+            specImgService.updateSpecImg(id, image);
             responseBody.put("success", true);
             responseBody.put("message", "更新成功");
         } catch (Exception e) {

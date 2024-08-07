@@ -2,12 +2,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import Login from '@/views/secure/Login.vue';
-import Cart from '@/views/orders/Cart.vue';
 import Messenger from '@/views/pages/Messenger.vue';
+import Cart from '@/views/orders/Cart.vue';
 
 //1. 引用元件
-import NotFound from "../views/NotFound.vue";
-// import routerBuyer from '../views/buyer/router-buyer.js';
+import NotFound from "@/views/NotFound.vue";
 import routerBuyer from '@/views/buyer/router-buyer.js';
 import routerMembers from '@/views/members/router-members.js';
 import routerSecure from '@/views/secure/router-secure.js';
@@ -15,11 +14,7 @@ import routerProduct from '@/views/product/router-product';
 import routerSeller from '@/views/seller/router-seller';
 import routerOther from '@/views/other/router-other';
 import routerPages from '@/views/pages/router-pages';
-// import routerCore2 from '../views/03-core2/router-core.js';
-// import routerComp from '../views/04-comp/router-comp.js';
-// import routerImpl from '../views/05-impl/router-impl.js';
-// import routerAdvance from '../views/08-advance/router-advance.js';
-// import routerLibrarys from '../views/09-librarys/router-librarys.js';
+
 
 // 2. 定義網頁路由
 const routes = [
@@ -35,7 +30,9 @@ const routes = [
     ...routerBuyer,
     ...routerSeller,
     ...routerMembers,
-    ...routerOther
+    ...routerOther,
+
+
 ];
 
 // 3. 產生路由物件

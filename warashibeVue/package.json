@@ -34,7 +34,8 @@
     "vue-flatpickr-component": "^11.0.5",
     "vue-router": "^4.4.0",
     "vue-upload-component": "^2.8.23",
-    "vuejs-paginate-next": "^1.0.2"
+    "vuejs-paginate-next": "^1.0.2",
+    "warashibevue": "file:"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.5",

@@ -133,6 +133,6 @@ public class Products {
     private List<Favorite> favorite;
 
     @OneToOne(mappedBy = "product")
-    @JsonIncludeProperties({ "specOneName", "specOneNameID", "specOnes" })
+    @JsonIncludeProperties({"specOneName","specOneNameID","specOnes"})
     private SpecOneNames specs;
 }

@@ -1,5 +1,5 @@
 <template>
-        <nav class="navbar navbar-expand-lg bg-body-tertiary container">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary container fixed-nav">
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                         <ul class="navbar-nav w-100 justify-content-evenly">
                                 <template v-for="mainCategory in mainCategories" :key="mainCategory.mainCategoryID">
@@ -9,7 +9,7 @@
                                         <li class="nav-item dropdown" v-if="mainCategory.subCategories.length !== 0" >
                                                 <a class="nav-link dropdown-toggle fs-5 fw-bold" href="#" role="button"
                                                         data-bs-toggle="dropdown" aria-expanded="false">{{
-                                                        mainCategory.mainCategory }}</a>
+                                                                mainCategory.mainCategory }}</a>
                                                 <ul class="dropdown-menu">
                                                         <template v-for="subCategory in filteredSubCategories(mainCategory.mainCategoryID)" :key="subCategory.subCategoryID">
                                                                 <li
@@ -94,5 +94,10 @@ async function postSubcategory(subcategoryID) {
 .dropdown>.dropdown-toggle:active {
         /*Without this, clicking will make it sticky*/
         pointer-events: none;
+}
+
+.fixed-nav {
+        background-color: #FCFCFC;
+        /* 設定背景顏色以匹配 .navbar */
 }
 </style>
