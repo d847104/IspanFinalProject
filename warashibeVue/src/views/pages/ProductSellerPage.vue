@@ -155,7 +155,6 @@ const fetchProductImage = async (imgID) => {
     align-items: center;
     min-height: 50vh;
     min-width: 100vh;
-    background-color: #bfc7ee;
     padding: 20px;
 }
 
