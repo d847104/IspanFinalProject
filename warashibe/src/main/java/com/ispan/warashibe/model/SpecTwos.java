@@ -59,7 +59,9 @@ public class SpecTwos {
 	@JsonProperty("specTwoImg")
 	public void setSpecOneImgById(Integer specTwoImgId) {
 		this.specTwoImg = new SpecImg();
-		this.specTwoImg.setSpecImgID(specTwoImgId);
+		if(specTwoImgId!=null) {
+			this.specTwoImg.setSpecImgID(specTwoImgId);			
+		} else {this.specTwoImg = null;}
 	}
 	
 	@OneToMany(mappedBy = "specTwo")
