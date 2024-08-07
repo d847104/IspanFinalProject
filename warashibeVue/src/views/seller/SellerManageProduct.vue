@@ -9,7 +9,7 @@
         </div>
         <div class="product-item" v-for="product in onSaleProducts" :key="product.productID">
         <div class="product-info">
-            <img :src="product.imageUrl || '/default-product.png'" alt="商品圖片" class="product-image" />
+            <img :src="product.imageUrl || '/default-product.png'" alt="商品圖片" class="product-image" @click="gotoProductPage(product)"/>
             <div class="product-details">
             <div>
                 商品名稱:
@@ -135,6 +135,7 @@
 <script setup>
 import { ref, inject, onMounted } from 'vue';
 import axiosapi from '@/plugins/axios';
+import router from '@/router/router';
 
 const user = inject('user');
 const onSaleProducts = ref([]);
@@ -153,6 +154,10 @@ const saveProductsToLocalStorage = () => {
 localStorage.setItem('onSaleProducts', JSON.stringify(onSaleProducts.value));
 localStorage.setItem('offSaleProducts', JSON.stringify(offSaleProducts.value));
 };
+
+const gotoProductPage = (product) => {
+    router.push(`/pages/productpage?productID=${product.productID}`);
+}
 
 const fetchMemberProducts = async () => {
 if (user.value) {
@@ -383,6 +388,7 @@ align-items: center;
 width: 100px;
 height: 100px;
 margin-right: 10px;
+cursor: pointer; /* 添加此行以更改鼠标光标 */
 }
 
 .product-details {

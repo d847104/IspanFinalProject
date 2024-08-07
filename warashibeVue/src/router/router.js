@@ -2,9 +2,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import Login from '@/views/secure/Login.vue';
-import SecondHand from '@/views/SecondHand.vue';
-import infiniteTest from '@/views/infiniteTest.vue';
-import Cart from '@/views/pages/Cart.vue';
+import Cart from '@/views/orders/Cart.vue';
+import Messenger from '@/views/pages/Messenger.vue';
 
 
 //1. 引用元件
@@ -22,10 +21,10 @@ import routerPages from '@/views/pages/router-pages';
 const routes = [
     { name: "home", path: '/', component: Home },
     { name: "notfound-link", path: "/:pathMatch(.*)*", component: NotFound },
+    { name: "Login", path: '/login', component: Login },
+    { name: 'cart', path: '/cart', component: Cart },
+    { name: 'messenger', path: '/messenger', component: Messenger },
     { path: '/login', component: Login },
-    { path: '/secondHand', component: SecondHand},
-    { path: '/infiniteTest', component: infiniteTest},
-    { name: 'cart', path: '/cart', component: Cart},
     ...routerSecure,
     ...routerPages,
     ...routerProduct,
@@ -42,6 +41,18 @@ const router = createRouter({
     history: createWebHistory(),
     routes: routes,
 })
+
+// 添加全局前置守卫
+router.beforeEach((to, from, next) => {
+    const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+    const isAuthenticated = sessionStorage.getItem("token"); // 假设登录后会将token存储在sessionStorage
+
+    if (requiresAuth && !isAuthenticated) {
+        next({ name: 'Login' });
+    } else {
+        next();
+    }
+});
 
 // 4. 導出路由物件以利其他元件導入
 export default router

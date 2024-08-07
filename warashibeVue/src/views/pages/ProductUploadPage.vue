@@ -123,42 +123,36 @@
                 </div>
             </div>
 
-            <span style="margin-right: 30px;" class="col-md-3">規格ㄧ：</span>
-            <div class="form-floating mb-3">
+            <div v-for="(spec, index) in specs" :key="index" class="form-floating mb-3">
+                <span style="margin-right: 30px;" class="col-md-3">規格 {{ index + 1 }}：</span>
                 <div class="input-row">
                     <div class="input-group">
-                        <input v-model="specName1" type="text" class="form-control" id="specName" placeholder="請輸入規格名稱">
+                        <input v-model="spec.name" type="text" class="form-control" placeholder="請輸入規格名稱">
                     </div>
                     <div class="input-group">
-                        <input v-model="spec1" type="text" class="form-control" id="specCate" placeholder="請輸入規格內容">
-                    </div>
-                </div>
-
-            </div>
-
-            <span style="margin-right: 30px;" class="col-md-3">規格二：</span>
-            <div class="form-floating mb-3">
-                <div class="input-row">
-                    <div class="input-group">
-                        <input v-model="specName2" type="text" class="form-control" id="specName" placeholder="請輸入規格名稱">
+                        <input v-model="spec.content" type="text" class="form-control" placeholder="請輸入規格內容">
                     </div>
                     <div class="input-group">
-                        <input v-model="spec2" type="text" class="form-control" id="specCate" placeholder="請輸入規格內容">
+                        <input v-model="spec.quantity" type="number" class="form-control" placeholder="請輸入數量">
                     </div>
                     <div class="input-group">
-                        <input v-model="specNum" type="number" class="form-control" id="specQt" placeholder="請輸入數量">
+                        <input type="file" @change="event => specImageChange(event, index)" />
                     </div>
-
-                </div>
-                <!-- <input type="file" @change="handleFileChange" multiple /> -->
-                <input type="file" @change="specImageChange" />
-                <div v-if="specImage1.url" class="specImage1-preview">
-                    <div class="specImage1-container">
-                        <img :src="specImage1.url" alt="Preview" class="preview-specImage1" />
-                        <div @click="removeSpecImage1" class="remove-btn">X</div>
+                    <div v-if="spec.image.url" class="specImage-preview">
+                        <div class="specImage-container">
+                            <img :src="spec.image.url" alt="Preview" class="preview-specImage" />
+                            <div @click="() => removeSpecImage(index)" class="remove-btn">X</div>
+                        </div>
                     </div>
+                    <button type="button" @click="removeSpec(index)" class="btn btn-danger">移除</button>
                 </div>
             </div>
+
+            <button type="button" @click="addSpec" class="btn btn-primary">新增規格</button>
+
+
+
+
 
             <div class="form-floating mb-3">
                 <div class="row justify-content-end">
@@ -208,6 +202,36 @@ const price = ref(0);
 const stock = ref(0);
 const description = ref('');
 const isSecondHand = ref(false);
+
+// 動態規格
+const specs = ref([
+    { name: '', content: '', quantity: 0, image: {} }
+]);
+
+const addSpec = () => {
+    specs.value.push({ name: '', content: '', quantity: 0, image: {} });
+};
+
+const removeSpec = (index) => {
+    specs.value.splice(index, 1);
+};
+
+const specImageChange = (event, index) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            specs.value[index].image = { file: file, url: e.target.result };
+        };
+        reader.readAsDataURL(file);
+    }
+};
+
+const removeSpecImage = (index) => {
+    specs.value[index].image = {};
+};
+
+
 const onMainCategoryChange = () => {
     subCategories.value = allSubCate.value.filter((subcate) => subcate.mainCategory === selectedMain.value);
     selectedSub.value = '';
@@ -264,26 +288,33 @@ async function upload() {
 
 }
 
+
+
+
+
 // 處理規格圖片上傳功能
 async function specPost(productID) {
-    const formData = new FormData();
-    formData.append('jsonProduct',
-        JSON.stringify({
-            productID: productID,
-            specOne: spec1.value,
-            specOneName: specName1.value,
-            specTwo: spec2.value,
-            specTwoName: specName2.value,
-            specQt: specNum.value,
 
-        }));
-    formData.append('image', specImage1.value.file);
-    await uploadSpec(formData);
+    for (const spec of specs.value) {
+        const formData = new FormData();
+        formData.append('jsonProduct',
+            JSON.stringify({
+                specOne: spec.content,
+                specOneName: spec.name,
+                specTwo: '',
+                specTwoName: '',
+                specQt: spec.quantity,
+
+            }));
+        formData.set('productID', productID);
+        formData.append('image', spec.image.file.file);
+        await uploadSpec(formData);
+    }
 }
 
 async function uploadSpec(formData) {
     try {
-        await axiosapi.post("/api/productSpec", formData, {
+        await axiosapi.post("/api/spec/create", formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -327,19 +358,19 @@ async function uploadImage(formData) {
 }
 
 // 處理規格單張圖片上傳
-const specImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            specImage1.value = { file: file, url: e.target.result };
-        };
-        reader.readAsDataURL(file);
-    }
-}
-const removeSpecImage1 = () => {
-    specImage1.value = {};
-};
+// const specImageChange = (event) => {
+//     const file = event.target.files[0];
+//     if (file) {
+//         const reader = new FileReader();
+//         reader.onload = (e) => {
+//             specImage1.value = { file: file, url: e.target.result };
+//         };
+//         reader.readAsDataURL(file);
+//     }
+// }
+// const removeSpecImage1 = () => {
+//     specImage1.value = {};
+// };
 
 // 處理圖片預覽(新增、刪除)
 const handleFileChange = (event) => {
@@ -466,61 +497,43 @@ function callDelivery() {
 </script>
 
 <style>
-.specImage1-preview {
-    flex-wrap: nowrap;
-    display: flex;
-    overflow-x: auto;
-    /*當圖片數量超過容器寬度時，會顯示水平滾動條*/
-    margin-top: 10px;
+
+.form-container {
+    margin: 20px;
 }
 
-.specImage1-container {
-    position: relative;
-    margin: 5px;
-    border: 1px solid #ccc;
-    padding: 5px;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f8f8f8;
+.form-floating {
+    margin-bottom: 20px;
 }
-
-.preview-specImage1 {
-    max-width: 100%;
-    max-height: 100%;
-}
-
 
 .input-row {
     display: flex;
-    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
 .input-group {
-    display: flex;
-    flex-direction: row;
-    width: 220px;
+    margin-right: 10px;
 }
 
+.specImage-preview {
+    margin-top: 10px;
+}
 
-.form-container {
+.specImage-container {
     display: flex;
-    justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    background-color: #f0dddd;
-    padding: 20px;
 }
 
-.upload-form {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 800px;
+.preview-specImage {
+    max-width: 50px;
+    max-height: 50px;
+    margin-right: 10px;
+}
+
+.remove-btn {
+    cursor: pointer;
+    color: red;
 }
 
 .image-preview {
@@ -543,25 +556,10 @@ function callDelivery() {
     justify-content: center;
     background-color: #f8f8f8;
 }
-
 .preview-img {
     max-width: 100%;
     max-height: 100%;
 }
 
-.remove-btn {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: rgba(255, 0, 0, 0.7);
-    color: black;
-    border: none;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
+
 </style>

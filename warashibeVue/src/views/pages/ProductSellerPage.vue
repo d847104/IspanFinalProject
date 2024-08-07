@@ -42,21 +42,20 @@
 <script setup>
 import compCard from '@/components/compCard.vue';
 import axiosapi from '@/plugins/axios';
-import { ref, onMounted, inject } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+const route = useRoute();
+const router = useRouter();
 const SellerProducts = ref([]);
 const seller = ref([]);
 const productTotal = ref(0);
 const averageRanking = ref(0);
-const profileImg = ref(null);
 const profileImgUrl = ref(null);
-
-// const user = inject('user');
-
+const sellerID = ref(route.query.sellerID);
 
 onMounted(function () {
     loadProductsFromLocalStorage();
-    callProduct(1);
-
+    callProduct(sellerID.value);
 });
 
 // 从本地存储加载数据
@@ -67,7 +66,6 @@ const loadProductsFromLocalStorage = () => {
 
 //sellerID
 async function callProduct(sellerID) {
-    // 暫時寫1號
     axiosapi.get(`/api/products/member/${sellerID}`).then(function (response) {
         //取得賣家資訊
         productTotal.value = response.data.count;
@@ -77,7 +75,7 @@ async function callProduct(sellerID) {
             getSellerInfo(products[0].member);
             getSellerProductsRank(products[0].member);
             for (let product of products) {
-                product.isEditing = false; // 默认不可编辑
+                product.isEditing = false; // 預設不可編輯
                 if (product.productImgs.length > 0) {
                     const imgID = product.productImgs[0];
                     product.imageUrl = fetchProductImage(imgID);
@@ -118,7 +116,6 @@ async function getSellerInfo(sellerID) {
         seller.value = response.data.list;
         if (seller.value[0] && seller.value[0].profileImg) {
             profileImgUrl.value = `data:image/png;base64,${seller.value[0].profileImg}`;
-            console.log(profileImgUrl.value);
         } else {
             profileImgUrl.value = '/default-person.png';
         }

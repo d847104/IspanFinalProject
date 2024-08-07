@@ -63,4 +63,7 @@ public class RankService {
         return rankRepository.findByMember_MemberID(memberID);
     }
     
+    public List<Rank> getRanksByProductID(Integer productID) {
+        return rankRepository.findByProduct_ProductID(productID);
+    }    
 }

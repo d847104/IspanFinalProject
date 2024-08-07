@@ -20,7 +20,7 @@ import com.ispan.warashibe.model.Cart;
 import com.ispan.warashibe.service.CartService;
 
 @RestController
-@RequestMapping("/private/pages")
+@RequestMapping("/api/cart")
 @CrossOrigin
 public class CartController {
 	@Autowired
@@ -28,7 +28,7 @@ public class CartController {
 	@Autowired
 	private ObjectMapper objMapper;
 	
-	@PostMapping("/cart/create")	// 新增一筆
+	@PostMapping("/create")	// 新增一筆
 	public String create(@RequestBody String body) {
 		JSONObject responseBody = new JSONObject();
 		Cart product = cartServ.create(body);
@@ -37,7 +37,7 @@ public class CartController {
 					responseBody.put("success", false).put("message", "新增失敗").toString();
 	}
 	
-	@PutMapping("/cart/modify")	// 修改一筆
+	@PutMapping("/modify")	// 修改一筆
 	public String modify(@RequestBody String body) {
 		JSONObject responseBody = new JSONObject();
 		Cart product = cartServ.modify(body);
@@ -46,7 +46,7 @@ public class CartController {
 		} return responseBody.put("success", false).put("message", "修改失敗").toString();
 	}
 	
-	@GetMapping("/cart/{id}")	// 查詢一筆
+	@GetMapping("/{id}")	// 查詢一筆
 	public String findById(@PathVariable Integer id) {
 		JSONObject responseBody = new JSONObject();
 		JSONArray array = new JSONArray();
@@ -59,7 +59,7 @@ public class CartController {
 		return responseBody.toString();
 	}
 	
-	@DeleteMapping("/cart/delete/{id}")	// 刪除一筆
+	@DeleteMapping("/delete/{id}")	// 刪除一筆
 	public String delete(@PathVariable Integer id) {
 		JSONObject responseBody = new JSONObject();
 		if(cartServ.deleteById(id)) {
@@ -67,7 +67,7 @@ public class CartController {
 		} return responseBody.put("success", false).put("message", "刪除失敗").toString();
 	}
 	
-	@GetMapping("/cart/member/{id}")	// 以買家ID查詢多筆
+	@GetMapping("/member/{id}")	// 以買家ID查詢多筆
 	public String findByBuyerId(@PathVariable Integer id) {
 		JSONObject responseBody = new JSONObject();
 		JSONArray array = new JSONArray();

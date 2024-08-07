@@ -20,6 +20,15 @@
                 <ProductList v-if="!showPopular" v-for="item in products" :key="item.productID" :item="item"></ProductList>
                 <ProductList v-if="showPopular" v-for="item in products" :key="item.productID" :item="item"></ProductList>
             </div>
+            <div>
+                <Paginate :first-last-button="true" first-button-text="&lt;&lt;" last-button-text="&gt;&gt;"
+                prev-text="&lt;" next-text="&gt;"
+                :page-count="pages"
+                :initial-page="current"
+                v-model = "current"
+                :click-handler="callSearch">
+            </Paginate>
+            </div>
         </div>
     </div>
 
@@ -36,7 +45,9 @@ import ProductList from '@/components/ProductList.vue';
 import axiosapi from '@/plugins/axios.js';
 import swal from 'sweetalert2';
 import { ref, onMounted,  onUnmounted} from 'vue';
+import { nextTick } from 'vue';
 import emitter from '@/plugins/events';
+import Paginate from 'vuejs-paginate-next';
 
 const products = ref([]);
 const showPopular = ref(false); // 狀態變量用於切換顯示的產品列表
@@ -44,21 +55,28 @@ const total = ref(0)
 const current = ref(1)
 const pages = ref(0)
 const start = ref(0)
-const rows = ref(30)
+const rows = ref(10)
 const showDir = ref(false)
 const lastPageRows = ref(0)
 const findName = ref(""); //模糊查詢搜尋字串
+const receivedEvent = ref(false); // 增加的狀態變量
 
+onMounted(async() => {
+    emitter.on('result', receiveMessage);
+    await nextTick();
+    if (!receivedEvent.value) {
+        callSearch();
+    }
+});
 const receiveMessage = (msg) => {
+    console.log("收到的訊息",msg);
     products.value = msg;
+    receivedEvent.value = true; // 接收到事件时设置为 true
+
 };
 
-onMounted(function () {
-    callSearch();
-    emitter.on('sub', receiveMessage);
-});
 onUnmounted(() => {
-    emitter.off('sub', receiveMessage);
+    emitter.off('result', receiveMessage);
 });
 
 
@@ -92,10 +110,11 @@ function sortProducts(event) {
 
 
 function callSearch(page) {
+    
     if (findName.value === "") {
         findName.value = null;
     }
-    console.log("page頁數", page);
+    // console.log("page頁數", page);
     if (page) {
         start.value = (page - 1) * rows.value;
         current.value = page;

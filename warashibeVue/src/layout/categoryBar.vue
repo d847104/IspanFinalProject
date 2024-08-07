@@ -28,12 +28,14 @@
 </template>
 
 <script setup>
-import { ref,onMounted } from 'vue';
+import { ref,onMounted, nextTick } from 'vue';
 import axiosapi from '@/plugins/axios';
 import Swal from 'sweetalert2';
 import emitter from '@/plugins/events';
+import { useRouter } from 'vue-router'
 const mainCategories = ref([]);
 const subCategories = ref([]);
+const router = useRouter();
 
 onMounted(async () => {
         try {
@@ -57,9 +59,7 @@ function filteredSubCategories(mainCategoryID) {
 }
 async function postSubcategory(subcategoryID) {
         console.log(subcategoryID);
-        
-        // Reset subCategories to ensure it updates correctly
-        // subCategories.value = [];
+
         let requestSubCategory = {
                 "start": 0,
                 "max": 30,
@@ -69,7 +69,11 @@ async function postSubcategory(subcategoryID) {
 
         try {
                 let response = await axiosapi.post(`/api/products/category/${subcategoryID}`, requestSubCategory);
-                emitter.emit("sub", response.data.list);
+                router.push("/pages/productListPage").then(() => {
+                        emitter.emit("result", response.data.list);
+                });
+
+
         } catch (error) {
                 console.log("Error posting subcategory", error);
                 Swal.fire({

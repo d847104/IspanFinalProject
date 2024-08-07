@@ -35,7 +35,12 @@
                     </form>
                     <!-- 右側功能選單 -->
                     <li class="nav-item d-none d-lg-block">
-                        <RouterLink class="nav-link" to="#">
+                        <RouterLink class="nav-link" :to="{ name: 'cart' }">
+                            <font-awesome-icon :icon="['fas', 'cart-shopping']" />
+                        </RouterLink>
+                    </li>
+                    <li class="nav-item d-none d-lg-block">
+                        <RouterLink class="nav-link" :to="{ name: 'messenger' }">
                             <font-awesome-icon icon="fa-solid fa-comments" />
                         </RouterLink>
                     </li>
@@ -44,24 +49,18 @@
                     </li>
                     <li class="nav-item" v-if="!user">
                         <RouterLink class="nav-link" to="/secure/login"><font-awesome-icon
-                                :icon="['fas', 'right-to-bracket']" /></RouterLink>
+                            :icon="['fas', 'right-to-bracket']" /></RouterLink>
                     </li>
                     <li class="nav-item" v-if="!user">
                         <RouterLink class="nav-link" to="/secure/registerOne"><font-awesome-icon
-                                icon="fa-solid fa-user-plus" /></RouterLink>
+                            icon="fa-solid fa-user-plus" /></RouterLink>
                     </li>
                     <li class="nav-item" v-if="user">
-                        <span class="nav-link">HI~{{ user?.username }}</span>
+                        <span class="nav-link">{{ user?.username }}</span>
                     </li>
                     <li class="nav-item" v-if="user">
                         <button class="nav-link active" @click="logout"><font-awesome-icon
-                                icon="fa-solid fa-right-from-bracket" /></button>
-                    </li>
-                    <li class="nav-item">
-                        <RouterLink class="nav-link" :to="{ path: '/secure/member' }">會員中心</RouterLink>
-                    </li>
-                    <li class="nav-item">
-                        <RouterLink class="nav-link" :to="{ name: 'pages-checkout-link' }">結帳</RouterLink>
+                            icon="fa-solid fa-right-from-bracket" /></button>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -70,8 +69,12 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
                             <li>
-                                <RouterLink class="dropdown-item" to="#"
-                                    @click="checkAuth('/members/basicinformation')">會員基本資料</RouterLink>
+                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/secure/member')">會員中心
+                                </RouterLink>
+                            </li>
+                            <li>
+                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/members/basicinformation')">會員基本資料
+                                </RouterLink>
                             </li>
                             <li>
                                 <RouterLink class="dropdown-item" to="#" @click="checkAuth('/buyer/buyerorder')">買家訂單
@@ -86,8 +89,8 @@
                                     @click="checkAuth('/seller/sellermanageproduct')">賣家商品管理</RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/pages/productUploadPage')">
-                                    上架商品</RouterLink>
+                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/pages/productUploadPage')">上架商品
+                                </RouterLink>
                             </li>
                         </ul>
                     </li>
@@ -97,66 +100,88 @@
     </nav>
     <!-- </div> -->
 </template>
-
-<script setup>
-import { ref, inject } from 'vue'
-import { useRouter } from 'vue-router'
-import NotificationPop from '@/components/NotificationPop.vue';
-import axiosapi from '@/plugins/axios';
-
-const router = useRouter();
-
-// 登入相關
-const user = inject('user');
-const setUser = inject('setUser');
-function logout() {
-    axiosapi.defaults.headers.authorization = "";
-    sessionStorage.removeItem("memberID");
-    sessionStorage.removeItem("token");
-    setUser(false);
-    router.push("/secure/login");
-}
-
-const popupVisible = ref(false);
-
-const showPopup = () => {
-    console.log("show");
-    popupVisible.value = true;
-};
-
-const hidePopup = () => {
-    console.log("hide");
-    popupVisible.value = false;
-};
-
-const checkAuth = (path) => {
-    if (!user.value) {
-        router.push('/secure/login');
-    } else {
-        router.push(path);
+    
+    <script setup>
+    import { ref, inject } from 'vue'
+    import { useRouter } from 'vue-router'
+    import NotificationPop from '@/components/NotificationPop.vue';
+    import axiosapi from '@/plugins/axios';
+    import Swal from 'sweetalert2';
+    import emitter from '@/plugins/events';
+    const router = useRouter();
+    
+    // 登入相關
+    const user = inject('user');
+    const setUser = inject('setUser');
+    function logout(){
+        axiosapi.defaults.headers.authorization = "";
+        sessionStorage.removeItem("memberID");
+        sessionStorage.removeItem("token");
+        setUser(false);
+        router.push("/secure/login");
     }
-}
-</script>
+    
+    const popupVisible = ref(false);
+    
+    const showPopup = () => {
+        console.log("show");
+        popupVisible.value = true;
+    };
+    
+    const hidePopup = () => {
+        console.log("hide");
+        popupVisible.value = false;
+    };
+    
+    const checkAuth = (path) => {
+        if (!user.value) {
+            router.push('/secure/login');
+        } else {
+            router.push(path);
+        }
+    }
 
-<style scoped>
-.navbar {
-    position: fixed;
-    /* 固定在視窗中的位置 */
-    top: 0;
-    /* 距離視窗頂部 0 像素 */
-    left: 50px;
-    /* 距離視窗左邊 0 像素 */
-    width: 92.85%;
-    /* 設定寬度跟category一樣*/
-    background-color: #FCFCFC;
-    /* 背景顏色 */
+
+    // 搜尋相關
+    const keyword = ref("");
+    async function search() {
+        
+        
+        let requestSearch = {
+            "name": keyword.value,
+            "start": 0,
+            "max": 100,
+            "order": "productName",
+            "dir": false
+        }
+        try {
+            console.log(keyword.value);
+                let response = await axiosapi.post(`/api/products/search`, requestSearch);
+                router.push("/pages/productListPage").then(() => {
+                        emitter.emit("result", response.data.list);
+                });
+        } catch (error) {
+                console.log("Error search", error);
+                Swal.fire({
+                        icon: "error",
+                        text: "Error search: " + error.message,
+                        allowOutsideClick: false,
+                });
+        }
+        
+
+
+    }
+
+
+    </script>
+    
+    <style scoped>
+    .navbar {
+    padding: 5px 15px;
+    background-color: #343a40;
+    border-bottom: 1px solid #e7e7e7;
     font-size: 1.5rem;
-    /* 字體大小 */
-    box-sizing: border-box;
-    /* 確保 padding 不會超出容器 */
-    z-index: 1000;
-    /* 確保在其他內容之上 */
-    /* padding: 5px 15px; */
 }
 
 .logo {

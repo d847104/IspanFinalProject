@@ -111,6 +111,11 @@ public class RankController {
         List<Rank> ranks = rankService.getRanksByMemberID(memberID);
         return createResponse(ranks);
     }
+    @GetMapping("/product/{productID}")
+    public String getRanksByProductID(@PathVariable int productID) throws JSONException, JsonProcessingException, ParseException {
+        List<Rank> ranks = rankService.getRanksByProductID(productID);
+        return createResponse(ranks);
+    }
  
     private Pageable createPageRequest(JSONObject request) throws JSONException {
         int start = request.optInt("start", 0); // 默認值為0

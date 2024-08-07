@@ -1,5 +1,5 @@
 <template>
-  <div class="background">
+  <div class="background container p-4">
     <Navigation></Navigation>
     <categoryBar></categoryBar>
     <RouterView></RouterView>
@@ -55,8 +55,10 @@ provide('setUser', (newUser, token) => {
 
 <style>
 body {
-  background: url('/src/img/bg02.jpg') no-repeat center center fixed;
-  background-size: cover;
+  background: url('/src/img/bg01.jpg') no-repeat fixed;
+}
+.background{
+  background-color: rgba(255, 255, 255, 0.6);
 }
 
 /* .background{
