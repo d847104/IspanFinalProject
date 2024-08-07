@@ -1,7 +1,6 @@
 package com.ispan.warashibe.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,5 +48,27 @@ public class SpecImgService {
 
     public List<SpecImg> getAllSpecImgs() {
         return specImgRepository.findAll();
+    }
+    
+    public SpecImg createSpecOneImg(MultipartFile image, Integer specOneId) {
+    	SpecImg specImg = new SpecImg();
+    	if (image != null && !image.isEmpty() && specOneId != null) {
+            try {
+				specImg.setSpecImg(image.getBytes());
+			} catch (Exception e) {e.printStackTrace();}
+            specImg.setSpecOneById(specOneId);
+            return specImgRepository.save(specImg);
+        } return null;
+    }
+    
+    public SpecImg createSpecTwoImg(MultipartFile image, Integer specTwoId) {
+    	SpecImg specImg = new SpecImg();
+    	if (image != null && !image.isEmpty() && specTwoId != null) {
+            try {
+				specImg.setSpecImg(image.getBytes());
+			} catch (Exception e) {e.printStackTrace();}
+            specImg.setSpecTwoById(specTwoId);
+            return specImgRepository.save(specImg);
+        } return null;
     }
 }
