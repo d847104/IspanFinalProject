@@ -29,6 +29,8 @@ const routes = [
     { name: 'cart', path: '/cart', component: Cart },
     { name: 'messenger', path: '/messenger', component: Messenger },
     { path: '/login', component: Login },
+    ...routerSecure,
+    ...routerPages,
     ...routerProduct,
     ...routerBuyer,
     ...routerSeller,
