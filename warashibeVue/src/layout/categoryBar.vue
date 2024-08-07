@@ -97,8 +97,6 @@ async function postSubcategory(subcategoryID) {
 }
 
 .fixed-nav {
-        top: 111px;
-        /* 設定在 navbar 以下的高度 */
         background-color: #FCFCFC;
         /* 設定背景顏色以匹配 .navbar */
 }

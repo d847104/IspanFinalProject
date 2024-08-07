@@ -1,41 +1,40 @@
-    <template>
-        <br><br><br><br><br>
-        <div v-if="images.length" id="carouselExampleFade" class="carousel slide carousel-fade">
-            <div class="carousel-inner">
-                <div v-for="(image, index) in images" :key="image.imgID"
-                    :class="['carousel-item', { active: index === 0 }]">
-                    <img :src="`data:image/jpeg;base64,${image.img}`" class="d-block w-100"
-                        :alt="`Image ${image.imgID}`">
-                </div>
+<template>
+    <div v-if="images.length" id="carouselExampleFade" class="carousel slide carousel-fade">
+        <div class="carousel-inner">
+            <div v-for="(image, index) in images" :key="image.imgID"
+                :class="['carousel-item', { active: index === 0 }]">
+                <img :src="`data:image/jpeg;base64,${image.img}`" class="d-block w-100"
+                    :alt="`Image ${image.imgID}`">
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade"
-                data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade"
-                data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
         </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
 
-        <h2 class="lh-lg">熱門商品</h2>
-        <div class="row">
-            <compCard v-for="product in productsPopular" :key="product.productID" :product="product" @add-cart="addCart"></compCard>
-        </div>
-        <br>
-        <h2 class="lh-lg">隨機精選</h2>
-        <div class="row">
-            <compCard v-for="product in productsRandom" :key="product.productID" :product="product" @add-cart="addCart"></compCard>
-        </div>
-        <br>
-        <h2 class="lh-lg">物換心儀</h2>
-        <div class="row">
-            <compCard v-for="product in productsSecHand" :key="product.productID" :product="product" @add-cart="addCart"></compCard>
-        </div>
+    <h2 class="lh-lg">熱門商品</h2>
+    <div class="row">
+        <compCard v-for="product in productsPopular" :key="product.productID" :product="product" @add-cart="addCart"></compCard>
+    </div>
+    <br>
+    <h2 class="lh-lg">隨機精選</h2>
+    <div class="row">
+        <compCard v-for="product in productsRandom" :key="product.productID" :product="product" @add-cart="addCart"></compCard>
+    </div>
+    <br>
+    <h2 class="lh-lg">物換心儀</h2>
+    <div class="row">
+        <compCard v-for="product in productsSecHand" :key="product.productID" :product="product" @add-cart="addCart"></compCard>
+    </div>
 
-    </template>
+</template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
@@ -102,7 +101,7 @@ onMounted(async () => {
 
 <style scoped>
     .carousel {
-        width: 90%;
+        width: 100%;
         /* 設定輪播寬度為容器的90% */
         height: 40vh;
         /* 設定輪播高度為螢幕高度的50% */

@@ -3,7 +3,7 @@
     <!-- navbar黑色 -->
     <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top"> -->
     <!-- navbar透明 -->
-    <nav class="navbar navbar-expand-lg sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
 
         <div class="container-fluid">
             <!-- 網站LOGO -->
@@ -101,7 +101,7 @@
     <!-- </div> -->
 </template>
     
-    <script setup>
+<script setup>
     import { ref, inject } from 'vue'
     import { useRouter } from 'vue-router'
     import NotificationPop from '@/components/NotificationPop.vue';
@@ -174,14 +174,14 @@
     }
 
 
-    </script>
+</script>
     
-    <style scoped>
-    .navbar {
-    padding: 5px 15px;
-    background-color: #343a40;
-    border-bottom: 1px solid #e7e7e7;
-    font-size: 1.5rem;
+<style scoped>
+.navbar {
+padding: 5px 15px;
+background-color: #343a40;
+border-bottom: 1px solid #e7e7e7;
+font-size: 1.5rem;
 }
 
 .logo {
@@ -192,7 +192,7 @@
 .nav-item {
     margin: 0 5px;
     text-decoration: none;
-    /* color: #fff; */
+    color: #fff;
 }
 
 .nav-link {
