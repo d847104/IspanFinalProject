@@ -24,17 +24,10 @@
                                                         <option v-for="specOne in product.specs.specOnes" :key="specOne.specOneID" :value="specOne.specOneID">{{ specOne.specOne }}</option>
                                                 </select>
                                                 <!-- 規格二(若存在) -->
-<<<<<<< HEAD
                                                 <template v-if="filteredSpecTwos.length">
-                                                        <select class="form-select" v-model="selectedSpecTwo">
-                                                        <option value="" disabled selected>請選擇{{ filteredSpecTwoName }}</option>
-                                                        <option v-for="specTwo in filteredSpecTwos" :key="specTwo.specTwo" :value="specTwo.specTwoID">{{ specTwo.specTwo }}</option>
-=======
-                                                 <template v-if="filteredSpecTwos.length">
                                                         <select class="form-select" v-model="selectedSpecTwo" @change="specTwoChange">
                                                                 <option value="" disabled selected>請選擇{{ filteredSpecTwoName }}</option>
                                                                 <option v-for="specTwo in filteredSpecTwos" :key="specTwo.specTwo" :value="specTwo.specTwoID">{{ specTwo.specTwo }}</option>
->>>>>>> origin/Angel
                                                         </select>
                                                 </template>
                                         </div>
@@ -70,7 +63,9 @@
                                                         <a href="#"><font-awesome-icon :icon="['far', 'heart']" size="2x" beat
                                                                 style="color:lightcoral;--fa-beat-scale: 1.0" pull="right"
                                                                 @mouseover="(e) => { e.target.style.setProperty('--fa-beat-scale', 1.3) }"
-                                                                @mouseout="(e) => { e.target.style.setProperty('--fa-beat-scale', 1.0) }" /></a>
+                                                                @mouseout="(e) => { e.target.style.setProperty('--fa-beat-scale', 1.0) }" 
+                                                                @click = "addToFavorite"/>
+                                                        </a>
                                                 </div>
                                         </div>
                                 </div>
@@ -80,9 +75,14 @@
 </template>
 
 <script setup>
-        import { computed, onMounted, ref, watch, nextTick } from 'vue';
+        import { inject, computed, onMounted, ref, watch, nextTick } from 'vue';
         import { RouterLink } from 'vue-router';
         import { Tooltip } from 'bootstrap/dist/js/bootstrap.bundle.min.js';
+        import axiosapi from '@/plugins/axios';
+        import Swal from 'sweetalert2';
+        
+        // 接收使用者資訊
+        const user = inject("user");
 
         // 接收父元件資料
         const props = defineProps(["product"]);
@@ -294,6 +294,23 @@
                 selectedSpecTwo.value == null || selectedSpecTwo.value == "" ? null : selectedSpecTwo.value,
                 quantity.value)
         }
+
+        const addToFavorite = async () => {
+                try {
+                        if(!user.value){
+                                Swal.fire('請登入會員', '', 'warning');
+                        }
+                        await axiosapi.post('/ajax/favorite/insert', {
+                        memberID: user.value.id,
+                        productID: props.product.productID,
+                        sellerID: props.product.member
+                        });
+                        Swal.fire('成功', '已將該商品加入最愛', 'success');
+                } catch (error) {
+                        console.error('加入最愛失敗', error);
+                        Swal.fire('失敗', '加入最愛失敗', 'error');
+                }
+                };
 </script>
 
 <style scoped></style>

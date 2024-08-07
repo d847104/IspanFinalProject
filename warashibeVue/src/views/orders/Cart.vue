@@ -26,9 +26,11 @@
         import axiosapi from "@/plugins/axios.js";
         import Swal from "sweetalert2";
         import compCartList from '@/components/compCartList.vue';
+        import { inject } from 'vue';
 
         // 這邊先 Hard Code 會員ID, 待加入登入功能後應實際從 httpSession 取得
-        const memberId = 4;
+        const user = inject("user");
+        const memberId = ref(user.value.id);
         const sellerList = ref([]);
         const cartList = ref([]);
         const selectedCarts = ref({}); // 用於追蹤每個商品是否被選中
@@ -52,7 +54,7 @@
         }
 
         onMounted(function () {
-                cartList.value = callCart(memberId);
+                cartList.value = callCart(memberId.value);
         })
 
         // 依會員 ID 呼叫購物車清單
