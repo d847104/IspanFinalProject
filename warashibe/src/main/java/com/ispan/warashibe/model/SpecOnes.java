@@ -41,8 +41,7 @@ public class SpecOnes {
 	@Column(name = "specOneQt", nullable = true)
 	private Integer specOneQt;
 	
-	@ManyToOne
-	@JoinColumn(name = "specOneImg", nullable = true)
+	@OneToOne(mappedBy = "specOne")
 	@JsonIdentityReference(alwaysAsId = true)
 	private SpecImg specOneImg;
 	

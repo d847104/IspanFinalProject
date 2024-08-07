@@ -14,28 +14,21 @@
                                 <div class="card-body">
                                     <div class="row g-0">
                                         <div class="col-xl-3 col-md-4 d-flex justify-content-center">
-                                            <div
-                                                class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0">
-                                                <img :src="imageSrc" :alt="item.productName" class="w-100"
-                                                    v-if="imageSrc" />
-                                                <p v-else>Loading...</p>
-                                                <a href="#!">
+                                            <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0">
+                                                <RouterLink :to="{name: 'pages-productpage-link', query: {productID: item.productID}}">
+                                                    <img :src="imageSrc" :alt="item.productName" class="w-100" v-if="imageSrc" />
+                                                    <p v-else>Loading...</p>
+                                                </RouterLink>
+
                                                     <div class="hover-overlay">
-                                                        <div class="mask"
-                                                            style="background-color: rgba(253, 253, 253, 0.15);"></div>
+                                                        <div class="mask" style="background-color: rgba(253, 253, 253, 0.15);"></div>
                                                     </div>
-                                                </a>
                                             </div>
                                         </div>
                                         <div class="col-xl-6 col-md-5 col-sm-7">
                                             <h5>{{ item.productName }}</h5>
                                             <div class="d-flex flex-row">
                                                 <div class="text-warning mb-1 me-2">
-                                                    <!-- <font-awesome-icon icon="fa fa-star"></font-awesome-icon>
-                                                    <font-awesome-icon icon="fa fa-star"></font-awesome-icon>
-                                                    <font-awesome-icon icon="fa fa-star"></font-awesome-icon>
-                                                    <font-awesome-icon icon="fa fa-star"></font-awesome-icon>
-                                                    <font-awesome-icon icon="fas fa-star-half-alt"></font-awesome-icon> -->
                                                     <span class="ms-1">評價：{{ productRank }}</span>
                                                 </div> 
                                                 <span class="text-muted">數量：{{ item.stock }}</span>
@@ -47,9 +40,7 @@
                                         <div class="col-xl-3 col-md-3 col-sm-5">
                                             <div class="d-flex flex-row align-items-center mb-1">
                                                 <h4 class="mb-1 me-1">NT$ {{ item.price }}</h4>
-                                                <!-- <span class="text-danger"><s>NT$1,500</s></span> -->
                                             </div>
-                                            <!-- <h6 class="text-success">Free shipping</h6> -->
                                             <div class="mt-4">
                                                 <!-- <a href="#"><font-awesome-icon :icon="['fas', 'cart-plus']" size="2x" pull="left" /></a>
                                                 <button class="btn btn-primary shadow-0" type="button">直接購買</button>
@@ -57,7 +48,7 @@
                                                     <font-awesome-icon icon="fas fa-heart fa-lg px-1"></font-awesome-icon>
                                                 </a> -->
                                                 <button class="btn btn-success" @click="addToFavorite">加入最愛</button>&nbsp;
-                                                <!-- <button class="btn btn-primary" @click="addToCart">加入購物車</button>&nbsp; -->
+                                                <button class="btn btn-primary" @click="addToCart">加入購物車</button>&nbsp;
                                                 <!-- <button class="btn btn-danger" @click="buyNow">直接購買</button> -->
                                             </div>
                                         </div>
@@ -76,11 +67,12 @@
 <script setup>
 import { ref, onMounted, inject } from 'vue';
 import axiosapi from '@/plugins/axios.js';
+import Swal from 'sweetalert2';
+import { RouterLink } from 'vue-router';
 const props = defineProps(["item"]);
 const imageSrc = ref(null); // 定義一個 ref 來存儲圖片來源
 const productRank = ref(0);
 const user = inject("user");
-import Swal from 'sweetalert2';
 
 const addToFavorite = async () => {
     let data = {
@@ -103,27 +95,27 @@ const addToFavorite = async () => {
     }
 };
 
-// const addToCart = async () => {
-//     try {
-//         const selectedSpec = productSpecs.value.find(spec => {
-//             const matchesSpecOne = selectedSpecOne.value ? spec.specOne === selectedSpecOne.value : true;
-//             const matchesSpecTwo = selectedSpecTwo.value ? spec.specTwo === selectedSpecTwo.value : true;
-//             return matchesSpecOne && matchesSpecTwo;
-//         });
+const addToCart = async () => {
+    try {
+        const selectedSpec = productSpecs.value.find(spec => {
+            const matchesSpecOne = selectedSpecOne.value ? spec.specOne === selectedSpecOne.value : true;
+            const matchesSpecTwo = selectedSpecTwo.value ? spec.specTwo === selectedSpecTwo.value : true;
+            return matchesSpecOne && matchesSpecTwo;
+        });
 
-//         await axiosapi.post('/private/pages/cart/create', {
-//             member: user.value.id,
-//             product: product.value.productID,
-//             productSpec: selectedSpec.specID,
-//             seller: product.value.sellerID,
-//             quantity: quantity.value
-//         });
-//         Swal.fire('成功', '已將該商品加入購物車', 'success');
-//     } catch (error) {
-//         console.error('加入購物車失敗', error);
-//         Swal.fire('失敗', '加入購物車失敗', 'error');
-//     }
-// };
+        await axiosapi.post('/private/pages/cart/create', {
+            member: user.value.id,
+            product: product.value.productID,
+            productSpec: selectedSpec.specID,
+            seller: product.value.sellerID,
+            quantity: quantity.value
+        });
+        Swal.fire('成功', '已將該商品加入購物車', 'success');
+    } catch (error) {
+        console.error('加入購物車失敗', error);
+        Swal.fire('失敗', '加入購物車失敗', 'error');
+    }
+};
 
 
 

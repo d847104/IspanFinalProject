@@ -2,8 +2,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import Login from '@/views/secure/Login.vue';
-import Messenger from '@/views/pages/Messenger.vue';
 import Cart from '@/views/orders/Cart.vue';
+import Messenger from '@/views/pages/Messenger.vue';
+import Checkout from '@/views/orders/Checkout.vue';
 
 //1. 引用元件
 import NotFound from "@/views/NotFound.vue";
@@ -15,15 +16,14 @@ import routerSeller from '@/views/seller/router-seller';
 import routerOther from '@/views/other/router-other';
 import routerPages from '@/views/pages/router-pages';
 
-
 // 2. 定義網頁路由
 const routes = [
     { name: "home", path: '/', component: Home },
     { name: "notfound-link", path: "/:pathMatch(.*)*", component: NotFound },
     { name: "Login", path: '/login', component: Login },
     { name: 'cart', path: '/cart', component: Cart },
+    { name: 'Checkout', path: '/checkout', component: Checkout},
     { name: 'messenger', path: '/messenger', component: Messenger },
-    { path: '/login', component: Login },
     ...routerSecure,
     ...routerPages,
     ...routerProduct,

@@ -31,7 +31,7 @@
                                                 <span class="fs-4 fw-bold">已選擇 {{ selectedItemCount }} 項商品</span>
                                         </div>
                                         <div class="col-2 d-flex justify-content-center">
-                                                <button type="button" class="btn btn-success btn-lg">結帳</button>
+                                                <button type="button" class="btn btn-success btn-lg" @click="checkout">結帳</button>
                                         </div>
                                 </div>
                         </template>
@@ -41,12 +41,16 @@
 
 <script setup>
         import { onMounted, ref, computed } from 'vue';
+        import { useRouter } from 'vue-router';
         import axiosapi from "@/plugins/axios.js";
         import Swal from "sweetalert2";
         import compCartList from '@/components/compCartList.vue';
+        import { inject } from 'vue';
 
+        const router = useRouter();
         // 這邊先 Hard Code 會員ID, 待加入登入功能後應實際從 httpSession 取得
-        const memberId = 4;
+        const user = inject("user");
+        const memberId = ref(user.value.id);
         const sellerList = ref([]);
         const cartList = ref([]);
         const selectedCarts = ref({}); // 用於追蹤每個商品是否被選中
@@ -122,7 +126,7 @@
         }
 
         onMounted(function () {
-                cartList.value = callCart(memberId);
+                cartList.value = callCart(memberId.value);
         })
 
         // 依會員 ID 呼叫購物車清單
@@ -221,6 +225,44 @@
                                 allowOutsideClick: false,
                         })
                 })
+        }
+
+        // 根據 selectedCarts 的布林值返回被選取的商品資料
+        function getSelectedItems() {
+                return cartList.value
+                        .filter(cart => selectedCarts.value[cart.cartID]) // 根據布林值過濾
+                        .map(cart => ({
+                                cartID: cart.cartID,
+                                product: cart.product.productID,
+                                quantity: cart.quantity,
+                                seller: cart.seller,
+                                specOne: cart.specOne == null ? null : cart.specOne,
+                                specTwo: cart.specTwo == null ? null : cart.specTwo,
+                                specOneName: cart.specOne == null ? null : cart.specOne.specOneName.specOneName,
+                                specTwoName: cart.specTwo == null ? null : cart.specTwo.specTwoName.specTwoName
+                                // 可以根據需要添加其他商品資訊
+                        }));
+        }
+
+        // 結帳按鈕
+        function checkout() {
+                Swal.fire({
+                        title: "確認結帳?",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "我要結帳",
+                        cancelButtonText: "取消"
+                }).then((result) => {
+                        if (result.isConfirmed) {
+                                const selectedItems = getSelectedItems();
+                                router.push({ 
+                                        name: 'Checkout', // 結帳頁面的路由名稱
+                                        state: { selectedItems } 
+                                });
+                        }
+                });
         }
 </script>
 
