@@ -2,9 +2,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import Login from '@/views/secure/Login.vue';
-import SecondHand from '@/views/SecondHand.vue';
-import infiniteTest from '@/views/infiniteTest.vue';
-import Cart from '@/views/pages/Cart.vue';
+import Cart from '@/views/orders/Cart.vue';
 
 //1. 引用元件
 import NotFound from "../views/NotFound.vue";
@@ -27,8 +25,6 @@ const routes = [
     { name: "home", path: '/', component: Home },
     { name: "notfound-link", path: "/:pathMatch(.*)*", component: NotFound },
     { path: '/login', component: Login },
-    { path: '/secondHand', component: SecondHand},
-    { path: '/infiniteTest', component: infiniteTest},
     { name: 'cart', path: '/cart', component: Cart},
     ...routerSecure,
     ...routerPages,

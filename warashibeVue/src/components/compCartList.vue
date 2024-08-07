@@ -66,7 +66,7 @@
                         <!-- 選取商品 CHECKBOX -->
                         <div class="card-body col-md-1 align-self-stretch d-flex align-items-center justify-content-center" style="background-color: var(--bs-light);">
                                 <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" style="width:2em; height:2em;" value="" :id="cart.product.productID+'ck'">
+                                        <input class="form-check-input" type="checkbox" style="width:2em; height:2em;" value="" :id="cart.cartID" v-model="isSelected" :disabled="chbdisabled">
                                 </div>
                         </div>
                 </div>
@@ -87,10 +87,13 @@
                 });
         })
         
-        // 接收從 cart.vue 取得使用者在資料庫的cart資料
-        const props = defineProps(["cart"]);
+        // 接收從 cart.vue 取得使用者在資料庫的cart資料 以及是否勾選
+        const props = defineProps(["cart","isChecked"]);
         // 修改數量及刪除須回傳 cart.vue 重新渲染
-        const emits = defineEmits(["updateCart","removeCart"]);
+        const emits = defineEmits(["updateCart","removeCart","selectCart"]);
+        // 雙向綁定 cart.vue 是否勾選
+        const isSelected = defineModel("isChecked")
+        const chbdisabled = defineModel("isDisabled")
 
         // 若商品有圖片則選擇第一張的 ImgID 以網址 {id} 方式秀出圖片,否則使用 comingsoon
         const path = computed(() => {
@@ -188,13 +191,6 @@
                 }).then((result) => {
                         if (result.isConfirmed) {
                                 emits("removeCart",props.cart.cartID)
-                                Swal.fire({
-                                        position: "center",
-                                        icon: "success",
-                                        title: "已移除",
-                                        showConfirmButton: false,
-                                        timer: 800
-                                });
                         }
                 });
         }

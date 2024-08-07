@@ -26,8 +26,8 @@
                                                 <!-- 規格二(若存在) -->
                                                  <template v-if="filteredSpecTwos.length">
                                                         <select class="form-select" v-model="selectedSpecTwo" @change="specTwoChange">
-                                                        <option value="" disabled selected>請選擇{{ filteredSpecTwoName }}</option>
-                                                        <option v-for="specTwo in filteredSpecTwos" :key="specTwo.specTwo" :value="specTwo.specTwoID">{{ specTwo.specTwo }}</option>
+                                                                <option value="" disabled selected>請選擇{{ filteredSpecTwoName }}</option>
+                                                                <option v-for="specTwo in filteredSpecTwos" :key="specTwo.specTwo" :value="specTwo.specTwoID">{{ specTwo.specTwo }}</option>
                                                         </select>
                                                  </template>
                                         </div>
@@ -155,20 +155,22 @@
                 selectedSpecTwo.value = null; // 清空選擇的規格二
                 quantity.value = 1;     // 初始化數量
                 exceed.value = false;
+                console.log(`已選擇規格一ID${selectedSpecOne.value},庫存量剩餘${stock.value}`);
         }
 
         function specTwoChange(){
                 quantity.value = 1;     // 初始化數量
                 exceed.value = false;
+                console.log(`已選擇規格二ID${selectedSpecTwo.value},庫存量剩餘${stock.value}`);
         }
 
-        // 初始化 Boottrap tooltip
+        // 初始化 Bootstrap tooltip
         function initializeTooltips() {
                 const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
                 tooltipTriggerList.forEach(tooltipTriggerEl => {new Tooltip(tooltipTriggerEl);});
         }
 
-        // 元件渲染完畢後初始化 Boottrap tooltip; 計算規格下拉式清單
+        // 元件渲染完畢後初始化 Bootstrap tooltip; 計算規格下拉式清單
         onMounted(async() => {
                 await nextTick(); // 等待 DOM 更新
                 initializeTooltips();
@@ -220,6 +222,7 @@
                 }else{
                         quantity.value = newQt;
                 }
+                console.log(`數量:${quantity.value}`);
         }
 
         // 數量增加按鈕
@@ -248,6 +251,7 @@
                         Tooltip.getInstance(quantityDOM.value).show();
                         setTimeout(()=>Tooltip.getInstance(quantityDOM.value).hide(),1200);
                 }
+                console.log(`數量:${quantity.value}`);
         }
 
         // 數量減少按鈕
@@ -258,6 +262,7 @@
                         newQt--;
                         quantity.value = newQt;
                 }
+                console.log(`數量:${quantity.value}`);
         }
 
         // 加入購物車
