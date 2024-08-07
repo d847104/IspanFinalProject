@@ -152,4 +152,28 @@ public class SpecImgController {
     public @ResponseBody byte[] noImg() {
         return this.img;
     }
+    
+    @PostMapping("/create/specone/{id}")
+    public String createSpecOneImg(@PathVariable Integer id, @RequestParam(value = "image", required = false) MultipartFile image) {
+    	JSONObject responseBody = new JSONObject();
+        SpecImg specImg = specImgService.createSpecOneImg(image,id);
+        try {
+			return specImg != null ?
+					responseBody.put("success", true).put("message", "新增成功").toString() :
+						responseBody.put("success", false).put("message", "新增失敗").toString();
+		} catch (JSONException e) {e.printStackTrace();}
+        return null;
+    }
+    
+    @PostMapping("/create/spectwo/{id}")
+    public String createSpecTwoImg(@PathVariable Integer id, @RequestParam(value = "image", required = false) MultipartFile image) {
+    	JSONObject responseBody = new JSONObject();
+        SpecImg specImg = specImgService.createSpecTwoImg(image,id);
+        try {
+			return specImg != null ?
+					responseBody.put("success", true).put("message", "新增成功").toString() :
+						responseBody.put("success", false).put("message", "新增失敗").toString();
+		} catch (JSONException e) {e.printStackTrace();}
+        return null;
+    }
 }

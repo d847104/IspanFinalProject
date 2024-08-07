@@ -15,7 +15,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -41,7 +40,7 @@ public class SpecOnes {
 	@Column(name = "specOneQt", nullable = true)
 	private Integer specOneQt;
 	
-	@ManyToOne
+	@OneToOne
 	@JoinColumn(name = "specOneImg", nullable = true)
 	@JsonIdentityReference(alwaysAsId = true)
 	private SpecImg specOneImg;
@@ -50,7 +49,7 @@ public class SpecOnes {
 	@JsonIncludeProperties({"specTwoNameID","specTwoName","specTwos"})
 	private List<SpecTwoNames> specTwoNames;
 	
-	@ManyToOne
+	@OneToOne
 	@JoinColumn(name = "specOneNameID", nullable = false)
 	@JsonIncludeProperties({"specOneName","specOneNameID"})
 	private SpecOneNames specOneName;
