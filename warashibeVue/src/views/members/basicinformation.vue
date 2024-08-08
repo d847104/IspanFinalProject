@@ -1,12 +1,12 @@
 <template>
-    <br><br><br><br><br>
+    <br>
     <div v-if="selectedMember" class="container">
         <h3 style="color:#ECFFFF;">會員基本資料</h3>
         <div class="row">
             <div class="col-md-8">
                 <div class="alert alert-light" role="alert">
                     <h5>關於我</h5>
-                    <a>HI~{{ memberID }}</a>
+                    <!-- <a>HI~{{ memberID }}</a> -->
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label text-end">會員ID</label>
                         <div class="col-sm-7">

@@ -1,5 +1,5 @@
 <template>
-    <br><br><br><br><br>
+    <br>
     <h3 style="color:#ECFFFF;">購物訂單管理</h3>
     <div v-if="selectedOrder">
         <div class="alert alert-dark" role="alert">
@@ -42,8 +42,8 @@
                                 class="btn btn-outline-secondary btn-sm d-block mb-2" @click="cancelOrder">取消訂單</a>
                             <a v-if="['shipped', 'completed'].includes(selectedOrder?.orderStatus)" href="#"
                                 class="btn btn-outline-secondary btn-sm d-block mb-2" @click="requestReturn">我要退貨</a>
-                            <a v-if="['shipped', 'completed'].includes(selectedOrder?.orderStatus)" href="#"
-                                class="btn btn-outline-secondary btn-sm d-block mb-2" @click="completeOrder">完成訂單</a>
+                            <!-- <a v-if="['shipped', 'completed'].includes(selectedOrder?.orderStatus)" href="#"
+                                class="btn btn-outline-secondary btn-sm d-block mb-2" @click="completeOrder">完成訂單</a> -->
                             <a v-if="selectedOrder?.orderStatus === 'returned'" href="#"
                                 class="btn btn-secondary btn-sm d-block mb-2"
                                 style="pointer-events: none; opacity: 0.6;">退貨中</a>
@@ -71,7 +71,7 @@
                         <div class="card mb-3">
                             <div class="row g-0" style="max-width: 1200px;">
                                 <div class="col-md-4 image-container">
-                                    <img :src="productImgMap[order.orderID] || '/path/to/default/image.png'"
+                                    <img :src="productImgMap[order.orderID] || '/src/assets/images/no-image.jpg'"
                                         alt="產品圖片" />
                                 </div>
                                 <div class="col-md-8">
@@ -134,7 +134,8 @@
         <div class="order-details-container">
             <h5>訂單明細</h5>
             <pre> {{ orderTooltipContent[currentOrderID] }}</pre>
-            <button @click="closeOrderDetailsModal" class="btn btn-outline-secondary btn-sm d-block close-button">關閉</button>
+            <button @click="closeOrderDetailsModal"
+                class="btn btn-outline-secondary btn-sm d-block close-button">關閉</button>
         </div>
     </div>
 
@@ -212,7 +213,6 @@ async function fetchOrderProducts(orderID) {
     try {
         const response = await axiosapi.get(`/private/pages/orderProducts/order/${orderID}`);
         const products = response.data.list || [];
-
         if (products.length > 0) {
             const productID = products[0].product; // 確保提取到正確的產品 ID
             productNameMap.value[orderID] = products[0].productName || '產品名稱未提供';
@@ -223,7 +223,7 @@ async function fetchOrderProducts(orderID) {
             } else {
                 productDescriptionMap.value[orderID] = '產品描述未提供';
                 productImgMap.value[orderID] = '產品圖未提供';
-            }
+            } return productID; // 返回產品 ID
         } else {
             productNameMap.value[orderID] = '產品名稱未提供'; // 沒有產品時的預設值
             productDescriptionMap.value[orderID] = '產品描述未提供';
@@ -313,7 +313,7 @@ const progressText = computed(() => {
         case 'completed':
             return '已到貨';
         case 'returned':
-            return '已退貨';
+            return '退貨中';
         case 'canceled':
             return '已取消';
         default:
@@ -364,10 +364,20 @@ async function submitRating() {
     }
 
     try {
+
+        const productID = await fetchOrderProducts(currentOrderID.value);
+
+        if (!productID) {
+            Swal.fire({
+                text: '找不到相關產品',
+                icon: 'error'
+            });
+            return;
+        }
         await axios.post(`${apiUrl}/api/ranks`, {
             rankDate: new Date().toISOString(),
             ranking: rating.value,
-            product: currentOrder.productID, // 確保此字段存在於訂單中
+            product: productID, // 確保此字段存在於訂單中
             order: currentOrderID.value,
             member: BuyerID,
             rankmsg: ratingMessage.value
@@ -612,19 +622,26 @@ button {
 }
 
 .order-details-container {
-    position: relative; /* 關閉鈕定位 */
+    position: relative;
+    /* 關閉鈕定位 */
     background-color: white;
     padding: 20px;
     border-radius: 8px;
     text-align: left;
 }
-.close-button {
-    position: absolute; /* 絕對定位 */
-    bottom: 10px; /* 距離容器底部 10 像素 */
-    right: 10px; /* 距離容器右邊 10 像素 */
-    border: none; /* 移除預設邊框 */
-    background: transparent; /* 背景透明 */
-    cursor: pointer; /* 鼠標懸停時顯示手型 */
-}
 
+.close-button {
+    position: absolute;
+    /* 絕對定位 */
+    bottom: 10px;
+    /* 距離容器底部 10 像素 */
+    right: 10px;
+    /* 距離容器右邊 10 像素 */
+    border: none;
+    /* 移除預設邊框 */
+    background: transparent;
+    /* 背景透明 */
+    cursor: pointer;
+    /* 鼠標懸停時顯示手型 */
+}
 </style>

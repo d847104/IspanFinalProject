@@ -28,8 +28,8 @@
                     <!-- 搜尋列 -->
 
                     <form class="d-flex search-form d-none d-lg-flex mx-auto" role="search" @submit.prevent="search">
-                        <input v-model="keyword" class="form-control me-1 search-bar" 
-                            type="search" placeholder="Search" aria-label="Search">
+                        <input v-model="keyword" class="form-control me-1 search-bar" type="search" placeholder="Search"
+                            aria-label="Search">
                         </input>
                         <div @click="search" class="btn btn-outline-success search-button" type="submit">
                             <font-awesome-icon icon="fa-solid fa-search" />
@@ -51,18 +51,18 @@
                     </li>
                     <li class="nav-item" v-if="!user">
                         <RouterLink class="nav-link" to="/secure/login"><font-awesome-icon
-                            :icon="['fas', 'right-to-bracket']" /></RouterLink>
+                                :icon="['fas', 'right-to-bracket']" /></RouterLink>
                     </li>
                     <li class="nav-item" v-if="!user">
                         <RouterLink class="nav-link" to="/secure/registerOne"><font-awesome-icon
-                            icon="fa-solid fa-user-plus" /></RouterLink>
+                                icon="fa-solid fa-user-plus" /></RouterLink>
                     </li>
                     <li class="nav-item" v-if="user">
                         <span class="nav-link">{{ user?.username }}</span>
                     </li>
                     <li class="nav-item" v-if="user">
                         <button class="nav-link active" @click="logout"><font-awesome-icon
-                            icon="fa-solid fa-right-from-bracket" /></button>
+                                icon="fa-solid fa-right-from-bracket" /></button>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -75,7 +75,8 @@
                                 </RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/members/basicinformation')">會員基本資料
+                                <RouterLink class="dropdown-item" to="#"
+                                    @click="checkAuth('/members/basicinformation')">會員基本資料
                                 </RouterLink>
                             </li>
                             <li>
@@ -83,7 +84,7 @@
                                 </RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller-orders')">賣家訂單
+                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller/sellerorder')">賣家訂單
                                 </RouterLink>
                             </li>
                             <li>
@@ -91,7 +92,8 @@
                                     @click="checkAuth('/seller/sellermanageproduct')">賣家商品管理</RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/pages/productUploadPage')">上架商品
+                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/pages/productUploadPage')">
+                                    上架商品
                                 </RouterLink>
                             </li>
                         </ul>
@@ -102,86 +104,86 @@
     </nav>
     <!-- </div> -->
 </template>
-    
+
 <script setup>
-    import { ref, inject } from 'vue'
-    import { useRouter } from 'vue-router'
-    import NotificationPop from '@/components/NotificationPop.vue';
-    import axiosapi from '@/plugins/axios';
-    import Swal from 'sweetalert2';
-    import emitter from '@/plugins/events';
-    const router = useRouter();
-    
-    // 登入相關
-    const user = inject('user');
-    const setUser = inject('setUser');
-    function logout(){
-        axiosapi.defaults.headers.authorization = "";
-        sessionStorage.removeItem("memberID");
-        sessionStorage.removeItem("token");
-        setUser(false);
-        router.push("/secure/login");
+import { ref, inject } from 'vue'
+import { useRouter } from 'vue-router'
+import NotificationPop from '@/components/NotificationPop.vue';
+import axiosapi from '@/plugins/axios';
+import Swal from 'sweetalert2';
+import emitter from '@/plugins/events';
+const router = useRouter();
+
+// 登入相關
+const user = inject('user');
+const setUser = inject('setUser');
+function logout() {
+    axiosapi.defaults.headers.authorization = "";
+    sessionStorage.removeItem("memberID");
+    sessionStorage.removeItem("token");
+    setUser(false);
+    router.push("/secure/login");
+}
+
+const popupVisible = ref(false);
+
+const showPopup = () => {
+    console.log("show");
+    popupVisible.value = true;
+};
+
+const hidePopup = () => {
+    console.log("hide");
+    popupVisible.value = false;
+};
+
+const checkAuth = (path) => {
+    if (!user.value) {
+        router.push('/secure/login');
+    } else {
+        router.push(path);
     }
-    
-    const popupVisible = ref(false);
-    
-    const showPopup = () => {
-        console.log("show");
-        popupVisible.value = true;
-    };
-    
-    const hidePopup = () => {
-        console.log("hide");
-        popupVisible.value = false;
-    };
-    
-    const checkAuth = (path) => {
-        if (!user.value) {
-            router.push('/secure/login');
-        } else {
-            router.push(path);
-        }
+}
+
+
+// 搜尋相關
+const keyword = ref("");
+async function search() {
+    let requestSearch = {
+        "name": keyword.value,
+        "start": 0,
+        "max": 100,
+        "order": "productName",
+        "dir": false
+    }
+    try {
+        console.log(keyword.value);
+        let response = await axiosapi.post(`/api/products/search`, requestSearch);
+        router.push("/pages/productListPage").then(() => {
+            emitter.emit("result", response.data.list);
+        });
+    } catch (error) {
+        console.log("Error search", error);
+        Swal.fire({
+            icon: "error",
+            text: "Error search: " + error.message,
+            allowOutsideClick: false,
+        });
     }
 
 
-    // 搜尋相關
-    const keyword = ref("");
-    async function search() {
-        let requestSearch = {
-            "name": keyword.value,
-            "start": 0,
-            "max": 100,
-            "order": "productName",
-            "dir": false
-        }
-        try {
-            console.log(keyword.value);
-                let response = await axiosapi.post(`/api/products/search`, requestSearch);
-                router.push("/pages/productListPage").then(() => {
-                        emitter.emit("result", response.data.list);
-                });
-        } catch (error) {
-                console.log("Error search", error);
-                Swal.fire({
-                        icon: "error",
-                        text: "Error search: " + error.message,
-                        allowOutsideClick: false,
-                });
-        }
-        
 
-
-    }
+}
 
 
 </script>
-    
+
 <style scoped>
 .navbar {
-padding: 5px 15px;
-background-color: #343a40;
-border-bottom: 1px solid #e7e7e7;
-font-size: 1.5rem;
+    padding: 5px 15px;
+    background-color: #343a40;
+    border-bottom: 1px solid #e7e7e7;
+    font-size: 1.5rem;
 }
 
 .logo {
