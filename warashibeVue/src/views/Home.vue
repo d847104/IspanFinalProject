@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { inject ,ref, onMounted } from 'vue';
 import compCard from '@/components/compCard.vue';
 import callPopular from '@/plugins/products/product_popular.js';
 import callSecondHand from '@/plugins/products/product_secondhand.js';
@@ -45,6 +45,7 @@ import callRandom from '@/plugins/products/product_random';
 import axiosapi from '@/plugins/axios';
 import addCartApi from '@/plugins/cart_add';
 
+const user = inject("user");
 const productsPopular = ref([]);
 const startPopular = ref(0);
 const rowsPopular = ref(8);
@@ -92,7 +93,7 @@ onMounted(async () => {
         })
 
         // 這邊先 Hard Code 會員ID, 待加入登入功能後應實際從 httpSession 取得
-        const memberId = 4;
+        const memberId = user.value.id;
 
         function addCart(productId,sellerId,specOne,specTwo,quantity){
             addCartApi(memberId,productId,sellerId,specOne,specTwo,quantity);

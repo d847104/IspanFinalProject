@@ -36,6 +36,13 @@
         </div>
         <!-- 右側商品資訊區域 -->
         <div class="col-md-5">
+        <div class="seller-info" @click="navigateToSellerPage">
+            <img :src="sellerImg" class="seller-image" alt="Seller Image" />
+            <div class="seller-details">
+                <span class="seller-name">{{ seller.username }}</span>
+                <span class="seller-intro">{{ seller.intro }}</span>
+            </div>
+        </div>
         <h1>{{ product.productName }}</h1>
         <p class="price">NT$ {{ product.price }}</p>
         <p class="description">{{ product.description }}</p>
@@ -99,7 +106,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, inject } from 'vue';
+import { ref, onMounted, watch, inject } from 'vue';
 import axiosapi from '@/plugins/axios';
 import { useRoute, useRouter } from 'vue-router';
 import RelatedCard from '@/components/RelatedCard.vue';
@@ -125,17 +132,15 @@ const selectedSpecOneID = ref(null);
 const selectedSpecTwoID = ref(null);
 const selectedSpecImage = ref('');
 const relatedProducts = ref([]);
+const seller = ref({});
+const sellerImg = ref('');
 const total = ref(0);
 const pages = ref(0);
 const current = ref(1);
 const rows = ref(4);
 
 const fetchProduct = async () => {
-    productImages.value = [];
-    specImages.value = [];
-    combinedImages.value = [];
-    displayedImages.value = [];
-    currentImage.value = '';
+    resetProductData();
 
     const { data } = await axiosapi.get(`/api/products/${productID.value}`);
     product.value = data;
@@ -149,6 +154,40 @@ const fetchProduct = async () => {
     await fetchRelatedProducts(data.subCategory);
 
     await recordBrowsingHistory();
+    await fetchSellerInfo(product.value.member);
+};
+
+const resetProductData = () => {
+    product.value = {};
+    productImages.value = [];
+    specImages.value = [];
+    combinedImages.value = [];
+    displayedImages.value = [];
+    currentImage.value = '';
+    groupedSpecs.value = {};
+    quantity.value = 1;
+    selectedSpecOne.value = '';
+    selectedSpecTwo.value = '';
+    selectedSpecOneID.value = null;
+    selectedSpecTwoID.value = null;
+    selectedSpecImage.value = '';
+};
+
+const fetchSellerInfo = async (memberID) => {
+    const { data } = await axiosapi.get(`/ajax/members/${memberID}`);
+    if (data.list && data.list.length > 0) {
+        seller.value = data.list[0];
+    }
+    if(seller.value.profileImg){
+        sellerImg.value = `data:image/jpeg;base64,${seller.value.profileImg}`;
+    }
+    else{
+        sellerImg.value = '/src/img/海棉寶.png';
+    }
+};
+
+const navigateToSellerPage = () => {
+    router.push(`/pages/productSellerPage?sellerID=${seller.value.id}`);
 };
 
 const recordBrowsingHistory = async () => {
@@ -463,22 +502,23 @@ position: relative;
 }
 
 .main-image {
-width: 100%;
+width: 300px;
+height: 300px;
 max-height: 400px;
-object-fit: contain;
+/* object-fit: contain; */
 }
 
 .image-thumbnails-wrapper {
 display: flex;
-align-items: center;
-justify-content: center;
+align-items: flex-start; /* 靠左對齊 */
+justify-content:flex-start;
 position: relative;
 margin-top: 1rem;
 }
 
 .thumbnails {
 display: flex;
-align-items: center;
+align-items: flex-start;
 }
 
 .thumbnail {
@@ -556,5 +596,32 @@ height: 30px;
 width: 50px;
 text-align: center;
 margin: 0 5px;
+}
+
+.seller-info {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 1rem;
+}
+
+.seller-image {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.seller-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.seller-name {
+    font-weight: bold;
+}
+
+.seller-intro {
+    color: #666;
 }
 </style>

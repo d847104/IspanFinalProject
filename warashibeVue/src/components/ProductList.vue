@@ -19,7 +19,6 @@
                                                     <img :src="imageSrc" :alt="item.productName" class="w-100" v-if="imageSrc" />
                                                     <p v-else>Loading...</p>
                                                 </RouterLink>
-
                                                     <div class="hover-overlay">
                                                         <div class="mask" style="background-color: rgba(253, 253, 253, 0.15);"></div>
                                                     </div>
@@ -48,7 +47,7 @@
                                                     <font-awesome-icon icon="fas fa-heart fa-lg px-1"></font-awesome-icon>
                                                 </a> -->
                                                 <button class="btn btn-success" @click="addToFavorite">加入最愛</button>&nbsp;
-                                                <button class="btn btn-primary" @click="addToCart">加入購物車</button>&nbsp;
+                                                <!-- <button class="btn btn-primary" @click="addToCart">加入購物車</button>&nbsp; -->
                                                 <!-- <button class="btn btn-danger" @click="buyNow">直接購買</button> -->
                                             </div>
                                         </div>
@@ -73,6 +72,9 @@ const props = defineProps(["item"]);
 const imageSrc = ref(null); // 定義一個 ref 來存儲圖片來源
 const productRank = ref(0);
 const user = inject("user");
+const quantity = ref(1);
+const selectedSpecOne = ref('');
+const selectedSpecTwo = ref('');
 
 const addToFavorite = async () => {
     let data = {
@@ -96,20 +98,27 @@ const addToFavorite = async () => {
 };
 
 const addToCart = async () => {
-    try {
-        const selectedSpec = productSpecs.value.find(spec => {
-            const matchesSpecOne = selectedSpecOne.value ? spec.specOne === selectedSpecOne.value : true;
-            const matchesSpecTwo = selectedSpecTwo.value ? spec.specTwo === selectedSpecTwo.value : true;
-            return matchesSpecOne && matchesSpecTwo;
-        });
+    if (!user.value) {
+        Swal.fire('請登入會員', '', 'warning');
+        return;
+    }
+    console.log(props.item.specs);
+    if ((!selectedSpecOneID.value || !selectedSpecTwoID.value) && props.item.specs) {
+        Swal.fire('失敗', '請選擇完整的商品規格', 'error');
+        return;
+    }
 
-        await axiosapi.post('/private/pages/cart/create', {
-            member: user.value.id,
-            product: product.value.productID,
-            productSpec: selectedSpec.specID,
-            seller: product.value.sellerID,
-            quantity: quantity.value
-        });
+    const data = {
+        member: user.value.id,
+        product: props.item.productID,
+        // specOne: props.item.
+        // specTwo: selectedSpecTwoID.value,
+        quantity: quantity.value,
+        seller: props.member,
+    };
+
+    try {
+        await axiosapi.post('/api/cart/create', data);
         Swal.fire('成功', '已將該商品加入購物車', 'success');
     } catch (error) {
         console.error('加入購物車失敗', error);

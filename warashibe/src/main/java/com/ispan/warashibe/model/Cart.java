@@ -37,7 +37,7 @@ public class Cart {
 	
 	@ManyToOne
 	@JoinColumn(name = "product", nullable = false)
-	@JsonIncludeProperties({"productID","productName","productImgs","stock","specOneName"})
+	@JsonIncludeProperties({"productID","productName","productImgs","stock","specOneName","price"})
 	private Products product;
 	
 	@ManyToOne

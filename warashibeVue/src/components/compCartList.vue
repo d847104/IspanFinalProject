@@ -4,7 +4,7 @@
                         <!-- 商品圖片 -->
                         <div class="col-md-3">
                                 <RouterLink :to="{name: 'pages-productpage-link', query: {productID: cart.product.productID}}">
-                                        <img :src="path" class="img-fluid rounded-start" :alt="cart.product.productName">
+                                        <img :src="path" class="img-fluid rounded-start object-fit-cover" :alt="cart.product.productName" style="height:100%;">
                                 </RouterLink>
                         </div>
                         <div class="col-md-7 align-self-center">
@@ -16,6 +16,7 @@
                                                 <template v-if="cart.specOne">
                                                         <!-- 商品規格一 -->
                                                         <div class="row mt-2" v-if="cart.specOne">
+                                                                <div class="col-md"></div>
                                                                 <span class="col">{{ cart.specOne.specOneName.specOneName }}</span>
                                                                 <div class="input-group col justify-content-center">
                                                                         {{ cart.specOne.specOne }}
@@ -23,6 +24,7 @@
                                                         </div>
                                                         <!-- 商品規格二 -->
                                                         <div class="row mt-2" v-if="cart.specTwo">
+                                                                <div class="col-md"></div>
                                                                 <span class="col"> {{ cart.specTwo.specTwoName.specTwoName }}</span>
                                                                 <div class="input-group col justify-content-center">
                                                                         {{ cart.specTwo.specTwo }}
@@ -31,12 +33,16 @@
                                                 </template>
                                                 <!-- 商品規格結束 -->
                                                 <div class="row mt-2">
+                                                        <!-- 金額 -->
+                                                         <div class="col-lg text-start text-danger">
+                                                                NT$ {{ cart.product.price }}
+                                                         </div>
                                                         <!-- 數量 LABEL -->
-                                                        <label :for="cart.cartID" class="col">
+                                                        <label :for="cart.cartID" class="col-lg justify-content-center">
                                                                 數量
                                                         </label>
                                                         <!-- 數量按鈕群組 -->
-                                                        <div class="input-group col">
+                                                        <div class="input-group col-md">
                                                                 <!-- 數量減少按鈕 -->
                                                                 <button class="btn btn-outline-secondary" type="button" @click="removeOne" :disabled="quantity===1">
                                                                         <font-awesome-icon :icon="['fas', 'minus']" />
@@ -53,7 +59,7 @@
                                                         <!-- 數量按鈕群組結束 -->
                                                 </div>
                                                 <!-- 垃圾桶按鈕 -->
-                                                <div class="row mt-5">
+                                                <div class="row mt-4 text-end">
                                                         <span>
                                                                 <button type="button" style="font-size: 1.5em; border: none; background-color: inherit;" class="text-danger" @click="remove">
                                                                         <font-awesome-icon :icon="['fas', 'trash-can']" />
@@ -190,7 +196,7 @@
                         cancelButtonText: "取消"
                 }).then((result) => {
                         if (result.isConfirmed) {
-                                emits("removeCart",props.cart.cartID)
+                                emits("removeCart",props.cart.cartID,props.cart.member)
                         }
                 });
         }

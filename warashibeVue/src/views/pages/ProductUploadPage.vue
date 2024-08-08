@@ -123,30 +123,32 @@
                 </div>
             </div>
 
-            <div v-for="(spec, index) in specs" :key="index" class="form-floating mb-3">
-                <span style="margin-right: 30px;" class="col-md-3">規格 {{ index + 1 }}：</span>
-                <div class="input-row">
-                    <div class="input-group">
-                        <input v-model="spec.name" type="text" class="form-control" placeholder="請輸入規格名稱">
-                    </div>
-                    <div class="input-group">
-                        <input v-model="spec.content" type="text" class="form-control" placeholder="請輸入規格內容">
-                    </div>
-                    <div class="input-group">
-                        <input v-model="spec.quantity" type="number" class="form-control" placeholder="請輸入數量">
-                    </div>
-                    <div class="input-group">
-                        <input type="file" @change="event => specImageChange(event, index)" />
-                    </div>
-                    <div v-if="spec.image.url" class="specImage-preview">
-                        <div class="specImage-container">
-                            <img :src="spec.image.url" alt="Preview" class="preview-specImage" />
-                            <div @click="() => removeSpecImage(index)" class="remove-btn">X</div>
+            <!-- <div v-if="showSpecs"> -->
+                <div v-for="(spec, index) in specs" :key="index" class="form-floating mb-3">
+                    <span style="margin-right: 30px;" class="col-md-3">規格 {{ index + 1 }}：</span>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <input v-model="spec.name" type="text" class="form-control" placeholder="請輸入規格名稱">
                         </div>
+                        <div class="input-group">
+                            <input v-model="spec.content" type="text" class="form-control" placeholder="請輸入規格內容">
+                        </div>
+                        <div class="input-group">
+                            <input v-model="spec.quantity" type="number" class="form-control" placeholder="請輸入數量">
+                        </div>
+                        <div class="input-group">
+                            <input type="file" @change="event => specImageChange(event, index)" />
+                        </div>
+                        <div v-if="spec.image.url" class="specImage-preview">
+                            <div class="specImage-container">
+                                <img :src="spec.image.url" alt="Preview" class="preview-specImage" />
+                                <div @click="() => removeSpecImage(index)" class="remove-btn">X</div>
+                            </div>
+                        </div>
+                        <button type="button" @click="removeSpec(index)" class="btn btn-danger">移除</button>
                     </div>
-                    <button type="button" @click="removeSpec(index)" class="btn btn-danger">移除</button>
                 </div>
-            </div>
+            <!-- </div> -->
 
             <button type="button" @click="addSpec" class="btn btn-primary">新增規格</button>
 
@@ -167,6 +169,7 @@ import axiosapi from '@/plugins/axios';
 import Swal from 'sweetalert2';
 const user = inject('user');
 
+const showSpecs = ref(false);
 const payMethods = ref([]);
 const deliverys = ref([]);
 const allMainCate = ref([]);
@@ -190,7 +193,7 @@ const description = ref('');
 const isSecondHand = ref(false);
 
 // 動態規格
-const specs = ref([
+let specs = ref([
     { name: '', content: '', quantity: 0, image: {} }
 ]);
 
@@ -278,7 +281,17 @@ async function specPost(productID) {
 }
 async function uploadSpec(productID) {
     try {
-        for (let index = 0; index < 1; index++) {
+        console.log(specs.value.length);
+        // console.log(specs.value[0].name);
+        // console.log(specs.value[0].content);
+        
+        if(specs.value[0].name == '' && specs.value[0].content == '') {
+            specs = null;
+            return;
+        }else {
+            console.log('spec有東西');
+            
+            for (let index = 0; index < 1; index++) {
             let spec = specs.value[index];
             let specOneNameRequest = {
                 "specOneName": spec.name,
@@ -325,16 +338,11 @@ async function uploadSpec(productID) {
                 console.log("規格成功加入");
             }
         }
+        }
 
-        // await axiosapi.post("/api/spec/create", formData, {
-        //     headers: {
-        //         'Content-Type': 'multipart/form-data'
-        //     }
-        // }).then(function (response) {
-        //     console.log(response.data);
-        // }).catch(function (error) {
-        //     console.log(error.message);
-        // });
+
+
+
     } catch (error) {
         console.error('Error uploading spec:', error);
         alert('規格上傳失敗');
