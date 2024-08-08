@@ -26,6 +26,7 @@
 <script setup>
 import { ref, onMounted, inject } from 'vue';
 import axiosapi from '@/plugins/axios';
+import router from '@/router/router';
 
 const notifications = ref([]);
 const user = inject('user');
@@ -60,6 +61,10 @@ const fetchNotifications = async () => {
         console.error('Error fetching notifications:', error);
     }
 };
+
+const gotoManageProduct = ()=>{
+    router.push("/seller/sellermanageproduct");
+}
 
 onMounted(fetchNotifications);
 </script>

@@ -8,7 +8,7 @@
             <h5 class="card-title">訂單相關</h5>
             <p class="card-text">查看和管理訂單。</p>
             <button @click="navigateTo('/buyer/buyerorder')" class="btn btn-primary">買家訂單查詢</button>
-            <button @click="navigateTo('/seller-orders')" class="btn btn-primary mt-2">賣家訂單查詢</button>
+            <button @click="navigateTo('/seller/sellerorder')" class="btn btn-primary mt-2">賣家訂單查詢</button>
             <button @click="navigateTo('/secure/favorite')" class="btn btn-primary mt-2">收藏訂單</button>
         </div>
         </div>
@@ -23,7 +23,7 @@
             <button @click="navigateTo('/members/basicinformation')" class="btn btn-primary">個人資訊管理</button>
             <button @click="navigateTo('/change-password')" class="btn btn-primary mt-2">密碼管理</button>
             <!-- <button @click="navigateTo('/wallet')" class="btn btn-primary mt-2">錢包管理</button> -->
-            <button @click="navigateTo('/bank-accounts')" class="btn btn-primary mt-2">銀行帳戶管理</button>
+            <!-- <button @click="navigateTo('/bank-accounts')" class="btn btn-primary mt-2">銀行帳戶管理</button> -->
         </div>
         </div>
     </div>
@@ -34,8 +34,8 @@
         <div class="card-body">
             <h5 class="card-title">客服相關</h5>
             <p class="card-text">聯繫客服和查看幫助。</p>
-            <button @click="navigateTo('/customer-service')" class="btn btn-primary">聯繫客服</button>
-            <button @click="navigateTo('/help-center')" class="btn btn-primary mt-2">幫助中心</button>
+            <button @click="navigateTo('/other/contectmessage')" class="btn btn-primary">聯繫客服</button>
+            <button @click="navigateTo('/other/helpcenter')" class="btn btn-primary mt-2">幫助中心</button>
         </div>
         </div>
     </div>
