@@ -1,6 +1,6 @@
 <template>
     <div class="container mt-5">
-        <div class="row">
+        <div class="row col-md-12">
             <!-- 右側內容區域 -->
             <div class="col-md-12">
                 <!-- 賣家資訊欄 -->
@@ -25,7 +25,7 @@
                     <h3>查無商品</h3>
                     <br>
                 </div>
-                <div class="row">
+                <div class="row col-md-12">
                     <compCard v-for="product in SellerProducts" :key="product.productID" :product="product"></compCard>
 
 
