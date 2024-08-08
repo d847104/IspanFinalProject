@@ -10,7 +10,7 @@
                 <form style="width: 23rem;">
 
                     <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">註冊會員</h3>
-                    <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">已完成註冊，請前往信箱收取驗證信件完成註冊</h3>
+                    <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">已完成註冊，請重新登入本網站</h3>
 
                 </form>
             </div>
