@@ -74,8 +74,11 @@ onMounted(function () {
     callPopular(productsPopular, startPopular, rowsPopular, currentPagePopular, totalPagesPopular, totalPopular, lastPageRowsPopular);
     callRandom(productsRandom, startRandom, rowsRandom, currentPageRandom, totalPagesRandom, totalRandom, lastPageRowsRandom);
     callSecondHand(productsSecHand, startSecHand, rowsSecHand, currentPageSecHand, totalPagesSecHand, totalSecHand, lastPageRowsSecHand);
-    if(user){
-        memberId.value = user.value.id
+    if(user.value){
+        memberId.value = user.value.id;
+    }
+    else{
+        memberId.value = null;
     }
 })
 
