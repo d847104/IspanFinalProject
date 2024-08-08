@@ -16,13 +16,17 @@
                     <input type="text" v-model="product.productName" :disabled="!product.isEditing" />
                 </div>
                 <div class="quantity">
-                    數量:
+                    <label class="col-sm-2 mb-2">
+                        數量:
+                    </label>
                     <button @click="decreaseQuantity(product)" :disabled="!product.isEditing">-</button>
                     <input type="number" v-model.number="product.stock" :disabled="!product.isEditing" />
                     <button @click="increaseQuantity(product)" :disabled="!product.isEditing">+</button>
                 </div>
                 <div class="price">
-                    定價:
+                    <label class="col-sm-2 mb-2">
+                        定價:
+                    </label>
                     <button @click="decreasePrice(product)" :disabled="!product.isEditing">-</button>
                     <input type="number" v-model.number="product.price" :disabled="!product.isEditing" />
                     <button @click="increasePrice(product)" :disabled="!product.isEditing">+</button>
@@ -42,32 +46,53 @@
                 </div>
             </ul>
             <!-- 規格編輯區域 -->
-            <div v-if="product.specs">
-                <div>
-                <label>規格一：</label>
-                    <input type="text" v-model="product.specs.specOneName" :disabled="!product.isEditing" @change="updateSpecOneName(product)" />
+            <div v-if="product.specs" class="specs">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">規格一：</label>
+                    <div class="col-sm-8 mb-2">
+                        <input type="text" class="form-control" v-model="product.specs.specOneName" :disabled="!product.isEditing" @change="updateSpecOneName(product)" />
+                    </div>
                 </div>
-                <div v-for="specOne in product.specs.specOnes" :key="specOne.specOneID">
-                    <label>規格值：</label>
-                    <input type="text" v-model="specOne.specOne" :disabled="!product.isEditing" @change="updateSpecOne(product, specOne)" />
-                    <div>
-                        <label>數量：</label>
-                        <input type="number" v-model.number="specOne.specOneQt" :disabled="!product.isEditing" @change="updateSpecOne(product, specOne)" />
+                <div v-for="specOne in product.specs.specOnes" :key="specOne.specOneID" class="spec-one">
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">規格值：</label>
+                        <div class="col-sm-8 mb-2">
+                            <input type="text" class="form-control" v-model="specOne.specOne" :disabled="!product.isEditing" @change="updateSpecOne(product, specOne)" />
+                        </div>
                     </div>
-                    <div>
-                        <label>圖片：</label>
-                        <input type="file" @change="uploadSpecOneImage(specOne, $event)" :disabled="!product.isEditing" />
-                        <img v-if="specOne.specOneImg" :src="fetchSpecImages(specOne.specOneImg)" alt="規格圖片" />
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">數量：</label>
+                        <div class="col-sm-8 mb-2">
+                            <input type="number" class="form-control" v-model.number="specOne.specOneQt" :disabled="!product.isEditing" @change="updateSpecOne(product, specOne)" />
+                        </div>
                     </div>
-
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">圖片：</label>
+                        <div class="col-sm-8 mb-2">
+                            <input type="file" class="form-control-file" @change="uploadSpecOneImage(specOne, $event)" :disabled="!product.isEditing" />
+                            <img v-if="specOne.imgUrl" :src="specOne.imgUrl" alt="規格圖片" class="spec-image" />
+                        </div>
+                    </div>
                     <div v-for="specTwoName in specOne.specTwoNames" :key="specTwoName.specTwoNameID">
-                        <label>規格二：</label>
-                        <input type="text" v-model="specTwoName.specTwoName" :disabled="!product.isEditing" @change="updateSpecTwoName(specOne, specTwoName)" />                   
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">規格二：</label>
+                            <div class="col-sm-8 mb-2">
+                                <input type="text" class="form-control" v-model="specTwoName.specTwoName" :disabled="!product.isEditing" @change="updateSpecTwoName(specOne, specTwoName)" />
+                            </div>
+                        </div>
                         <div v-for="specTwo in specTwoName.specTwos" :key="specTwo.specTwoID">
-                            <label>規格值：</label>
-                            <input type="text" v-model="specTwo.specTwo" :disabled="!product.isEditing" @change="updateSpecTwo(specTwoName, specTwo)" />
-                            <label>數量：</label>
-                            <input type="number" v-model.number="specTwo.specTwoQt" :disabled="!product.isEditing" @change="updateSpecTwo(specTwoName, specTwo)" />
+                            <div class="form-group row">
+                                <label class="col-sm-4 col-form-label">規格值：</label>
+                                <div class="col-sm-8 mb-2">
+                                    <input type="text" class="form-control" v-model="specTwo.specTwo" :disabled="!product.isEditing" @change="updateSpecTwo(specTwoName, specTwo)" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 col-form-label">數量：</label>
+                                <div class="col-sm-8 mb-2">
+                                    <input type="number" class="form-control" v-model.number="specTwo.specTwoQt" :disabled="!product.isEditing" @change="updateSpecTwo(specTwoName, specTwo)" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -111,13 +136,17 @@
                 <input type="text" v-model="product.productName" :disabled="!product.isEditing" />
             </div>
             <div class="quantity">
-                數量:
+                <label class="col-sm-2 mb-2">
+                    數量:
+                </label>
                 <button @click="decreaseQuantity(product)" :disabled="!product.isEditing">-</button>
                 <input type="number" v-model.number="product.stock" :disabled="!product.isEditing" />
                 <button @click="increaseQuantity(product)" :disabled="!product.isEditing">+</button>
             </div>
             <div class="price">
-                定價:
+                <label class="col-sm-2 mb-2">
+                    定價:
+                </label>
                 <button @click="decreasePrice(product)" :disabled="!product.isEditing">-</button>
                 <input type="number" v-model.number="product.price" :disabled="!product.isEditing" />
                 <button @click="increasePrice(product)" :disabled="!product.isEditing">+</button>
@@ -128,7 +157,7 @@
         </div>
         <ul>
             <div>
-            <label>上傳圖片：</label><br>
+            <label class="col-sm-4" >上傳圖片：</label><br>
             <input type="file" @change="uploadImage(product, $event)" :disabled="!product.isEditing" />
             </div>
             <div v-if="product.secondHand" style="padding-top: 10px;">
@@ -136,6 +165,58 @@
             <input type="text" @change="updateWishItem(product)" v-model="product.wishItem" :disabled="!product.isEditing" />
             </div>
         </ul>
+        <!-- 規格編輯區域 -->
+        <div v-if="product.specs" class="specs">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">規格一：</label>
+                <div class="col-sm-8 mb-2">
+                    <input type="text" class="form-control" v-model="product.specs.specOneName" :disabled="!product.isEditing" @change="updateSpecOneName(product)" />
+                </div>
+            </div>
+            <div v-for="specOne in product.specs.specOnes" :key="specOne.specOneID" class="spec-one">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">規格值：</label>
+                    <div class="col-sm-8 mb-2">
+                        <input type="text" class="form-control" v-model="specOne.specOne" :disabled="!product.isEditing" @change="updateSpecOne(product, specOne)" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">數量：</label>
+                    <div class="col-sm-8 mb-2">
+                        <input type="number" class="form-control" v-model.number="specOne.specOneQt" :disabled="!product.isEditing" @change="updateSpecOne(product, specOne)" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">圖片：</label>
+                    <div class="col-sm-8 mb-2">
+                        <input type="file" class="form-control-file" @change="uploadSpecOneImage(specOne, $event)" :disabled="!product.isEditing" />
+                        <img v-if="specOne.imgUrl" :src="specOne.imgUrl" alt="規格圖片" class="spec-image" />
+                    </div>
+                </div>
+                <div v-for="specTwoName in specOne.specTwoNames" :key="specTwoName.specTwoNameID">
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">規格二：</label>
+                        <div class="col-sm-8 mb-2">
+                            <input type="text" class="form-control" v-model="specTwoName.specTwoName" :disabled="!product.isEditing" @change="updateSpecTwoName(specOne, specTwoName)" />
+                        </div>
+                    </div>
+                    <div v-for="specTwo in specTwoName.specTwos" :key="specTwo.specTwoID">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">規格值：</label>
+                            <div class="col-sm-8 mb-2">
+                                <input type="text" class="form-control" v-model="specTwo.specTwo" :disabled="!product.isEditing" @change="updateSpecTwo(specTwoName, specTwo)" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">數量：</label>
+                            <div class="col-sm-8 mb-2">
+                                <input type="number" class="form-control" v-model.number="specTwo.specTwoQt" :disabled="!product.isEditing" @change="updateSpecTwo(specTwoName, specTwo)" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="action-buttons">
             <button
             class="action-button"
@@ -191,43 +272,51 @@ const gotoProductPage = (product) => {
 }
 
 const fetchMemberProducts = async () => {
-if (user.value) {
-    try {
-    const response = await axiosapi.get(`/api/products/member/${user.value.id}`);
-    const products = response.data.list || [];
-    
-    for (let product of products) {
-        product.isEditing = false; // 默认不可编辑
+    if (user.value) {
+        try {
+        const response = await axiosapi.get(`/api/products/member/${user.value.id}`);
+        const products = response.data.list || [];
+        
+        for (let product of products) {
+            product.isEditing = false; // 默认不可编辑
 
-        if (product.productImgs.length > 0) {
-        const imgID = product.productImgs[0];
-        product.imageUrl = await fetchProductImage(imgID);
-        } else {
-        product.imageUrl = '/default-product.png';
+            if (product.productImgs.length > 0) {
+                const imgID = product.productImgs[0];
+                product.imageUrl = await fetchProductImage(imgID);
+            } else {
+                product.imageUrl = '/default-product.png';
+            }
+
+            if (product.specs && product.specs.specOnes) {
+                for (let specOne of product.specs.specOnes) {
+                    if (specOne.specOneImg) {
+                    specOne.imgUrl = await fetchSpecImage(specOne.specOneImg);
+                    }
+                }
+            }
+        }
+
+        onSaleProducts.value = products.filter(product => product.productStatus);
+        offSaleProducts.value = products.filter(product => !product.productStatus);
+
+        // 保存数据到本地存储
+        saveProductsToLocalStorage();
+        } catch (error) {
+        console.error('Error fetching products:', error);
         }
     }
-
-    onSaleProducts.value = products.filter(product => product.productStatus);
-    offSaleProducts.value = products.filter(product => !product.productStatus);
-
-    // 保存数据到本地存储
-    saveProductsToLocalStorage();
-    } catch (error) {
-    console.error('Error fetching products:', error);
-    }
-}
 };
 
-const fetchSpecImages = async (img) => {
-    console.log(img);
-    if (img) {
-        const {data} = await axiosapi.get(`/api/specImg/${img}`);
-        // console.log(data.list.specImg);
-        return `data:image/jpg;base64,${data.list.specImg}`;
+const fetchSpecImage = async (imgID) => {
+    try {
+        const response = await axiosapi.get(`/api/specImg/${imgID}`);
+        if (response.data && response.data.list && response.data.list.specImg) {
+        return `data:image/png;base64,${response.data.list.specImg}`;
+        }
+    } catch (error) {
+        console.error('Error fetching spec image:', error);
     }
-    else{
-        return `data:image/png;base64,/src/img/貓頭鷹.jpg`;
-    }
+    return '/default-product.png';
 };
 
 const fetchProductImage = async (imgID) => {
@@ -243,35 +332,35 @@ return '/default-product.png';
 };
 
 const decreaseQuantity = (product) => {
-if (product.stock > 0) product.stock--;
-updateProduct(product);
+    if (product.stock > 0) product.stock--;
+    updateProduct(product);
 };
 
 const increaseQuantity = (product) => {
-product.stock++;
-updateProduct(product);
+    product.stock++;
+    updateProduct(product);
 };
 
 const decreasePrice = (product) => {
-if (product.price > 0) product.price--;
-updateProduct(product);
+    if (product.price > 0) product.price--;
+    updateProduct(product);
 };
 
 const increasePrice = (product) => {
-product.price++;
-updateProduct(product);
+    product.price++;
+    updateProduct(product);
 };
 
 const takeOffProduct = (product) => {
-product.productStatus = false;
-updateProductStatus(product);
-moveProductToOffSale(product);
+    product.productStatus = false;
+    updateProductStatus(product);
+    moveProductToOffSale(product);
 };
 
 const putOnProduct = (product) => {
-product.productStatus = true;
-updateProductStatus(product);
-moveProductToOnSale(product);
+    product.productStatus = true;
+    updateProductStatus(product);
+    moveProductToOnSale(product);
 };
 
 const confirmDelete = (product) => {
@@ -300,41 +389,41 @@ const deleteProduct = async (product) => {
 };
 
 const updateProduct = async (product) => {
-try {
-    const updatedProduct = {
-    productName: product.productName,
-    price: product.price,
-    stock: product.stock,
-    description: product.description,
-    wishItem: product.wishItem,
-    productStatus: product.productStatus
-    };
-    await axiosapi.put(`/api/products/${product.productID}`, updatedProduct);
-    saveProductsToLocalStorage(); // 保存更新到本地存储
-} catch (error) {
-    console.error('Error updating product:', error);
-}
+    try {
+        const updatedProduct = {
+        productName: product.productName,
+        price: product.price,
+        stock: product.stock,
+        description: product.description,
+        wishItem: product.wishItem,
+        productStatus: product.productStatus
+        };
+        await axiosapi.put(`/api/products/${product.productID}`, updatedProduct);
+        saveProductsToLocalStorage(); // 保存更新到本地存储
+    } catch (error) {
+        console.error('Error updating product:', error);
+    }
 };
 
 const updateProductStatus = async (product) => {
-try {
-    await axiosapi.put(`/api/products/${product.productID}`, { productStatus: product.productStatus });
-    saveProductsToLocalStorage(); // 保存更新到本地存储
-} catch (error) {
-    console.error('Error updating product status:', error);
-}
+    try {
+        await axiosapi.put(`/api/products/${product.productID}`, { productStatus: product.productStatus });
+        saveProductsToLocalStorage(); // 保存更新到本地存储
+    } catch (error) {
+        console.error('Error updating product status:', error);
+    }
 };
 
 const moveProductToOffSale = (product) => {
-onSaleProducts.value = onSaleProducts.value.filter(p => p.productID !== product.productID);
-offSaleProducts.value.push(product);
-saveProductsToLocalStorage(); // 保存更新到本地存储
+    onSaleProducts.value = onSaleProducts.value.filter(p => p.productID !== product.productID);
+    offSaleProducts.value.push(product);
+    saveProductsToLocalStorage(); // 保存更新到本地存储
 };
 
 const moveProductToOnSale = (product) => {
-offSaleProducts.value = offSaleProducts.value.filter(p => p.productID !== product.productID);
-onSaleProducts.value.push(product);
-saveProductsToLocalStorage(); // 保存更新到本地存储
+    offSaleProducts.value = offSaleProducts.value.filter(p => p.productID !== product.productID);
+    onSaleProducts.value.push(product);
+    saveProductsToLocalStorage(); // 保存更新到本地存储
 };
 
 const uploadImage = async (product, event) => {
@@ -350,7 +439,6 @@ const uploadImage = async (product, event) => {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            alert('圖片上傳成功');
 
             // 更新前端显示的图片
             const reader = new FileReader();
@@ -368,194 +456,199 @@ const uploadImage = async (product, event) => {
 };
 
 const setProductSecondHand = async (product, isSecondHand) => {
-try {
-    await axiosapi.put(`/api/products/${product.productID}`, { secondHand: isSecondHand });
-    product.secondHand = isSecondHand;
-    saveProductsToLocalStorage(); // 保存更新到本地存储
-} catch (error) {
-    console.error('Error updating product isSecondHand:', error);
-}
+    try {
+        await axiosapi.put(`/api/products/${product.productID}`, { secondHand: isSecondHand });
+        product.secondHand = isSecondHand;
+        saveProductsToLocalStorage(); // 保存更新到本地存储
+    } catch (error) {
+        console.error('Error updating product isSecondHand:', error);
+    }
 };
 
 const updateWishItem = async (product) => {
-try {
-    const updatedProduct = {
-    wishItem: product.wishItem
-    };
-    await axiosapi.put(`/api/products/${product.productID}`, updatedProduct);
-    alert('願望商品更新成功');
-    saveProductsToLocalStorage(); // 保存更新到本地存储
-} catch (error) {
-    console.error('Error updating wish item:', error);
-    alert('願望商品更新失敗');
-}
+    try {
+        const updatedProduct = {
+        wishItem: product.wishItem
+        };
+        await axiosapi.put(`/api/products/${product.productID}`, updatedProduct);
+        saveProductsToLocalStorage(); // 保存更新到本地存储
+    } catch (error) {
+        console.error('Error updating wish item:', error);
+    }
 };
 
 const toggleEditing = (product) => {
-product.isEditing = !product.isEditing;
-if (!product.isEditing) {
-    updateProduct(product);
-}
+    product.isEditing = !product.isEditing;
+    if (!product.isEditing) {
+        updateProduct(product);
+    }
 };
 
 const updateSpecOneName = async (product) => {
-if (product.specs && product.specs.specOneNameID && product.specs.specOneName) {
-    const updatedSpecOneName = {
-    specOneNameID: product.specs.specOneNameID,
-    specOneName: product.specs.specOneName,
-    product: product.productID
-    };
-    try {
-    await axiosapi.put(`/api/spec/onename/modify`, updatedSpecOneName);
-    alert('第一層規格名稱更新成功');
-    saveProductsToLocalStorage();
-    } catch (error) {
-    console.error('Error updating specOneName:', error);
-    alert('第一層規格名稱更新失敗');
+    if (product.specs && product.specs.specOneNameID && product.specs.specOneName) {
+        const updatedSpecOneName = {
+        specOneNameID: product.specs.specOneNameID,
+        specOneName: product.specs.specOneName,
+        product: product.productID
+        };
+        try {
+        await axiosapi.put(`/api/spec/onename/modify`, updatedSpecOneName);
+        saveProductsToLocalStorage();
+        } catch (error) {
+        console.error('Error updating specOneName:', error);
+        }
     }
-}
 };
 
 const updateSpecOne = async (product, specOne) => {
-if (specOne.specOneID && specOne.specOne && specOne.specOneQt !== undefined) {
-    const updatedSpecOne = {
-    specOneID: specOne.specOneID,
-    specOne: specOne.specOne,
-    specOneQt: specOne.specOneQt,
-    specOneName: product.specs.specOneNameID
-    };
-    try {
-    await axiosapi.put(`/api/spec/one/modify`, updatedSpecOne);
-    alert('第二層規格值更新成功');
-    saveProductsToLocalStorage();
-    } catch (error) {
-    console.error('Error updating specOne:', error);
-    alert('第二層規格值更新失敗');
+    if (specOne.specOneID && specOne.specOne && specOne.specOneQt !== undefined) {
+        const updatedSpecOne = {
+        specOneID: specOne.specOneID,
+        specOne: specOne.specOne,
+        specOneQt: specOne.specOneQt,
+        specOneName: product.specs.specOneNameID
+        };
+        try {
+        await axiosapi.put(`/api/spec/one/modify`, updatedSpecOne);
+        saveProductsToLocalStorage();
+        } catch (error) {
+        console.error('Error updating specOne:', error);
+        }
     }
-}
 };
 
 const uploadSpecOneImage = async (specOne, event) => {
-const file = event.target.files[0];
-if (file) {
-    const formData = new FormData();
-    formData.append('image', file);
-    try {
-    await axiosapi.put(`/api/specImg/${specOne.specOneImg}`, formData, {
-        headers: {
-        'Content-Type': 'multipart/form-data'
+    const file = event.target.files[0];
+    if (file) {
+        const formData = new FormData();
+        formData.append('image', file);
+        try {
+            const response = await axiosapi.put(`/api/specImg/${specOne.specOneImg}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            if (response.data.success) {
+                // 更新前端顯示的圖片
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    specOne.imgUrl = e.target.result;
+                    saveProductsToLocalStorage(); // 保存更新到本地存储
+                };
+                reader.readAsDataURL(file);
+                alert('規格圖片上傳成功');
+            } else {
+                alert('規格圖片上傳失敗');
+            }
+        } catch (error) {
+            console.error('Error uploading spec image:', error);
+            alert('規格圖片上傳失敗');
         }
-    });
-    alert('規格圖片上傳成功');
-    // 更新前端顯示的圖片
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        specOne.specOneImg = e.target.result;
-        saveProductsToLocalStorage(); // 保存更新到本地存储
-    };
-    reader.readAsDataURL(file);
-    } catch (error) {
-    console.error('Error uploading spec image:', error);
-    alert('規格圖片上傳失敗');
     }
-}
 };
 
 const updateSpecTwoName = async (specOne, specTwoName) => {
-if (specTwoName.specTwoNameID && specTwoName.specTwoName) {
-    const updatedSpecTwoName = {
-    specTwoNameID: specTwoName.specTwoNameID,
-    specTwoName: specTwoName.specTwoName,
-    specOne: specOne.specOneID
-    };
-    try {
-    await axiosapi.put(`/api/spec/twoname/modify`, updatedSpecTwoName);
-    alert('第三層規格名稱更新成功');
-    saveProductsToLocalStorage();
-    } catch (error) {
-    console.error('Error updating specTwoName:', error);
-    alert('第三層規格名稱更新失敗');
+    if (specTwoName.specTwoNameID && specTwoName.specTwoName) {
+        const updatedSpecTwoName = {
+        specTwoNameID: specTwoName.specTwoNameID,
+        specTwoName: specTwoName.specTwoName,
+        specOne: specOne.specOneID
+        };
+        try {
+            await axiosapi.put(`/api/spec/twoname/modify`, updatedSpecTwoName);
+            alert('第三層規格名稱更新成功');
+            saveProductsToLocalStorage();
+        } catch (error) {
+            console.error('Error updating specTwoName:', error);
+            alert('第三層規格名稱更新失敗');
+        }
     }
-}
 };
 
 const updateSpecTwo = async (specTwoName, specTwo) => {
-if (specTwo.specTwoID && specTwo.specTwo && specTwo.specTwoQt !== undefined) {
-    const updatedSpecTwo = {
-    specTwoID: specTwo.specTwoID,
-    specTwo: specTwo.specTwo,
-    specTwoQt: specTwo.specTwoQt,
-    specTwoName: specTwoName.specTwoNameID
-    };
-    try {
-    await axiosapi.put(`/api/spec/two/modify`, updatedSpecTwo);
-    alert('第四層規格值更新成功');
-    saveProductsToLocalStorage();
-    } catch (error) {
-    console.error('Error updating specTwo:', error);
-    alert('第四層規格值更新失敗');
+    if (specTwo.specTwoID && specTwo.specTwo && specTwo.specTwoQt !== undefined) {
+        const updatedSpecTwo = {
+        specTwoID: specTwo.specTwoID,
+        specTwo: specTwo.specTwo,
+        specTwoQt: specTwo.specTwoQt,
+        specTwoName: specTwoName.specTwoNameID
+        };
+        try {
+            await axiosapi.put(`/api/spec/two/modify`, updatedSpecTwo);
+            saveProductsToLocalStorage();
+        } catch (error) {
+            console.error('Error updating specTwo:', error);
+        }
     }
-}
 };
 
 onMounted(() => {
-loadProductsFromLocalStorage(); // 尝试从本地存储加载数据
-fetchMemberProducts(); // 仍然调用API以确保数据是最新的
+    loadProductsFromLocalStorage(); // 尝试从本地存储加载数据
+    fetchMemberProducts(); // 仍然调用API以确保数据是最新的
 });
 </script>
 
 <style scoped>
 .seller-manage-product {
-padding: 20px;
+    padding: 20px;
 }
 
 .product-list {
-margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .product-item {
-border: 1px solid #ddd;
-padding: 10px;
-margin-bottom: 10px;
-display: flex;
-align-items: center;
-justify-content: space-between;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .product-info {
-display: flex;
-align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .product-image {
-width: 100px;
-height: 100px;
-margin-right: 10px;
-cursor: pointer; /* 添加此行以更改鼠标光标 */
+    width: 100px;
+    height: 100px;
+    margin-right: 10px;
+    cursor: pointer; /* 添加此行以更改鼠标光标 */
 }
 
 .product-details {
-display: flex;
-flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .quantity, .price {
-display: flex;
-align-items: center;
-padding-top: 2px;
+    display: flex;
+    align-items: center;
+    padding-top: 2px;
 }
 
 .quantity button, .price button {
-margin: 0 6px;
-padding-top: 1px;
+    margin: 0 6px;
+    padding-top: 1px;
 }
 
 .action-button, .upload-button {
-margin-left: 10px;
+    margin-left: 10px;
 }
 
 .inactive-button {
-background-color: #e0e0e0; /* 灰色背景 */
-cursor: not-allowed; /*指示按钮不可点击 */
+    background-color: #e0e0e0; /* 灰色背景 */
+    cursor: not-allowed; /*指示按钮不可点击 */
+}
+
+.spec-image {
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+    margin-top: 10px;
 }
 </style>
+
+

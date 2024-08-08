@@ -74,11 +74,9 @@ onMounted(function () {
     callPopular(productsPopular, startPopular, rowsPopular, currentPagePopular, totalPagesPopular, totalPopular, lastPageRowsPopular);
     callRandom(productsRandom, startRandom, rowsRandom, currentPageRandom, totalPagesRandom, totalRandom, lastPageRowsRandom);
     callSecondHand(productsSecHand, startSecHand, rowsSecHand, currentPageSecHand, totalPagesSecHand, totalSecHand, lastPageRowsSecHand);
-    memberId.value = computed(()=>{
-        if(user){
-            memberId.value = user.value.id
-        }
-    })
+    if(user){
+        memberId.value = user.value.id
+    }
 })
 
 const images = ref([]);
@@ -102,6 +100,7 @@ onMounted(async () => {
         const memberId = ref(null);
 
         function addCart(productId,sellerId,specOne,specTwo,quantity){
+            console.log(productId,sellerId,specOne,specTwo,quantity);
             addCartApi(memberId,productId,sellerId,specOne,specTwo,quantity);
         }
 </script>

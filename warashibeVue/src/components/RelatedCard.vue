@@ -40,7 +40,7 @@
     </div>
 </div>
 </template>
-
+    
 <script setup>
 import { ref, computed, inject } from 'vue';
 import { useRouter } from 'vue-router';
@@ -84,23 +84,30 @@ const decreaseQuantity = () => {
 };
 
 const increaseQuantity = () => {
-    if (props.product.specs && selectedSpecOneID.value && selectedSpecTwoID.value) {
+    if (props.product.specs) {
         const selectedSpecOne = props.product.specs.specOnes.find(
             (specOne) => specOne.specOneID === selectedSpecOneID.value
         );
-        const selectedSpecTwo = selectedSpecOne.specTwoNames
-            .flatMap(specTwoName => specTwoName.specTwos)
-            .find(specTwo => specTwo.specTwoID === selectedSpecTwoID.value);
 
-        if (selectedSpecTwo && quantity.value < selectedSpecTwo.specTwoQt) {
-            quantity.value += 1;
+        if (selectedSpecOne) {
+            if (selectedSpecOne.specTwoNames.length === 0) {
+                if (quantity.value < selectedSpecOne.specOneQt) {
+                    quantity.value += 1;
+                }
+            } else {
+                const selectedSpecTwo = selectedSpecOne.specTwoNames
+                    .flatMap(specTwoName => specTwoName.specTwos)
+                    .find(specTwo => specTwo.specTwoID === selectedSpecTwoID.value);
+
+                if (selectedSpecTwo && quantity.value < selectedSpecTwo.specTwoQt) {
+                    quantity.value += 1;
+                }
+            }
         }
-    } else if (!props.product.specs) {
+    } else {
         if (quantity.value < props.product.stock) {
             quantity.value += 1;
         }
-    } else {
-        quantity.value += 1;
     }
 };
 
@@ -110,7 +117,7 @@ const addToCart = async () => {
         return;
     }
 
-    if (props.product.specs && (!selectedSpecOneID.value || !selectedSpecTwoID.value)) {
+    if (props.product.specs && (!selectedSpecOneID.value || (filteredSpecTwos.value.length > 0 && !selectedSpecTwoID.value))) {
         Swal.fire('失敗', '請選擇完整的商品規格', 'error');
         return;
     }
@@ -119,7 +126,7 @@ const addToCart = async () => {
         member: user.value.id,
         product: props.product.productID,
         specOne: selectedSpecOneID.value,
-        specTwo: selectedSpecTwoID.value,
+        specTwo: selectedSpecTwoID.value || null,
         quantity: quantity.value,
         seller: props.product.member,
     };

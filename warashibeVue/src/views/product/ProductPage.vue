@@ -87,11 +87,13 @@
         <div class="col-md-12">
         <h3>查看更多</h3>
         <div class="row">
-            <RelatedCard
-            v-for="product in relatedProducts"
-            :key="product.productID"
-            :product="product"
-            />
+            <template v-for="product in relatedProducts">
+                <RelatedCard                
+                v-if="product.productID != productID"
+                :key="product.productID"
+                :product="product"
+                />
+            </template>
         </div>
         <Paginate
             :page-count="pages"
@@ -385,12 +387,18 @@ const increaseQuantity = () => {
         );
     
         if (selectedSpec) {
-            const selectedSpecTwo = selectedSpec.specTwoNames
-            .flatMap((specTwoName) => specTwoName.specTwos)
-            .find((specTwo) => specTwo.specTwoID === selectedSpecTwoID.value);
+            if (selectedSpec.specTwoNames.length === 0) {
+                if (quantity.value < selectedSpec.specOneQt) {
+                    quantity.value += 1;
+                }
+            } else {
+                const selectedSpecTwo = selectedSpec.specTwoNames
+                    .flatMap((specTwoName) => specTwoName.specTwos)
+                    .find((specTwo) => specTwo.specTwoID === selectedSpecTwoID.value);
     
-            if (selectedSpecTwo && quantity.value < selectedSpecTwo.specTwoQt) {
-            quantity.value += 1;
+                if (selectedSpecTwo && quantity.value < selectedSpecTwo.specTwoQt) {
+                    quantity.value += 1;
+                }
             }
         }
     } else {
@@ -426,8 +434,8 @@ const addToCart = async () => {
         Swal.fire('請登入會員', '', 'warning');
         return;
     }
-    console.log(product.value.specs);
-    if ((!selectedSpecOneID.value || !selectedSpecTwoID.value) && product.value.specs) {
+
+    if ((!selectedSpecOneID.value || (selectedSpecOneID.value && product.value.specs.specOnes[0].specTwoNames.length > 0 && !selectedSpecTwoID.value)) && product.value.specs) {
         Swal.fire('失敗', '請選擇完整的商品規格', 'error');
         return;
     }
@@ -436,7 +444,7 @@ const addToCart = async () => {
         member: user.value.id,
         product: product.value.productID,
         specOne: selectedSpecOneID.value,
-        specTwo: selectedSpecTwoID.value,
+        specTwo: product.value.specs.specOnes[0].specTwoNames.length > 0 ? selectedSpecTwoID.value : null,
         quantity: quantity.value,
         seller: product.value.member,
     };

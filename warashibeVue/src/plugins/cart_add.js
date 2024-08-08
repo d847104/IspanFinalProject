@@ -1,7 +1,15 @@
 import axiosapi from "@/plugins/axios.js";
 import Swal from "sweetalert2";
 
-function addCartApi(memberId,productId,sellerId,specOne,specTwo,quantity){
+function addCartApi(memberId, productId, sellerId, specOne, specTwo, quantity) {
+        // 檢查是否為 Vue 的 ref 對象，並提取其值
+        memberId = memberId?.value || memberId;
+        productId = productId?.value || productId;
+        sellerId = sellerId?.value || sellerId;
+        specOne = specOne?.value || specOne;
+        specTwo = specTwo?.value || specTwo;
+        quantity = quantity?.value || quantity;
+
         let request = {
                 "member": memberId,
                 "product": productId,
@@ -11,35 +19,35 @@ function addCartApi(memberId,productId,sellerId,specOne,specTwo,quantity){
                 "quantity": quantity
         }
 
-        axiosapi.post("/api/cart/create",request)
-        .then(function(result){
-                if(result.data.success){
-                        console.log(`購物車新增成功,會員:${memberId}, 商品:${productId}, 規格一:${specOne}, 規格二:${specTwo}, 數量:${quantity}`)
-                        Swal.fire({
-                                position: "center",
-                                icon: "success",
-                                title: "已加入購物車",
-                                showConfirmButton: false,
-                                timer: 800
-                        });
-                }else{
-                        console.log(result.data.message);
+        axiosapi.post("/api/cart/create", request)
+                .then(function (result) {
+                        if (result.data.success) {
+                                console.log(`購物車新增成功,會員:${memberId}, 商品:${productId}, 規格一:${specOne}, 規格二:${specTwo}, 數量:${quantity}`)
+                                Swal.fire({
+                                        position: "center",
+                                        icon: "success",
+                                        title: "已加入購物車",
+                                        showConfirmButton: false,
+                                        timer: 800
+                                });
+                        } else {
+                                console.log(result.data.message);
+                                Swal.fire({
+                                        icon: "error",
+                                        text: "加入購物車失敗",
+                                        allowOutsideClick: false,
+                                })
+                        }
+                })
+                .catch(function (error) {
+                        console.log("error", error);
+                        console.log(error.message);
                         Swal.fire({
                                 icon: "error",
-                                text: "加入購物車失敗",
+                                text: "錯誤",
                                 allowOutsideClick: false,
                         })
-                }
-        })
-        .catch(function(error){
-                console.log("error",error)
-                console.log(error.message);
-                Swal.fire({
-                        icon: "error",
-                        text: "錯誤",
-                        allowOutsideClick: false,
                 })
-        })
 }
 
 export default addCartApi;
