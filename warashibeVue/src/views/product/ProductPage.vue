@@ -166,8 +166,8 @@ const fetchSellerInfo = async (memberID) => {
     if (data.list && data.list.length > 0) {
         seller.value = data.list[0];
     }
-    if(seller.profileImg){
-        sellerImg.value = `data:image/jpeg;base64,${seller.profileImg}`;
+    if(seller.value.profileImg){
+        sellerImg.value = `data:image/jpeg;base64,${seller.value.profileImg}`;
     }
     else{
         sellerImg.value = '/src/img/海棉寶.png';

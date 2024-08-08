@@ -288,8 +288,8 @@
                         }
                 }
                 emits("addCart",
-                props.product.productID,props.
-                product.member,
+                props.product.productID,
+                props.product.member,
                 selectedSpecOne.value == null || selectedSpecOne.value == "" ? null : selectedSpecOne.value,
                 selectedSpecTwo.value == null || selectedSpecTwo.value == "" ? null : selectedSpecTwo.value,
                 quantity.value)
