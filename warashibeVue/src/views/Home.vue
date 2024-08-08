@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import { inject ,ref, onMounted } from 'vue';
+import { inject ,ref, onMounted, computed } from 'vue';
 import compCard from '@/components/compCard.vue';
 import callPopular from '@/plugins/products/product_popular.js';
 import callSecondHand from '@/plugins/products/product_secondhand.js';
@@ -74,10 +74,16 @@ onMounted(function () {
     callPopular(productsPopular, startPopular, rowsPopular, currentPagePopular, totalPagesPopular, totalPopular, lastPageRowsPopular);
     callRandom(productsRandom, startRandom, rowsRandom, currentPageRandom, totalPagesRandom, totalRandom, lastPageRowsRandom);
     callSecondHand(productsSecHand, startSecHand, rowsSecHand, currentPageSecHand, totalPagesSecHand, totalSecHand, lastPageRowsSecHand);
+    memberId.value = computed(()=>{
+        if(user){
+            memberId.value = user.value.id
+        }
+    })
 })
 
 const images = ref([]);
 onMounted(async () => {
+
     try {
         const response = await axiosapi.get('/api/productImg/all');
         images.value = response.data.list;
@@ -93,7 +99,7 @@ onMounted(async () => {
         })
 
         // 這邊先 Hard Code 會員ID, 待加入登入功能後應實際從 httpSession 取得
-        const memberId = user.value.id;
+        const memberId = ref(null);
 
         function addCart(productId,sellerId,specOne,specTwo,quantity){
             addCartApi(memberId,productId,sellerId,specOne,specTwo,quantity);
