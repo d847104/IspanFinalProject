@@ -11,7 +11,7 @@ function addCartApi(memberId,productId,sellerId,specOne,specTwo,quantity){
                 "quantity": quantity
         }
 
-        axiosapi.post("/api/cart/create",request)
+        return axiosapi.post("/api/cart/create",request)
         .then(function(result){
                 if(result.data.success){
                         console.log(`購物車新增成功,會員:${memberId}, 商品:${productId}, 規格一:${specOne}, 規格二:${specTwo}, 數量:${quantity}`)
@@ -22,6 +22,7 @@ function addCartApi(memberId,productId,sellerId,specOne,specTwo,quantity){
                                 showConfirmButton: false,
                                 timer: 800
                         });
+                        return result;
                 }else{
                         console.log(result.data.message);
                         Swal.fire({
@@ -29,6 +30,7 @@ function addCartApi(memberId,productId,sellerId,specOne,specTwo,quantity){
                                 text: "加入購物車失敗",
                                 allowOutsideClick: false,
                         })
+                        throw new Error(result.data.message);
                 }
         })
         .catch(function(error){
@@ -39,6 +41,7 @@ function addCartApi(memberId,productId,sellerId,specOne,specTwo,quantity){
                         text: "錯誤",
                         allowOutsideClick: false,
                 })
+                throw error;
         })
 }
 

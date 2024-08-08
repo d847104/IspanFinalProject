@@ -18,8 +18,9 @@ axiosapi.interceptors.response.use(
     function (error) {
         if (error.response && error.response.status && error.response.status === 403) {
             sessionStorage.clear();
+            console.log(error.message);
             Swal.fire({
-                text: "失敗(403)：" + error.message,
+                text: "請登入會員方可操作",
                 icon: "error"
             }).then(function () {
                 window.location.href = "/secure/login";

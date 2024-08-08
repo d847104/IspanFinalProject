@@ -31,7 +31,10 @@
                     </form>
                     <!-- 右側功能選單 -->
                     <li class="nav-item d-none d-lg-block">
-                        <RouterLink class="nav-link" :to="{ name: 'cart' }">
+                        <RouterLink class="nav-link position-relative" :to="{ name: 'cart' }">
+                            <span class="position-absolute top-4 start-100 translate-middle badge rounded-pill bg-danger fs-6" v-if="cartQt > 0">
+                                {{ cartQt }}
+                            </span>
                             <font-awesome-icon :icon="['fas', 'cart-shopping']" />
                         </RouterLink>
                     </li>
@@ -65,28 +68,26 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
                             <li>
-                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/secure/member')">會員中心
+                                <RouterLink class="dropdown-item" :to="{name: 'secure-member-link'}">會員中心
                                 </RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" to="#"
-                                    @click="checkAuth('/members/basicinformation')">會員基本資料
+                                <RouterLink class="dropdown-item" :to="{name: 'members-basicinformation-link'}">會員基本資料
                                 </RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/buyer/buyerorder')">買家訂單
+                                <RouterLink class="dropdown-item" :to="{name: 'buyer-BuyerOrder-link'}">買家訂單
                                 </RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller/sellerorder')">賣家訂單
+                                <RouterLink class="dropdown-item" :to="{name: 'seller-sellerorder-link'}">賣家訂單
                                 </RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" to="#"
-                                    @click="checkAuth('/seller/sellermanageproduct')">賣家商品管理</RouterLink>
+                                <RouterLink class="dropdown-item" :to="{name: 'seller-sellermanageproduct-link'}">賣家商品管理</RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/pages/productUploadPage')">
+                                <RouterLink class="dropdown-item" :to="{name: 'product-Upload-page-link'}">
                                     上架商品
                                 </RouterLink>
                             </li>
@@ -100,7 +101,7 @@
 </template>
 
 <script setup>
-import { ref, inject, computed } from 'vue'
+import { ref, inject, computed, onMounted, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import NotificationPop from '@/components/NotificationPop.vue';
 import axiosapi from '@/plugins/axios';
@@ -112,11 +113,15 @@ const router = useRouter();
 const isLogin = inject('isLogin');
 const username = computed(()=>sessionStorage.getItem("username"));
 
+// 購物車數量
+const cartQt = inject("cartQt");
+
 function logout() {
     axiosapi.defaults.headers.authorization = "";
     sessionStorage.removeItem("memberID");
     sessionStorage.removeItem("username");
     isLogin.value = false;
+    cartQt.value = localStorage.getItem("cartList");
     router.push("/secure/login");
 }
 

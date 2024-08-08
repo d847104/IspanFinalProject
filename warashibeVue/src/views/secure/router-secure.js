@@ -12,7 +12,7 @@ export default [
     { name: "register-two-link", path: '/secure/registerTwo', component: RegisterTwo },
     { name: "register-three-link", path: '/secure/registerThree', component: RegisterThree },
     { name: "secure-login-link", path: "/secure/login", component: Login },
-    { name: "secure-member-link", path: "/secure/member", component: Member },
+    { name: "secure-member-link", path: "/secure/member", component: Member, meta: { requiresAuth: true } },
     { name: "secure-browsehistory-link", path: "/secure/browseHistory", component: BrowseHistory },
     { name: "secure-favorite-link", path: "/secure/favorite", component: Favorite },
 ]

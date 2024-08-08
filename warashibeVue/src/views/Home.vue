@@ -1,9 +1,9 @@
 <template>
-    <div v-if="images.length" id="carouselExampleFade" class="carousel slide carousel-fade">
+    <div v-if="images.length" id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-theme="dark">
         <div class="carousel-inner">
             <div v-for="(image, index) in images" :key="image.imgID"
                 :class="['carousel-item', { active: index === 0 }]">
-                <img :src="`data:image/jpeg;base64,${image.img}`" class="d-block w-100"
+                <img :src="`data:image/jpeg;base64,${image.img}`" class="w-100"
                     :alt="`Image ${image.imgID}`">
             </div>
         </div>
@@ -72,16 +72,39 @@
 
     const images = ref([]);
 
+    const updateCartQt = inject("updateCartQt")
+
     onMounted(function () {
         callPopular(productsPopular, startPopular, rowsPopular, currentPagePopular, totalPagesPopular, totalPopular, lastPageRowsPopular);
         callRandom(productsRandom, startRandom, rowsRandom, currentPageRandom, totalPagesRandom, totalRandom, lastPageRowsRandom);
         callSecondHand(productsSecHand, startSecHand, rowsSecHand, currentPageSecHand, totalPagesSecHand, totalSecHand, lastPageRowsSecHand);
+        axiosapi.get("/api/productImg/all")
+            .then(function(response){
+                if(response.data.success){
+                    images.value = response.data.list
+                }else{
+                    console.log("AXIOS 無法載入商品輪播圖片");
+                }})
+            .catch(function(error){
+                console.log("無法載入商品輪播圖片",error);
+        })
     })
 
-    // 這邊先 Hard Code 會員ID, 待加入登入功能後應實際從 httpSession 取得
-    const memberId = sessionStorage.getItem("memberID");
+    // 加入購物車
     function addCart(productId,sellerId,specOne,specTwo,quantity){
-        addCartApi(memberId,productId,sellerId,specOne,specTwo,quantity);
+        if(isLogin.value){
+            addCartApi(sessionStorage.getItem("memberID"),productId,sellerId,specOne,specTwo,quantity).then(()=>updateCartQt());
+        }else{
+            let cart = {"product":productId,"seller":sellerId,"specOne":specOne,"specTwo":specTwo,"quantity":quantity}
+            if(!localStorage.getItem("cartList")){
+                localStorage.setItem("cartList", JSON.stringify([cart]));
+            }else{
+                let cartList = JSON.parse(localStorage.getItem("cartList"));
+                cartList.push(cart);
+                localStorage.setItem("cartList", JSON.stringify(cartList));
+            }
+            updateCartQt();
+        }
     }
 </script>
 
