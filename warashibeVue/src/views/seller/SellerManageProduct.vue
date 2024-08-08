@@ -8,60 +8,91 @@
         <br>
         </div>
         <div class="product-item" v-for="product in onSaleProducts" :key="product.productID">
-        <div class="product-info">
-            <img :src="product.imageUrl || '/default-product.png'" alt="商品圖片" class="product-image" @click="gotoProductPage(product)"/>
-            <div class="product-details">
+            <div class="product-info">
+                <img :src="product.imageUrl || '/default-product.png'" alt="商品圖片" class="product-image" @click="gotoProductPage(product)"/>
+                <div class="product-details">
+                <div>
+                    商品名稱:
+                    <input type="text" v-model="product.productName" :disabled="!product.isEditing" />
+                </div>
+                <div class="quantity">
+                    數量:
+                    <button @click="decreaseQuantity(product)" :disabled="!product.isEditing">-</button>
+                    <input type="number" v-model.number="product.stock" :disabled="!product.isEditing" />
+                    <button @click="increaseQuantity(product)" :disabled="!product.isEditing">+</button>
+                </div>
+                <div class="price">
+                    定價:
+                    <button @click="decreasePrice(product)" :disabled="!product.isEditing">-</button>
+                    <input type="number" v-model.number="product.price" :disabled="!product.isEditing" />
+                    <button @click="increasePrice(product)" :disabled="!product.isEditing">+</button>
+                </div>
+                <p class="quantity">總數量: {{ product.stock }}</p>
+                <textarea v-model="product.description" :disabled="!product.isEditing"></textarea>
+                </div>
+            </div>
+            <ul>
+                <div>
+                <label>上傳圖片：</label><br>
+                <input type="file" @change="uploadImage(product, $event)" :disabled="!product.isEditing" />
+                </div>
+                <div v-if="product.secondHand" style="padding-top: 10px;">
+                <label>願望商品：</label>
+                <input type="text" @change="updateWishItem(product)" v-model="product.wishItem" :disabled="!product.isEditing" />
+                </div>
+            </ul>
+            <!-- 規格編輯區域 -->
+            <div v-if="product.specs">
+                <div>
+                <label>規格一：</label>
+                    <input type="text" v-model="product.specs.specOneName" :disabled="!product.isEditing" @change="updateSpecOneName(product)" />
+                </div>
+                <div v-for="specOne in product.specs.specOnes" :key="specOne.specOneID">
+                    <label>規格值：</label>
+                    <input type="text" v-model="specOne.specOne" :disabled="!product.isEditing" @change="updateSpecOne(product, specOne)" />
+                    <div>
+                        <label>數量：</label>
+                        <input type="number" v-model.number="specOne.specOneQt" :disabled="!product.isEditing" @change="updateSpecOne(product, specOne)" />
+                    </div>
+                    <div>
+                        <label>圖片：</label>
+                        <input type="file" @change="uploadSpecOneImage(specOne, $event)" :disabled="!product.isEditing" />
+                        <img v-if="specOne.specOneImg" :src="fetchSpecImages(specOne.specOneImg)" alt="規格圖片" />
+                    </div>
+
+                    <div v-for="specTwoName in specOne.specTwoNames" :key="specTwoName.specTwoNameID">
+                        <label>規格二：</label>
+                        <input type="text" v-model="specTwoName.specTwoName" :disabled="!product.isEditing" @change="updateSpecTwoName(specOne, specTwoName)" />                   
+                        <div v-for="specTwo in specTwoName.specTwos" :key="specTwo.specTwoID">
+                            <label>規格值：</label>
+                            <input type="text" v-model="specTwo.specTwo" :disabled="!product.isEditing" @change="updateSpecTwo(specTwoName, specTwo)" />
+                            <label>數量：</label>
+                            <input type="number" v-model.number="specTwo.specTwoQt" :disabled="!product.isEditing" @change="updateSpecTwo(specTwoName, specTwo)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button
+                class="action-button"
+                :class="{ 'inactive-button': product.secondHand === false }"
+                @click="setProductSecondHand(product, false)"
+                :disabled="!product.isEditing"
+                >拍賣</button>
+                <button
+                class="action-button"
+                :class="{ 'inactive-button': product.secondHand === true }"
+                @click="setProductSecondHand(product, true)"
+                :disabled="!product.isEditing"
+                >交換</button>
+            </div>
             <div>
-                商品名稱:
-                <input type="text" v-model="product.productName" :disabled="!product.isEditing" />
+                <button class="action-button" @click="takeOffProduct(product)">下架</button>
+                <button class="action-button" @click="toggleEditing(product)">
+                {{ product.isEditing ? '保存' : '修改' }}
+                </button>
+                <button class="action-button" @click="confirmDelete(product)">刪除</button>
             </div>
-            <div class="quantity">
-                數量:
-                <button @click="decreaseQuantity(product)" :disabled="!product.isEditing">-</button>
-                <input type="number" v-model.number="product.stock" :disabled="!product.isEditing" />
-                <button @click="increaseQuantity(product)" :disabled="!product.isEditing">+</button>
-            </div>
-            <div class="price">
-                定價:
-                <button @click="decreasePrice(product)" :disabled="!product.isEditing">-</button>
-                <input type="number" v-model.number="product.price" :disabled="!product.isEditing" />
-                <button @click="increasePrice(product)" :disabled="!product.isEditing">+</button>
-            </div>
-            <p class="quantity">總數量: {{ product.stock }}</p>
-            <textarea v-model="product.description" :disabled="!product.isEditing"></textarea>
-            </div>
-        </div>
-        <ul>
-            <div>
-            <label>上傳圖片：</label><br>
-            <input type="file" @change="uploadImage(product, $event)" :disabled="!product.isEditing" />
-            </div>
-            <div v-if="product.secondHand" style="padding-top: 10px;">
-            <label>願望商品：</label>
-            <input type="text" @change="updateWishItem(product)" v-model="product.wishItem" :disabled="!product.isEditing" />
-            </div>
-        </ul>
-        <div class="action-buttons">
-            <button
-            class="action-button"
-            :class="{ 'inactive-button': product.secondHand === false }"
-            @click="setProductSecondHand(product, false)"
-            :disabled="!product.isEditing"
-            >拍賣</button>
-            <button
-            class="action-button"
-            :class="{ 'inactive-button': product.secondHand === true }"
-            @click="setProductSecondHand(product, true)"
-            :disabled="!product.isEditing"
-            >交換</button>
-        </div>
-        <div>
-            <button class="action-button" @click="takeOffProduct(product)">下架</button>
-            <button class="action-button" @click="toggleEditing(product)">
-            {{ product.isEditing ? '保存' : '修改' }}
-            </button>
-            <button class="action-button" @click="confirmDelete(product)">刪除</button>
-        </div>
         </div>
     </div>
     <hr />
@@ -185,6 +216,18 @@ if (user.value) {
     console.error('Error fetching products:', error);
     }
 }
+};
+
+const fetchSpecImages = async (img) => {
+    console.log(img);
+    if (img) {
+        const {data} = await axiosapi.get(`/api/specImg/${img}`);
+        // console.log(data.list.specImg);
+        return `data:image/jpg;base64,${data.list.specImg}`;
+    }
+    else{
+        return `data:image/png;base64,/src/img/貓頭鷹.jpg`;
+    }
 };
 
 const fetchProductImage = async (imgID) => {
@@ -352,6 +395,106 @@ const toggleEditing = (product) => {
 product.isEditing = !product.isEditing;
 if (!product.isEditing) {
     updateProduct(product);
+}
+};
+
+const updateSpecOneName = async (product) => {
+if (product.specs && product.specs.specOneNameID && product.specs.specOneName) {
+    const updatedSpecOneName = {
+    specOneNameID: product.specs.specOneNameID,
+    specOneName: product.specs.specOneName,
+    product: product.productID
+    };
+    try {
+    await axiosapi.put(`/api/spec/onename/modify`, updatedSpecOneName);
+    alert('第一層規格名稱更新成功');
+    saveProductsToLocalStorage();
+    } catch (error) {
+    console.error('Error updating specOneName:', error);
+    alert('第一層規格名稱更新失敗');
+    }
+}
+};
+
+const updateSpecOne = async (product, specOne) => {
+if (specOne.specOneID && specOne.specOne && specOne.specOneQt !== undefined) {
+    const updatedSpecOne = {
+    specOneID: specOne.specOneID,
+    specOne: specOne.specOne,
+    specOneQt: specOne.specOneQt,
+    specOneName: product.specs.specOneNameID
+    };
+    try {
+    await axiosapi.put(`/api/spec/one/modify`, updatedSpecOne);
+    alert('第二層規格值更新成功');
+    saveProductsToLocalStorage();
+    } catch (error) {
+    console.error('Error updating specOne:', error);
+    alert('第二層規格值更新失敗');
+    }
+}
+};
+
+const uploadSpecOneImage = async (specOne, event) => {
+const file = event.target.files[0];
+if (file) {
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+    await axiosapi.put(`/api/specImg/${specOne.specOneImg}`, formData, {
+        headers: {
+        'Content-Type': 'multipart/form-data'
+        }
+    });
+    alert('規格圖片上傳成功');
+    // 更新前端顯示的圖片
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        specOne.specOneImg = e.target.result;
+        saveProductsToLocalStorage(); // 保存更新到本地存储
+    };
+    reader.readAsDataURL(file);
+    } catch (error) {
+    console.error('Error uploading spec image:', error);
+    alert('規格圖片上傳失敗');
+    }
+}
+};
+
+const updateSpecTwoName = async (specOne, specTwoName) => {
+if (specTwoName.specTwoNameID && specTwoName.specTwoName) {
+    const updatedSpecTwoName = {
+    specTwoNameID: specTwoName.specTwoNameID,
+    specTwoName: specTwoName.specTwoName,
+    specOne: specOne.specOneID
+    };
+    try {
+    await axiosapi.put(`/api/spec/twoname/modify`, updatedSpecTwoName);
+    alert('第三層規格名稱更新成功');
+    saveProductsToLocalStorage();
+    } catch (error) {
+    console.error('Error updating specTwoName:', error);
+    alert('第三層規格名稱更新失敗');
+    }
+}
+};
+
+const updateSpecTwo = async (specTwoName, specTwo) => {
+if (specTwo.specTwoID && specTwo.specTwo && specTwo.specTwoQt !== undefined) {
+    const updatedSpecTwo = {
+    specTwoID: specTwo.specTwoID,
+    specTwo: specTwo.specTwo,
+    specTwoQt: specTwo.specTwoQt,
+    specTwoName: specTwoName.specTwoNameID
+    };
+    try {
+    await axiosapi.put(`/api/spec/two/modify`, updatedSpecTwo);
+    alert('第四層規格值更新成功');
+    saveProductsToLocalStorage();
+    } catch (error) {
+    console.error('Error updating specTwo:', error);
+    alert('第四層規格值更新失敗');
+    }
 }
 };
 
