@@ -3,7 +3,7 @@
                 <div class="my-4">
                         <h2 class="fw-bold">購物車</h2>
                 </div>
-                <div v-for="seller in sellerList" class="container p-5">
+                <div v-for="seller in sellerList" class="container p-4">
                         <div class="row">
                                 <div class="col-10"><h3 class="fw-bold">賣家 {{ seller.username }}</h3></div>
                                 <div class="col">
@@ -46,11 +46,12 @@
         import Swal from "sweetalert2";
         import compCartList from '@/components/compCartList.vue';
         import { inject } from 'vue';
+        import emitter from '@/plugins/events';
 
         const router = useRouter();
         // 這邊先 Hard Code 會員ID, 待加入登入功能後應實際從 httpSession 取得
         const user = inject("user");
-        const memberId = ref(user.value.id);
+        const memberId = ref(0);
         const sellerList = ref([]);
         const cartList = ref([]);
         const selectedCarts = ref({}); // 用於追蹤每個商品是否被選中
@@ -61,6 +62,11 @@
         const selectedItemCount = computed(() => { // 計算被選中的商品數量
                 return Object.values(selectedCarts.value).filter(isSelected => isSelected).length;
         });
+        
+        onMounted(function () {
+                memberId.value = user.value.id
+                cartList.value = callCart(memberId.value);
+        })
 
         // 點選賣家全選/取消全選
         function toggleSelectSeller(sellerID,event) {
@@ -124,10 +130,6 @@
                         disableSeller.value[seller.memberID] = false;
                 })
         }
-
-        onMounted(function () {
-                cartList.value = callCart(memberId.value);
-        })
 
         // 依會員 ID 呼叫購物車清單
         function callCart(memberId){
@@ -194,7 +196,7 @@
         }
 
         // 監聽子元件 compCartList.vue 刪除購物車 TABLE 資料一筆
-        function removeCart(cartId){
+        function removeCart(cartId,memberId){
                 axiosapi.delete("/api/cart/delete/"+cartId)
                 .then(function(result){
                         if(result.data.success){
@@ -233,9 +235,9 @@
                         .filter(cart => selectedCarts.value[cart.cartID]) // 根據布林值過濾
                         .map(cart => ({
                                 cartID: cart.cartID,
-                                product: cart.product.productID,
+                                product: cart.product,
                                 quantity: cart.quantity,
-                                seller: cart.seller,
+                                sellerID: cart.seller,
                                 specOne: cart.specOne == null ? null : cart.specOne,
                                 specTwo: cart.specTwo == null ? null : cart.specTwo,
                                 specOneName: cart.specOne == null ? null : cart.specOne.specOneName.specOneName,
@@ -257,9 +259,8 @@
                 }).then((result) => {
                         if (result.isConfirmed) {
                                 const selectedItems = getSelectedItems();
-                                router.push({ 
-                                        name: 'Checkout', // 結帳頁面的路由名稱
-                                        state: { selectedItems } 
+                                router.push({name: 'Checkout'}).then(()=>{
+                                        emitter.emit('result',selectedItems);
                                 });
                         }
                 });
