@@ -37,9 +37,9 @@
                             </div>
                             <h6 class="text-success">Free shipping</h6>
                             <div class="mt-4">
-                                <button class="btn btn-primary shadow-0" type="button">直接購買</button>
+                                <button class="btn btn-primary shadow-0" type="button" @click="viewProductDetail">直接購買</button>
                                 <a href="javascript:void(0);" class="btn btn-light border px-2 pt-2 icon-hover">
-                                    <font-awesome-icon icon="fas fa-heart fa-lg px-1"></font-awesome-icon>
+                                    <font-awesome-icon icon="fas fa-heart fa-lg px-1" @click="addToFavorite"></font-awesome-icon>
                                 </a>
                             </div>
                         </div>
@@ -51,13 +51,34 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted,inject } from 'vue';
 import { useRouter } from 'vue-router';
 import axiosapi from '@/plugins/axios';
+import Swal from 'sweetalert2';
+
+const user = inject("user");
 const props = defineProps(["item"]);
 const product = ref(null);
 const imageSrc = ref(null);
 const router = useRouter();
+
+const viewProductDetail = () => {
+    router.push(`/pages/productpage?productID=${props.item.product}`);
+};
+
+const addToFavorite = async () => {
+    try {
+        await axiosapi.post('/ajax/favorite/insert', {
+            memberID: user.value.id,
+            productID: props.item.product,
+            sellerID: props.item.member
+        });
+        Swal.fire('成功', '已將該商品加入最愛', 'success');
+    } catch (error) {
+        console.error('加入最愛失敗', error);
+        Swal.fire('失敗', '加入最愛失敗', 'error');
+    }
+};
 
 const fetchProduct = async () => {
     try {
