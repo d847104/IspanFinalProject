@@ -1,10 +1,5 @@
 <template>
-    <!-- <div class="container"> -->
-    <!-- navbar黑色 -->
-    <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top"> -->
-    <!-- navbar透明 -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-
         <div class="container-fluid">
             <!-- 網站LOGO -->
             <RouterLink class="navbar-brand" to="/">
@@ -26,7 +21,6 @@
                         <RouterLink class="nav-link" to="#">商城/二手</RouterLink>
                     </li>
                     <!-- 搜尋列 -->
-
                     <form class="d-flex search-form d-none d-lg-flex mx-auto" role="search" @submit.prevent="search">
                         <input v-model="keyword" class="form-control me-1 search-bar" type="search" placeholder="Search"
                             aria-label="Search">
@@ -49,18 +43,18 @@
                     <li class="nav-item d-none d-lg-block" @mouseover="showPopup" @mouseleave="hidePopup">
                         <NotificationPop :popupVisible="popupVisible" />
                     </li>
-                    <li class="nav-item" v-if="!user">
+                    <li class="nav-item" v-if="!isLogin">
                         <RouterLink class="nav-link" to="/secure/login"><font-awesome-icon
                                 :icon="['fas', 'right-to-bracket']" /></RouterLink>
                     </li>
-                    <li class="nav-item" v-if="!user">
+                    <li class="nav-item" v-if="!isLogin">
                         <RouterLink class="nav-link" to="/secure/registerOne"><font-awesome-icon
                                 icon="fa-solid fa-user-plus" /></RouterLink>
                     </li>
-                    <li class="nav-item" v-if="user">
-                        <span class="nav-link">{{ user?.username }}</span>
+                    <li class="nav-item" v-if="isLogin">
+                        <span class="nav-link">{{ username }}</span>
                     </li>
-                    <li class="nav-item" v-if="user">
+                    <li class="nav-item" v-if="isLogin">
                         <button class="nav-link active" @click="logout"><font-awesome-icon
                                 icon="fa-solid fa-right-from-bracket" /></button>
                     </li>
@@ -106,7 +100,7 @@
 </template>
 
 <script setup>
-import { ref, inject } from 'vue'
+import { ref, inject, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import NotificationPop from '@/components/NotificationPop.vue';
 import axiosapi from '@/plugins/axios';
@@ -115,13 +109,14 @@ import emitter from '@/plugins/events';
 const router = useRouter();
 
 // 登入相關
-const user = inject('user');
-const setUser = inject('setUser');
+const isLogin = inject('isLogin');
+const username = computed(()=>sessionStorage.getItem("username"));
+
 function logout() {
     axiosapi.defaults.headers.authorization = "";
     sessionStorage.removeItem("memberID");
-    sessionStorage.removeItem("token");
-    setUser(false);
+    sessionStorage.removeItem("username");
+    isLogin.value = false;
     router.push("/secure/login");
 }
 
@@ -138,7 +133,7 @@ const hidePopup = () => {
 };
 
 const checkAuth = (path) => {
-    if (!user.value) {
+    if (!isLogin.value) {
         router.push('/secure/login');
     } else {
         router.push(path);
@@ -170,9 +165,6 @@ async function search() {
             allowOutsideClick: false,
         });
     }
-
-
-
 }
 
 

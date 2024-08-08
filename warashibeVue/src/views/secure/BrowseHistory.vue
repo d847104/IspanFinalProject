@@ -17,13 +17,13 @@ import { ref, onMounted, inject } from 'vue';
 import axiosapi from '@/plugins/axios';
 import BrowsingHistoryItem from '@/components/BrowsingHistoryItem.vue';
 
-const user = inject("user");
+const isLogin = inject("isLogin");
 const browsingHistory = ref([]);
 
 const fetchBrowsingHistory = async () => {
-    if (user && user.value && user.value.id) {
+    if (isLogin.value && sessionStorage.getItem("memberID")!=null) {
         try {
-            const response = await axiosapi.get(`/api/browsing-history/${user.value.id}`);
+            const response = await axiosapi.get(`/api/browsing-history/${sessionStorage.getItem("memberID")}`);
             browsingHistory.value = response.data;
         } catch (error) {
             console.error('獲取瀏覽紀錄失敗:', error);

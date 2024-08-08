@@ -74,6 +74,7 @@ public class AuthController {
             responseJson.put("token", token);
             responseJson.put("memberID", member.getMemberID());
             responseJson.put("account", member.getAccount());
+            responseJson.put("username", member.getUsername());
             
         }
         return responseJson.toString();

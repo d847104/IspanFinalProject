@@ -37,73 +37,52 @@
 </template>
 
 <script setup>
-import { inject ,ref, onMounted, computed } from 'vue';
-import compCard from '@/components/compCard.vue';
-import callPopular from '@/plugins/products/product_popular.js';
-import callSecondHand from '@/plugins/products/product_secondhand.js';
-import callRandom from '@/plugins/products/product_random';
-import axiosapi from '@/plugins/axios';
-import addCartApi from '@/plugins/cart_add';
+    import { inject ,ref, onMounted } from 'vue';
+    import compCard from '@/components/compCard.vue';
+    import callPopular from '@/plugins/products/product_popular.js';
+    import callSecondHand from '@/plugins/products/product_secondhand.js';
+    import callRandom from '@/plugins/products/product_random';
+    import axiosapi from '@/plugins/axios';
+    import addCartApi from '@/plugins/cart_add';
 
-const user = inject("user");
-const productsPopular = ref([]);
-const startPopular = ref(0);
-const rowsPopular = ref(8);
-const currentPagePopular = ref(0);
-const totalPagesPopular = ref(0);
-const totalPopular = ref(0);
-const lastPageRowsPopular = ref(0);
+    const isLogin = inject("isLogin");
+    const productsPopular = ref([]);
+    const startPopular = ref(0);
+    const rowsPopular = ref(8);
+    const currentPagePopular = ref(0);
+    const totalPagesPopular = ref(0);
+    const totalPopular = ref(0);
+    const lastPageRowsPopular = ref(0);
 
-const productsRandom = ref([]);
-const startRandom = ref(0);
-const rowsRandom = ref(8);
-const currentPageRandom = ref(0);
-const totalPagesRandom = ref(0);
-const totalRandom = ref(0);
-const lastPageRowsRandom = ref(0);
+    const productsRandom = ref([]);
+    const startRandom = ref(0);
+    const rowsRandom = ref(8);
+    const currentPageRandom = ref(0);
+    const totalPagesRandom = ref(0);
+    const totalRandom = ref(0);
+    const lastPageRowsRandom = ref(0);
 
-const productsSecHand = ref([]);
-const startSecHand = ref(0);
-const rowsSecHand = ref(8);
-const currentPageSecHand = ref(0);
-const totalPagesSecHand = ref(0);
-const totalSecHand = ref(0);
-const lastPageRowsSecHand = ref(0);
+    const productsSecHand = ref([]);
+    const startSecHand = ref(0);
+    const rowsSecHand = ref(8);
+    const currentPageSecHand = ref(0);
+    const totalPagesSecHand = ref(0);
+    const totalSecHand = ref(0);
+    const lastPageRowsSecHand = ref(0);
 
-onMounted(function () {
-    callPopular(productsPopular, startPopular, rowsPopular, currentPagePopular, totalPagesPopular, totalPopular, lastPageRowsPopular);
-    callRandom(productsRandom, startRandom, rowsRandom, currentPageRandom, totalPagesRandom, totalRandom, lastPageRowsRandom);
-    callSecondHand(productsSecHand, startSecHand, rowsSecHand, currentPageSecHand, totalPagesSecHand, totalSecHand, lastPageRowsSecHand);
-    memberId.value = computed(()=>{
-        if(user){
-            memberId.value = user.value.id
-        }
+    const images = ref([]);
+
+    onMounted(function () {
+        callPopular(productsPopular, startPopular, rowsPopular, currentPagePopular, totalPagesPopular, totalPopular, lastPageRowsPopular);
+        callRandom(productsRandom, startRandom, rowsRandom, currentPageRandom, totalPagesRandom, totalRandom, lastPageRowsRandom);
+        callSecondHand(productsSecHand, startSecHand, rowsSecHand, currentPageSecHand, totalPagesSecHand, totalSecHand, lastPageRowsSecHand);
     })
-})
 
-const images = ref([]);
-onMounted(async () => {
-
-    try {
-        const response = await axiosapi.get('/api/productImg/all');
-        images.value = response.data.list;
-    } catch (error) {
-        console.error('Error fetching data:', error);
+    // 這邊先 Hard Code 會員ID, 待加入登入功能後應實際從 httpSession 取得
+    const memberId = sessionStorage.getItem("memberID");
+    function addCart(productId,sellerId,specOne,specTwo,quantity){
+        addCartApi(memberId,productId,sellerId,specOne,specTwo,quantity);
     }
-});
-
-        onMounted(function () {
-            callPopular(productsPopular, startPopular, rowsPopular, currentPagePopular, totalPagesPopular, totalPopular, lastPageRowsPopular);
-            callRandom(productsRandom, startRandom, rowsRandom, currentPageRandom, totalPagesRandom, totalRandom, lastPageRowsRandom);
-            callSecondHand(productsSecHand, startSecHand, rowsSecHand, currentPageSecHand, totalPagesSecHand, totalSecHand, lastPageRowsSecHand);
-        })
-
-        // 這邊先 Hard Code 會員ID, 待加入登入功能後應實際從 httpSession 取得
-        const memberId = ref(null);
-
-        function addCart(productId,sellerId,specOne,specTwo,quantity){
-            addCartApi(memberId,productId,sellerId,specOne,specTwo,quantity);
-        }
 </script>
 
 <style scoped>
@@ -118,27 +97,27 @@ onMounted(async () => {
         /* 隱藏溢出內容 */
     }
 
-.carousel-inner {
-    height: 100%;
-    /* 使輪播內部容器高度與輪播相同 */
-    align-items: center;
-    justify-content: center;
+    .carousel-inner {
+        height: 100%;
+        /* 使輪播內部容器高度與輪播相同 */
+        align-items: center;
+        justify-content: center;
 
-}
+    }
 
-.carousel-item {
+    .carousel-item {
 
-    /* 使用 flexbox 使圖片在輪播項目中居中 */
-    height: 100%;
-}
+        /* 使用 flexbox 使圖片在輪播項目中居中 */
+        height: 100%;
+    }
 
-.carousel-item img {
-    max-width: 100%;
-    max-height: 100%;
-    /* 確保圖片在容器內最大化，但不超過容器的大小 */
-    object-fit: cover;
-    /* 保持圖片比例，並填充容器 */
-    display: block;
-    /* 確保圖片是塊級元素 */
-}
+    .carousel-item img {
+        max-width: 100%;
+        max-height: 100%;
+        /* 確保圖片在容器內最大化，但不超過容器的大小 */
+        object-fit: cover;
+        /* 保持圖片比例，並填充容器 */
+        display: block;
+        /* 確保圖片是塊級元素 */
+    }
 </style>

@@ -168,7 +168,7 @@ import { ref, inject, onMounted } from 'vue';
 import axiosapi from '@/plugins/axios';
 import router from '@/router/router';
 
-const user = inject('user');
+const isLogin = inject('isLogin');
 const onSaleProducts = ref([]);
 const offSaleProducts = ref([]);
 
@@ -191,9 +191,9 @@ const gotoProductPage = (product) => {
 }
 
 const fetchMemberProducts = async () => {
-if (user.value) {
+if (isLogin.value) {
     try {
-    const response = await axiosapi.get(`/api/products/member/${user.value.id}`);
+    const response = await axiosapi.get(`/api/products/member/${sessionStorage.getItem("memberID")}`);
     const products = response.data.list || [];
     
     for (let product of products) {

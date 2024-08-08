@@ -49,9 +49,7 @@
         import emitter from '@/plugins/events';
 
         const router = useRouter();
-        // 這邊先 Hard Code 會員ID, 待加入登入功能後應實際從 httpSession 取得
-        const user = inject("user");
-        const memberId = ref(0);
+        const isLogin = inject("isLogin");
         const sellerList = ref([]);
         const cartList = ref([]);
         const selectedCarts = ref({}); // 用於追蹤每個商品是否被選中
@@ -64,8 +62,9 @@
         });
         
         onMounted(function () {
-                memberId.value = user.value.id
-                cartList.value = callCart(memberId.value);
+                if(isLogin.value){
+                        cartList.value = callCart(sessionStorage.getItem("memberID"));
+                }
         })
 
         // 點選賣家全選/取消全選

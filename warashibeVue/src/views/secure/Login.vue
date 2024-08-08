@@ -65,7 +65,7 @@ import { useRouter } from 'vue-router';
 const account = ref("");
 const password = ref("");
 const router = useRouter();
-const setUser = inject('setUser');
+const isLogin = inject("isLogin")
 
 function login() {
     axiosapi.defaults.headers.authorization = "";
@@ -89,24 +89,11 @@ function login() {
             swal.fire({
                 icon: "success",
                 text: response.data.message,
-            }).then(async function(result) {
-                axiosapi.defaults.headers.authorization=`Bearer ${response.data.token}`;
-                sessionStorage.setItem("memberID",response.data.memberID);
-                sessionStorage.setItem("token",response.data.token);
-                // console.log(sessionStorage.getItem("token"));
-
-                // 记录用户信息
-                try {
-                    const userResponse = await axiosapi.get(`/ajax/members/${response.data.memberID}`);
-                    setUser(userResponse.data.list[0],response.data.token);
-                    // console.log(userResponse.data);
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
-                }
-
             }).then(function (result) {
                 axiosapi.defaults.headers.authorization = `Bearer ${response.data.token}`;
                 sessionStorage.setItem("memberID", response.data.memberID);
+                sessionStorage.setItem("username", response.data.username)
+                isLogin.value = true;
                 router.push("/");
                 console.log("登入成功");
             });
@@ -125,8 +112,6 @@ function login() {
     });
 
 }
-
-
 
 </script>
 

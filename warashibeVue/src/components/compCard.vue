@@ -1,5 +1,5 @@
 <template>
-        <div class="col-lg-3 col-md-6 mb-5">
+        <div class="col-lg-4 col-md-6 mb-5">
                 <div class="card h-100 rounded-3">
                         <!-- 商品照片 -->
                         <RouterLink :to="{name: 'pages-productpage-link', query: {productID: product.productID}}">
@@ -38,11 +38,10 @@
                                                         <button type="button" class="btn btn-link btn-sm" @click="addCart">
                                                                 <font-awesome-icon :icon="['fas', 'cart-plus']" size="2x" pull="left" />
                                                         </button>
-                                                        <a href="#"></a>
                                                 </div>
                                                 
                                                 <!-- 數量按鈕群組 -->
-                                                <div class="input-group col">
+                                                <div class="input-group input-group-sm col">
                                                         <!-- 數量減少按鈕 -->
                                                         <button class="btn btn-outline-secondary" type="button" @click="removeOne" :disabled="quantity===1">
                                                                 <font-awesome-icon :icon="['fas', 'minus']" />
@@ -60,12 +59,8 @@
                                                 
                                                 <!-- 收藏愛心 -->
                                                 <div class="col-2">
-                                                        <a href="#"><font-awesome-icon :icon="['far', 'heart']" size="2x" beat
-                                                                style="color:lightcoral;--fa-beat-scale: 1.0" pull="right"
-                                                                @mouseover="(e) => { e.target.style.setProperty('--fa-beat-scale', 1.3) }"
-                                                                @mouseout="(e) => { e.target.style.setProperty('--fa-beat-scale', 1.0) }" 
-                                                                @click = "addToFavorite"/>
-                                                        </a>
+                                                        <font-awesome-icon :icon="['far', 'heart']" size="2x" beat style="color:lightcoral;--fa-beat-scale: 1.0" pull="right" 
+                                                        @mouseover="(e) => { e.target.style.setProperty('--fa-beat-scale', 1.3) }" @mouseout="(e) => { e.target.style.setProperty('--fa-beat-scale', 1.0) }" @click = "addFav"/>
                                                 </div>
                                         </div>
                                 </div>
@@ -81,8 +76,8 @@
         import axiosapi from '@/plugins/axios';
         import Swal from 'sweetalert2';
         
-        // 接收使用者資訊
-        const user = inject("user");
+        // 確認登入狀態
+        const isLogin = inject("isLogin");
 
         // 接收父元件資料
         const props = defineProps(["product"]);
@@ -295,22 +290,15 @@
                 quantity.value)
         }
 
-        const addToFavorite = async () => {
-                try {
-                        if(!user.value){
-                                Swal.fire('請登入會員', '', 'warning');
-                        }
-                        await axiosapi.post('/ajax/favorite/insert', {
-                        memberID: user.value.id,
-                        productID: props.product.productID,
-                        sellerID: props.product.member
-                        });
-                        Swal.fire('成功', '已將該商品加入最愛', 'success');
-                } catch (error) {
-                        console.error('加入最愛失敗', error);
-                        Swal.fire('失敗', '加入最愛失敗', 'error');
+        function addFav(){
+                if(!isLogin.value){
+                        Swal.fire({
+                                icon: "error",
+                                text: "請先登入會員",
+                                allowOutsideClick: false,
+                         })
                 }
-                };
+        }
 </script>
 
 <style scoped></style>
