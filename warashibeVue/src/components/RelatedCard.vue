@@ -1,6 +1,6 @@
 <template>
 <div class="col-lg-3 col-md-6 mb-4">
-    <div class="card little-product-card" v-show="product.productStatus">
+    <div class="card h-100 rounded-3" v-show="product.productStatus">
         <img :src="productImageSrc" class="card-img-top" :alt="product.productName" @click="viewProductDetail" />
         <div class="card-body">
             <h5 class="card-title">{{ product.productName }}</h5>
@@ -79,11 +79,6 @@ const filterSpecTwos = () => {
     }
 };
 
-const resetSpecOne = () => {
-    selectedSpecOneID.value = '';
-    filteredSpecTwos.value = [];
-};
-
 const decreaseQuantity = () => {
     if (quantity.value > 1) quantity.value -= 1;
 };
@@ -156,15 +151,22 @@ const addToFavorite = async () => {
 <style scoped>
 .little-product-card {
     cursor: pointer;
+    width: 100%;
+    max-width: 280px; /* 設定卡片最大寬度 */
+    height: 420px; /* 設定卡片固定高度 */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
-
-.little-product-card .card-img-top {
-    height: 250px;
+.card-img-top {
+    height: 300px; /* 設定圖片固定高度 */
     object-fit: cover;
+    cursor: pointer;
 }
 
 .specs {
     margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .quantity-group {

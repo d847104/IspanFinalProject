@@ -106,7 +106,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, inject } from 'vue';
+import { ref, onMounted, watch, inject } from 'vue';
 import axiosapi from '@/plugins/axios';
 import { useRoute, useRouter } from 'vue-router';
 import RelatedCard from '@/components/RelatedCard.vue';
@@ -140,11 +140,7 @@ const current = ref(1);
 const rows = ref(4);
 
 const fetchProduct = async () => {
-    productImages.value = [];
-    specImages.value = [];
-    combinedImages.value = [];
-    displayedImages.value = [];
-    currentImage.value = '';
+    resetProductData();
 
     const { data } = await axiosapi.get(`/api/products/${productID.value}`);
     product.value = data;
@@ -159,6 +155,22 @@ const fetchProduct = async () => {
 
     await recordBrowsingHistory();
     await fetchSellerInfo(product.value.member);
+};
+
+const resetProductData = () => {
+    product.value = {};
+    productImages.value = [];
+    specImages.value = [];
+    combinedImages.value = [];
+    displayedImages.value = [];
+    currentImage.value = '';
+    groupedSpecs.value = {};
+    quantity.value = 1;
+    selectedSpecOne.value = '';
+    selectedSpecTwo.value = '';
+    selectedSpecOneID.value = null;
+    selectedSpecTwoID.value = null;
+    selectedSpecImage.value = '';
 };
 
 const fetchSellerInfo = async (memberID) => {
