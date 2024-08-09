@@ -167,7 +167,7 @@
 import { ref, onMounted, inject } from 'vue';
 import axiosapi from '@/plugins/axios';
 import Swal from 'sweetalert2';
-const user = inject('user');
+const isLogin = inject('isLogin');
 
 const showSpecs = ref(false);
 const payMethods = ref([]);
@@ -242,10 +242,10 @@ async function upload() {
         "description": description.value,
         "isSecondHand": isSecondHand.value,
         "subCategory": selectedSub.value,
-        "member": user.value.id,
+        "member": sessionStorage.getItem("memberID"),
         "productStatus": true,
     }
-    if (user.value) {
+    if (isLogin.value) {
         try {
             const productResponse = await axiosapi.post("/api/products", requestProduct);
             if (productResponse.data.success) {

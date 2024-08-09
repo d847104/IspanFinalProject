@@ -3,7 +3,7 @@
     <font-awesome-icon icon="fa-solid fa-bell" />
     <div v-if="popupVisible" class="notification-popup">
         <div class="notification-header">最近收到的通知</div>
-        <div v-if="!user" class="login-message alert alert-primary" role="alert">
+        <div v-if="!isLogin" class="login-message alert alert-primary" role="alert">
             <p>請登入以查看通知</p>
             <button @click="goToLogin">登入查看全部</button>
         </div>
@@ -35,13 +35,12 @@ import { useRouter } from 'vue-router';
 
 const popupVisible = ref(false);
 const notifications = ref([]);
-const user = inject('user');
+const isLogin = inject('isLogin');
 const router = useRouter();
 
 const fetchNotifications = async () => {
     try {
-        console.log(user);
-        const response = await axiosapi.get(`/ajax/notification/receiver/${user.value.id}`);
+        const response = await axiosapi.get(`/ajax/notification/receiver/${sessionStorage.getItem("memberID")}`);
         notifications.value = response.data.list || [];
     } catch (error) {
         console.error('Error fetching notifications:', error);
@@ -78,7 +77,7 @@ const handleNotificationClick = async (notification) => {
 };
 
 watch(popupVisible, (newValue) => {
-    if (newValue && user.value) {
+    if (newValue && isLogin.value) {
         fetchNotifications();
     }
 });

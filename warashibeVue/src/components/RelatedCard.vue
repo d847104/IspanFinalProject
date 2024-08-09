@@ -49,7 +49,7 @@ import Swal from 'sweetalert2';
 
 const props = defineProps(["product"]);
 const router = useRouter();
-const user = inject("user");
+const isLogin = inject("isLogin");
 
 const selectedSpecOneID = ref('');
 const selectedSpecTwoID = ref('');
@@ -112,7 +112,7 @@ const increaseQuantity = () => {
 };
 
 const addToCart = async () => {
-    if (!user.value) {
+    if (!isLogin.value) {
         Swal.fire('請登入會員', '', 'warning');
         return;
     }
@@ -123,7 +123,7 @@ const addToCart = async () => {
     }
 
     const data = {
-        member: user.value.id,
+        member: sessionStorage.getItem("memberID"),
         product: props.product.productID,
         specOne: selectedSpecOneID.value,
         specTwo: selectedSpecTwoID.value || null,
@@ -143,7 +143,7 @@ const addToCart = async () => {
 const addToFavorite = async () => {
     try {
         await axiosapi.post('/ajax/favorite/insert', {
-            memberID: user.value.id,
+            memberID: sessionStorage.getItem("memberID"),
             productID: props.product.productID,
             sellerID: props.product.member
         });

@@ -71,14 +71,14 @@ import { RouterLink } from 'vue-router';
 const props = defineProps(["item"]);
 const imageSrc = ref(null); // 定義一個 ref 來存儲圖片來源
 const productRank = ref(0);
-const user = inject("user");
+const isLogin = inject("isLogin");
 const quantity = ref(1);
 const selectedSpecOne = ref('');
 const selectedSpecTwo = ref('');
 
 const addToFavorite = async () => {
     let data = {
-            memberID: user.value.id,
+            memberID: sessionStorage.getItem("memberID"),
             productID: props.item.productID,
             sellerID: props.item.memberID
         }
@@ -86,7 +86,7 @@ const addToFavorite = async () => {
     console.log(props.item);
     try {
         await axiosapi.post('/ajax/favorite/insert', {
-            memberID: user.value.id,
+            memberID: sessionStorage.getItem("memberID"),
             productID: props.item.productID,
             sellerID: props.item.member
         });
@@ -98,7 +98,7 @@ const addToFavorite = async () => {
 };
 
 const addToCart = async () => {
-    if (!user.value) {
+    if (!isLogin.value) {
         Swal.fire('請登入會員', '', 'warning');
         return;
     }
@@ -109,7 +109,7 @@ const addToCart = async () => {
     }
 
     const data = {
-        member: user.value.id,
+        member: sessionStorage.getItem("memberID"),
         product: props.item.productID,
         // specOne: props.item.
         // specTwo: selectedSpecTwoID.value,

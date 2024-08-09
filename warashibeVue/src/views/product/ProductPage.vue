@@ -115,7 +115,7 @@ import RelatedCard from '@/components/RelatedCard.vue';
 import Paginate from 'vuejs-paginate-next';
 import Swal from 'sweetalert2';
 
-const user = inject('user');
+const isLogin = inject('isLogin');
 const route = useRoute();
 const router = useRouter();
 const productID = ref(route.query.productID);
@@ -193,9 +193,9 @@ const navigateToSellerPage = () => {
 };
 
 const recordBrowsingHistory = async () => {
-    if (user.value && user.value.id && product.value.productID) {
+    if (isLogin.value && sessionStorage.getItem("memberID")!=null && product.value.productID) {
         const history = {
-        member: user.value.id,
+        member: sessionStorage.getItem("memberID"),
         product: product.value.productID,
         browseTime: new Date().toISOString(),
         };
@@ -409,13 +409,13 @@ const increaseQuantity = () => {
 };
 
 const addToFavorite = async () => {
-    if (!user.value) {
+    if (!isLogin.value) {
         Swal.fire('請登入會員', '', 'warning');
         return;
     }
 
     const data = {
-        memberID: user.value.id,
+        memberID: sessionStorage.getItem("memberID"),
         productID: product.value.productID,
         sellerID: product.value.member,
     };
@@ -430,7 +430,7 @@ const addToFavorite = async () => {
 };
 
 const addToCart = async () => {
-    if (!user.value) {
+    if (!isLogin.value) {
         Swal.fire('請登入會員', '', 'warning');
         return;
     }
@@ -441,7 +441,7 @@ const addToCart = async () => {
     }
 
     const data = {
-        member: user.value.id,
+        member: sessionStorage.getItem("memberID"),
         product: product.value.productID,
         specOne: selectedSpecOneID.value,
         specTwo: product.value.specs.specOnes[0].specTwoNames.length > 0 ? selectedSpecTwoID.value : null,
@@ -459,7 +459,7 @@ const addToCart = async () => {
 };
 
 const buyNow = async () => {
-    if (!user.value) {
+    if (!isLogin.value) {
         Swal.fire('請登入會員', '', 'warning');
         return;
     }
@@ -470,7 +470,7 @@ const buyNow = async () => {
     }
 
     const data = {
-        member: user.value.id,
+        member: sessionStorage.getItem("memberID"),
         product: product.value.productID,
         specOne: selectedSpecOneID.value,
         specTwo: selectedSpecTwoID.value,

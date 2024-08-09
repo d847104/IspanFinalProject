@@ -48,10 +48,9 @@
         import { inject } from 'vue';
         import emitter from '@/plugins/events';
 
+        const updateCartQt = inject("updateCartQt")
         const router = useRouter();
-        // 這邊先 Hard Code 會員ID, 待加入登入功能後應實際從 httpSession 取得
-        const user = inject("user");
-        const memberId = ref(0);
+        const isLogin = inject("isLogin");
         const sellerList = ref([]);
         const cartList = ref([]);
         const selectedCarts = ref({}); // 用於追蹤每個商品是否被選中
@@ -64,8 +63,11 @@
         });
         
         onMounted(function () {
-                memberId.value = user.value.id
-                cartList.value = callCart(memberId.value);
+                if(isLogin.value){
+                        cartList.value = callCart(sessionStorage.getItem("memberID"));
+                }else{
+                        cartList.value = JSON.parse(sessionStorage.getItem("cartList"))
+                }
         })
 
         // 點選賣家全選/取消全選
@@ -209,6 +211,7 @@
                                         timer: 800
                                 });
                                 callCart(memberId)
+                                updateCartQt();
                         }else{
                                 console.log(result.data.message);
                                 Swal.fire({
@@ -236,6 +239,9 @@
                         .map(cart => ({
                                 cartID: cart.cartID,
                                 product: cart.product,
+                                img: cart.product.productImgs[0] == null ? 
+                                `${import.meta.env.VITE_API_URL}/api/productImg/img/comingsoon` : 
+                                `${import.meta.env.VITE_API_URL}/api/productImg/img/${cart.product.productImgs[0]}`,
                                 quantity: cart.quantity,
                                 sellerID: cart.seller,
                                 specOne: cart.specOne == null ? null : cart.specOne,

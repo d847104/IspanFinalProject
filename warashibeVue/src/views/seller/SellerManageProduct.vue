@@ -249,7 +249,7 @@ import { ref, inject, onMounted } from 'vue';
 import axiosapi from '@/plugins/axios';
 import router from '@/router/router';
 
-const user = inject('user');
+const isLogin = inject('isLogin');
 const onSaleProducts = ref([]);
 const offSaleProducts = ref([]);
 
@@ -272,13 +272,13 @@ const gotoProductPage = (product) => {
 }
 
 const fetchMemberProducts = async () => {
-    if (user.value) {
-        try {
-        const response = await axiosapi.get(`/api/products/member/${user.value.id}`);
-        const products = response.data.list || [];
-        
-        for (let product of products) {
-            product.isEditing = false; // 默认不可编辑
+if (isLogin.value) {
+    try {
+    const response = await axiosapi.get(`/api/products/member/${sessionStorage.getItem("memberID")}`);
+    const products = response.data.list || [];
+    
+    for (let product of products) {
+        product.isEditing = false; // 默认不可编辑
 
             if (product.productImgs.length > 0) {
                 const imgID = product.productImgs[0];

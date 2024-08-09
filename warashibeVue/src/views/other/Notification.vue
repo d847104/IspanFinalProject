@@ -29,7 +29,6 @@ import axiosapi from '@/plugins/axios';
 import router from '@/router/router';
 
 const notifications = ref([]);
-const user = inject('user');
 
 const fetchSenderInfo = async (senderID) => {
     try {
@@ -47,7 +46,7 @@ const fetchSenderInfo = async (senderID) => {
 
 const fetchNotifications = async () => {
     try {
-        const response = await axiosapi.get(`/ajax/notification/receiver/${user.value.id}`);
+        const response = await axiosapi.get(`/ajax/notification/receiver/${sessionStorage.getItem("memberID")}`);
         const notificationList = response.data.list || [];
 
         for (const notification of notificationList) {

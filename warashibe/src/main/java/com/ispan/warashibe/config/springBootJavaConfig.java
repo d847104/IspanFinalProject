@@ -17,7 +17,8 @@ public class springBootJavaConfig implements WebMvcConfigurer {
 	public void addInterceptors(InterceptorRegistry registry) {
 
 		registry.addInterceptor(jsonWebTokenInterceptor)
-				.addPathPatterns("/ajax/members/**");
+				.addPathPatterns("/ajax/members/**")
+				.addPathPatterns("/api/cart");
 //				.excludePathPatterns("/ajax/pages/detail/**");
 	}
 
