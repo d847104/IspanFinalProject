@@ -1,6 +1,7 @@
 package com.ispan.warashibe.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
@@ -20,7 +21,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name="ProductPayMethod")
-
 public class ProductPayMethod {
 
 	@Id
@@ -30,7 +30,7 @@ public class ProductPayMethod {
 	
 	@ManyToOne
 	@JoinColumn(name = "payMethodID")
-	@JsonIdentityReference(alwaysAsId = true)
+	@JsonIncludeProperties({"payMethod","payMethodID"})
 	private PayMethod payMethodID;
 
 	@JsonProperty("payMethodID")
@@ -39,26 +39,17 @@ public class ProductPayMethod {
 		this.payMethodID.setPayMethodID(payMethodId);
 	}
 	
-	@JsonProperty("payMethodID")
-	public Integer getpayMethodID() {
-		return (this.payMethodID != null) ? this.payMethodID.getPayMethodID() : null;
-	}
-	
 	@ManyToOne
 	@JoinColumn(name = "productID")
 	@JsonIdentityReference(alwaysAsId = true)
 	private Products productID;
 	
 	@JsonProperty("productID")
-	public void setProductID(Integer productId) {
-		this.productID=new Products();
-		this.productID.setProductID(productId);
+	public void setProductID(Integer productID) {
+		this.productID = new Products();
+		this.productID.setProductID(productID);
 	}
-	
-	@JsonProperty("productID")
-	public Integer getProductID() {
-		return (this.productID != null) ? this.productID.getProductID() : null;
-	}
+		
 	
 //	@Override
 //	public String toString() {

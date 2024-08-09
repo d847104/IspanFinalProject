@@ -60,7 +60,7 @@
                                                 <!-- 收藏愛心 -->
                                                 <div class="col-2">
                                                         <font-awesome-icon :icon="['far', 'heart']" size="2x" beat style="color:lightcoral;--fa-beat-scale: 1.0" pull="right" 
-                                                        @mouseover="(e) => { e.target.style.setProperty('--fa-beat-scale', 1.3) }" @mouseout="(e) => { e.target.style.setProperty('--fa-beat-scale', 1.0) }" @click = "addFav"/>
+                                                        @mouseover="(e) => { e.target.style.setProperty('--fa-beat-scale', 1.3) }" @mouseout="(e) => { e.target.style.setProperty('--fa-beat-scale', 1.0) }" @click = "addToFavorite"/>
                                                 </div>
                                         </div>
                                 </div>
@@ -79,6 +79,7 @@
         
         // 確認登入狀態
         const isLogin = inject("isLogin");
+        const loginUserId = inject("loginUserId");
 
         // 接收父元件資料
         const props = defineProps(["product"]);
@@ -307,7 +308,7 @@
                 Swal.fire('請登入會員', '', 'warning');
                 }
                 await axiosapi.post('/ajax/favorite/insert', {
-                memberID: user.value.id,
+                memberID: loginUserId.value,
                 productID: props.product.productID,
                 sellerID: props.product.member
                 });

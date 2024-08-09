@@ -97,7 +97,7 @@ public class ProductPayMethodController {
 		if (productPayMethods != null && !productPayMethods.isEmpty()) {
 			for (ProductPayMethod productPayMethod : productPayMethods) {
 				JSONObject item = new JSONObject().put("id", productPayMethod.getId())
-						.put("payMethodID", productPayMethod.getpayMethodID())
+						.put("payMethodID", productPayMethod.getPayMethodID())
 						.put("productID", productPayMethod.getProductID());
 				array.put(item);
 			}
@@ -116,7 +116,7 @@ public class ProductPayMethodController {
 
 		if (productPayMethod != null) {
 			JSONObject item = new JSONObject().put("id", productPayMethod.getId())
-					.put("payMethodID", productPayMethod.getpayMethodID())
+					.put("payMethodID", productPayMethod.getPayMethodID())
 					.put("productID	", productPayMethod.getProductID());
 			responseBody.put("productPayMethod", item);
 		} else {

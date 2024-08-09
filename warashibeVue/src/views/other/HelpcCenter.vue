@@ -79,7 +79,7 @@ async function submitRequest() {
     const memberType = requestType.value === 'buyerOrderIssue' ? 'buyer' : 'seller';
 
     const request = {
-        memberId: user.value.id,
+        memberId: sessionStorage.getItem('memberID'),
         memberType: memberType,
         requestType: requestType.value,
         relatedOrderId: relatedOrderId.value,

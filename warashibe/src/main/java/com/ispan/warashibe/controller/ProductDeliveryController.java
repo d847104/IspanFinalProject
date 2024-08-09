@@ -116,7 +116,7 @@ public class ProductDeliveryController {
 
 		if (productDelivery != null) {
 			JSONObject item = new JSONObject().put("id", productDelivery.getId())
-					.put("deliveryID", productDelivery.getDeliveryID())
+					.put("deliveryID", productDelivery.getDelivery())
 					.put("productID	", productDelivery.getProductID());
 			responseBody.put("productDelivery", item);
 		} else {
