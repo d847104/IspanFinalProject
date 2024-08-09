@@ -1,5 +1,6 @@
 // src/router.js
 import { createRouter, createWebHistory } from 'vue-router';
+import Swal from 'sweetalert2';
 import Home from '@/views/Home.vue';
 import Login from '@/views/secure/Login.vue';
 import Cart from '@/views/orders/Cart.vue';
@@ -21,7 +22,7 @@ const routes = [
     { name: "home", path: '/', component: Home },
     { name: "notfound-link", path: "/:pathMatch(.*)*", component: NotFound },
     { name: "Login", path: '/login', component: Login },
-    { name: 'cart', path: '/cart', component: Cart },
+    { name: 'cart', path: '/cart', component: Cart, meta:{requiresAuth: true} },
     { name: 'Checkout', path: '/checkout', component: Checkout},
     { name: 'messenger', path: '/messenger', component: Messenger },
     ...routerSecure,
@@ -45,7 +46,12 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
     if (requiresAuth && sessionStorage.getItem("token")==null) {
-        next({ name: 'Login' });
+        Swal.fire({
+            text: "請登入會員",
+            icon: "error"
+        }).then(function(){
+            next({ name: 'Login' });
+        })
     } else {
         next();
     }

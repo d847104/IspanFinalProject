@@ -80,9 +80,6 @@
         // 確認登入狀態
         const isLogin = inject("isLogin");
 
-        // 接收使用者資訊
-        const user = inject("user");
-
         // 接收父元件資料
         const props = defineProps(["product"]);
 
@@ -108,160 +105,6 @@
         const specOne = props.product.specs.specOnes.find((specOne) => specOne.specOneID === selectedSpecOne.value);
         return specOne && specOne.specTwoNames.length ? specOne.specTwoNames[0]?.specTwos : [];
         });
-
-        function specOneChange(){
-        selectedSpecTwo.value = null; // 清空選擇的規格二
-        quantity.value = 1;     // 初始化數量
-        exceed.value = false;
-        console.log(`已選擇規格一ID${selectedSpecOne.value},庫存量剩餘${stock.value}`);
-        }
-
-        function specTwoChange(){
-        quantity.value = 1;     // 初始化數量
-        exceed.value = false;
-        console.log(`已選擇規格二ID${selectedSpecTwo.value},庫存量剩餘${stock.value}`);
-        }
-
-        // 初始化 Bootstrap tooltip
-        function initializeTooltips() {
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.forEach(tooltipTriggerEl => {new Tooltip(tooltipTriggerEl);});
-        }
-
-        // 元件渲染完畢後初始化 Bootstrap tooltip; 計算規格下拉式清單
-        onMounted(async() => {
-        await nextTick(); // 等待 DOM 更新
-        initializeTooltips();
-        })
-
-        // 更新 tooltips 內容
-        watch(alertQt, () => {
-        nextTick(() => {
-                const tooltip = Tooltip.getInstance(quantityDOM.value);
-                if (tooltip) {
-                tooltip.setContent({ '.tooltip-inner': alertQt.value });
-                }
-        });
-        });
-
-        // 數量 INPUT 被鎖定時先取得修改前的值
-        var focusQt;
-        function focus(event){
-        if(props.product.specs){
-                if (selectedSpecOne.value == "" || selectedSpecOne.value == null){
-                event.target.blur();
-                Tooltip.getInstance(specDOM.value).show();
-                setTimeout(()=>Tooltip.getInstance(specDOM.value).hide(),1200);
-                event.preventDefault();
-                } else if (filteredSpecTwos.value.length != 0){
-                if (selectedSpecTwo.value == "" || selectedSpecTwo.value == null){
-                        event.target.blur();
-                        Tooltip.getInstance(specDOM.value).show();
-                        setTimeout(()=>Tooltip.getInstance(specDOM.value).hide(),1200);
-                        event.preventDefault();
-                }
-                }
-        }
-        focusQt = quantity.value;
-        }
-
-        // 數量 INPUT 被修改後檢查合法性,否則就恢復至 focusValue
-        function checkQt(){
-        exceed.value = false;
-        let newQt = parseInt(quantity.value);
-        if(!Number.isInteger(newQt) || newQt <1){
-                quantity.value = focusQt;
-                return;
-        }else if(newQt > stock.value){
-                quantity.value = stock.value;
-                exceed.value = true;
-                Tooltip.getInstance(quantityDOM.value).show();
-                setTimeout(()=>Tooltip.getInstance(quantityDOM.value).hide(),1200);
-        }else{
-                quantity.value = newQt;
-        }
-        console.log(`數量:${quantity.value}`);
-        }
-
-        // 數量增加按鈕
-        function addOne(){
-        if(props.product.specs){
-                if (selectedSpecOne.value == "" || selectedSpecOne.value == null){
-                Tooltip.getInstance(specDOM.value).show();
-                setTimeout(()=>Tooltip.getInstance(specDOM.value).hide(),1200);
-                return;
-                } else if (filteredSpecTwos.value.length != 0){
-                if (selectedSpecTwo.value == "" || selectedSpecTwo.value == null){
-                        Tooltip.getInstance(specDOM.value).show();
-                        setTimeout(()=>Tooltip.getInstance(specDOM.value).hide(),1200);
-                        return;
-                }
-                }
-        }
-        exceed.value = false;
-        let newQt = parseInt(quantity.value);
-        if(newQt < stock.value){
-                newQt++
-                quantity.value = newQt;
-        }else{
-                quantity.value = stock.value;
-                exceed.value = true;
-                Tooltip.getInstance(quantityDOM.value).show();
-                setTimeout(()=>Tooltip.getInstance(quantityDOM.value).hide(),1200);
-        }
-        console.log(`數量:${quantity.value}`);
-        }
-
-        // 數量減少按鈕
-        function removeOne(){
-        exceed.value = false;
-        let newQt = parseInt(quantity.value);
-        if(newQt > 1){
-                newQt--;
-                quantity.value = newQt;
-        }
-        console.log(`數量:${quantity.value}`);
-        }
-
-        // 加入購物車
-        function addCart(){
-        if(props.product.specs){
-                if (selectedSpecOne.value == "" || selectedSpecOne.value == null){
-                Tooltip.getInstance(specDOM.value).show();
-                setTimeout(()=>Tooltip.getInstance(specDOM.value).hide(),1200);
-                return;
-                } else if (filteredSpecTwos.value.length != 0){
-                if (selectedSpecTwo.value == "" || selectedSpecTwo.value == null){
-                        Tooltip.getInstance(specDOM.value).show();
-                        setTimeout(()=>Tooltip.getInstance(specDOM.value).hide(),1200);
-                        return;
-                }
-                }
-        }
-        emits("addCart",
-        props.product.productID,
-        props.product.member,
-        selectedSpecOne.value == null || selectedSpecOne.value == "" ? null : selectedSpecOne.value,
-        selectedSpecTwo.value == null || selectedSpecTwo.value == "" ? null : selectedSpecTwo.value,
-        quantity.value)
-        }
-
-        const addToFavorite = async () => {
-        try {
-                if(!user.value){
-                Swal.fire('請登入會員', '', 'warning');
-                }
-                await axiosapi.post('/ajax/favorite/insert', {
-                memberID: user.value.id,
-                productID: props.product.productID,
-                sellerID: props.product.member
-                });
-                Swal.fire('成功', '已將該商品加入最愛', 'success');
-        } catch (error) {
-                console.error('加入最愛失敗', error);
-                Swal.fire('失敗', '加入最愛失敗', 'error');
-        }
-        };
 
         // 計算屬性：過濾出符合選擇的規格一的規格二名字
         const filteredSpecTwoName = computed(() => {
@@ -457,6 +300,23 @@
                          })
                 }
         }
+
+        const addToFavorite = async () => {
+        try {
+                if(!isLogin){
+                Swal.fire('請登入會員', '', 'warning');
+                }
+                await axiosapi.post('/ajax/favorite/insert', {
+                memberID: user.value.id,
+                productID: props.product.productID,
+                sellerID: props.product.member
+                });
+                Swal.fire('成功', '已將該商品加入最愛', 'success');
+        } catch (error) {
+                console.error('加入最愛失敗', error);
+                Swal.fire('失敗', '加入最愛失敗', 'error');
+        }
+        };
 </script>
 
 <style scoped></style>
