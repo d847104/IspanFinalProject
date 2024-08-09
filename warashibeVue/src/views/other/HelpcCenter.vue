@@ -51,7 +51,6 @@
 import { ref, watch, inject } from 'vue';
 import axiosapi from '@/plugins/axios';
 
-const user = inject('user');
 const requestType = ref('');
 const relatedOrderId = ref('');
 const relatedProductId = ref('');
@@ -65,13 +64,13 @@ watch(() => requestType.value, loadRelatedOptions);
 
 async function loadRelatedOptions() {
     if (requestType.value === 'buyerOrderIssue') {
-        const response = await axiosapi.get(`/private/pages/orders/buyer/${user.value.id}`);
+        const response = await axiosapi.get(`/private/pages/orders/buyer/${sessionStorage.getItem('memberID')}`);
         buyerOrders.value = response.data.list;
     } else if (requestType.value === 'sellerOrderIssue') {
-        const response = await axiosapi.get(`/private/pages/orders/seller/${user.value.id}`);
+        const response = await axiosapi.get(`/private/pages/orders/seller/${sessionStorage.getItem('memberID')}`);
         sellerOrders.value = response.data.list;
     } else if (requestType.value === 'deleteProduct') {
-        const response = await axiosapi.get(`/api/products/member/${user.value.id}`);
+        const response = await axiosapi.get(`/api/products/member/${sessionStorage.getItem('memberID')}`);
         sellerProducts.value = response.data.list;
     }
 }

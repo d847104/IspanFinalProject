@@ -409,7 +409,7 @@ const increaseQuantity = () => {
 };
 
 const addToFavorite = async () => {
-    if (!isLogin.value) {
+    if (!isLogin) {
         Swal.fire('請登入會員', '', 'warning');
         return;
     }
@@ -430,21 +430,31 @@ const addToFavorite = async () => {
 };
 
 const addToCart = async () => {
-    if (!isLogin.value) {
+    if (!isLogin) {
         Swal.fire('請登入會員', '', 'warning');
         return;
     }
 
-    if ((!selectedSpecOneID.value || (selectedSpecOneID.value && product.value.specs.specOnes[0].specTwoNames.length > 0 && !selectedSpecTwoID.value)) && product.value.specs) {
-        Swal.fire('失敗', '請選擇完整的商品規格', 'error');
-        return;
+    // 如果商品有規格
+    if (product.value.specs) {
+        // 如果有規格一，但沒有選擇
+        if (!selectedSpecOneID.value) {
+            Swal.fire('失敗', '請選擇' + product.value.specs.specOneName, 'error');
+            return;
+        }
+
+        // 如果有規格二，但沒有選擇
+        if (product.value.specs.specOnes[0].specTwoNames.length > 0 && !selectedSpecTwoID.value) {
+            Swal.fire('失敗', '請選擇完整的商品規格', 'error');
+            return;
+        }
     }
 
     const data = {
         member: sessionStorage.getItem("memberID"),
         product: product.value.productID,
-        specOne: selectedSpecOneID.value,
-        specTwo: product.value.specs.specOnes[0].specTwoNames.length > 0 ? selectedSpecTwoID.value : null,
+        specOne: selectedSpecOneID.value || null,
+        specTwo: selectedSpecTwoID.value || null,
         quantity: quantity.value,
         seller: product.value.member,
     };
@@ -459,21 +469,31 @@ const addToCart = async () => {
 };
 
 const buyNow = async () => {
-    if (!isLogin.value) {
+    if (!isLogin) {
         Swal.fire('請登入會員', '', 'warning');
         return;
     }
 
-    if (!selectedSpecOneID.value || !selectedSpecTwoID.value) {
-        Swal.fire('失敗', '請選擇完整的商品規格', 'error');
-        return;
+    // 如果商品有規格
+    if (product.value.specs) {
+        // 如果有規格一，但沒有選擇
+        if (!selectedSpecOneID.value) {
+            Swal.fire('失敗', '請選擇' + product.value.specs.specOneName, 'error');
+            return;
+        }
+
+        // 如果有規格二，但沒有選擇
+        if (product.value.specs.specOnes[0].specTwoNames.length > 0 && !selectedSpecTwoID.value) {
+            Swal.fire('失敗', '請選擇完整的商品規格', 'error');
+            return;
+        }
     }
 
     const data = {
         member: sessionStorage.getItem("memberID"),
         product: product.value.productID,
-        specOne: selectedSpecOneID.value,
-        specTwo: selectedSpecTwoID.value,
+        specOne: selectedSpecOneID.value || null,
+        specTwo: selectedSpecTwoID.value || null,
         quantity: quantity.value,
         seller: product.value.member,
     };

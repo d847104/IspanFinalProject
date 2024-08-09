@@ -59,7 +59,6 @@ const props = defineProps(["item"]);
 const product = ref(null);
 const imageSrc = ref(null);
 const router = useRouter();
-const user = inject("user");
 
 const fetchProduct = async () => {
     try {
@@ -78,7 +77,7 @@ const viewProductDetail = () => {
 const addToFavorite = async () => {
     try {
         await axiosapi.post('/ajax/favorite/insert', {
-            memberID: user.value.id,
+            memberID: sessionStorage.getItem('memberID'),
             productID: props.item.product,
             sellerID: props.item.member
         });

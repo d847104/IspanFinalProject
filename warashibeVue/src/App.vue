@@ -13,7 +13,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import 'sweetalert2/dist/sweetalert2.min.css'
 import 'flatpickr/dist/flatpickr.css'
 import { RouterView } from 'vue-router';
-import { onMounted, inject } from 'vue';
+import { onMounted, inject, provide } from 'vue';
 import Navigation from './layout/Navigation.vue'
 import categoryBar from '@/layout/categoryBar.vue';
 

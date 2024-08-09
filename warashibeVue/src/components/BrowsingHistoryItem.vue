@@ -56,7 +56,6 @@ import { useRouter } from 'vue-router';
 import axiosapi from '@/plugins/axios';
 import Swal from 'sweetalert2';
 
-const user = inject("user");
 const props = defineProps(["item"]);
 const product = ref(null);
 const imageSrc = ref(null);
@@ -69,7 +68,7 @@ const viewProductDetail = () => {
 const addToFavorite = async () => {
     try {
         await axiosapi.post('/ajax/favorite/insert', {
-            memberID: user.value.id,
+            memberID: sessionStorage.getItem('memberID'),
             productID: props.item.product,
             sellerID: props.item.member
         });
