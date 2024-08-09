@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <!-- 網站LOGO -->
             <RouterLink class="navbar-brand" to="/">
-                <img src="@/img/logo.png" alt="Logo" class="logo navbar-brand">
+                <img src="@/img/logo2.png" alt="Logo" class="logo navbar-brand h-100">
             </RouterLink>
             <!-- 漢堡選單按鈕 -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"

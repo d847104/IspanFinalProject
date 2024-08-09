@@ -39,7 +39,7 @@ public class Recepient {
 	@ManyToOne
 	@JoinColumn(name="memberID")
 	@JsonIdentityReference(alwaysAsId = true)
-	private Members memberID;
+	private Members member;
 
 	
 

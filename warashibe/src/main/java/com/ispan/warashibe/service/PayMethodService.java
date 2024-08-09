@@ -142,5 +142,8 @@ public class PayMethodService {
 	public PayMethod findById(Integer payMethodID) {
 		return payMethodRepo.findById(payMethodID).orElse(null);
 	}
-
+	
+	public List<PayMethod> findAll(){
+		return payMethodRepo.findAll();
+	}
 }

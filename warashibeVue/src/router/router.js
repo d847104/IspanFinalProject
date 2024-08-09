@@ -23,7 +23,7 @@ const routes = [
     { name: "notfound-link", path: "/:pathMatch(.*)*", component: NotFound },
     { name: "Login", path: '/login', component: Login },
     { name: 'cart', path: '/cart', component: Cart, meta:{requiresAuth: true} },
-    { name: 'Checkout', path: '/checkout', component: Checkout},
+    { name: 'checkout', path: '/checkout', component: Checkout},
     { name: 'messenger', path: '/messenger', component: Messenger },
     ...routerSecure,
     ...routerPages,

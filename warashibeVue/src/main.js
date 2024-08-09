@@ -4,9 +4,6 @@ import router from '@/router/router';
 import FontAwesomeIcon from '@/plugins/fontawesome.js';
 import axiosapi from '@/plugins/axios';
 import addCartApi from '@/plugins/cart_add';
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
 const isLogin = ref(false);
 const cartQt = ref(null);

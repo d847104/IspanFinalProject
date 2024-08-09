@@ -3,6 +3,7 @@ package com.ispan.warashibe.controller;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -135,6 +138,20 @@ public class RecepientController {
         return responseBody.toString();
     }
     
+    // 依會員ID查詢多筆
+    @GetMapping("/recepient/member/{id}")
+    public String findByMemberId(@PathVariable(name = "id") Integer id) throws JsonProcessingException, JSONException {
+    	JSONObject responseBody = new JSONObject();
+    	JSONArray array = new JSONArray();
+    	List<Recepient> recepients = recepientService.findByMemberId(id);
+    	for(Recepient recepient : recepients) {
+    		if(recepient!=null) {
+    			array.put(new JSONObject(objectMapper.writeValueAsString(recepient)));
+    		}
+    	}
+    	responseBody.put("list", array);
+        return responseBody.toString();
+    }
     
     
     
