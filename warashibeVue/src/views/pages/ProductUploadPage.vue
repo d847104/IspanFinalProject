@@ -155,7 +155,7 @@
 
             <div class="form-floating mb-3">
                 <div class="row justify-content-end">
-                    <RouterLink :to="{ name: 'product-Upload-page-link' }" @click="upload"
+                    <RouterLink :to="{ name: 'seller-sellermanageproduct-link' }" @click="upload"
                         class="btn btn-outline-primary col-md-3 rounded-pill ">送出</RouterLink>
                 </div>
             </div>

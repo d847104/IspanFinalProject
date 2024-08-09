@@ -9,7 +9,9 @@ import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
 const isLogin = ref(false);
-const cartQt = ref(null)
+const cartQt = ref(null);
+const loginUserName = ref(null);
+const loginUserId = ref(null);
 
 async function updateCartQt(){
     if(!isLogin.value){
@@ -37,6 +39,8 @@ createApp(App)
     .use(router)
     .provide("isLogin",isLogin)
     .provide("cartQt",cartQt)
+    .provide("loginUserName",loginUserName)
+    .provide("loginUserId",loginUserId)
     .provide("updateCartQt",updateCartQt)
     .component('font-awesome-icon', FontAwesomeIcon)
     .mount('#app');

@@ -36,11 +36,12 @@ import { useRouter } from 'vue-router';
 const popupVisible = ref(false);
 const notifications = ref([]);
 const isLogin = inject('isLogin');
+const loginUserId = inject("loginUserId")
 const router = useRouter();
 
 const fetchNotifications = async () => {
     try {
-        const response = await axiosapi.get(`/ajax/notification/receiver/${sessionStorage.getItem("memberID")}`);
+        const response = await axiosapi.get(`/ajax/notification/receiver/${loginUserId.value}`);
         notifications.value = response.data.list || [];
     } catch (error) {
         console.error('Error fetching notifications:', error);

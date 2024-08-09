@@ -64,6 +64,8 @@ const account = ref("");
 const password = ref("");
 const router = useRouter();
 const isLogin = inject("isLogin")
+const loginUserName = inject("loginUserName")
+const loginUserId = inject("loginUserId")
 const updateCartQt = inject("updateCartQt")
 
 function login() {
@@ -94,6 +96,8 @@ function login() {
                 sessionStorage.setItem("memberID", response.data.memberID);
                 sessionStorage.setItem("username", response.data.username)
                 isLogin.value = true;
+                loginUserName.value = response.data.username;
+                loginUserId.value = response.data.memberID;
                 updateCartQt()
                 router.push("/");
                 console.log("登入成功");

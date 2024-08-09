@@ -55,7 +55,7 @@
                                 icon="fa-solid fa-user-plus" /></RouterLink>
                     </li>
                     <li class="nav-item" v-if="isLogin">
-                        <span class="nav-link">{{ username }}</span>
+                        <span class="nav-link">{{ loginUserName }}</span>
                     </li>
                     <li class="nav-item" v-if="isLogin">
                         <button class="nav-link active" @click="logout"><font-awesome-icon
@@ -111,6 +111,8 @@ const router = useRouter();
 
 // 登入相關
 const isLogin = inject('isLogin');
+const loginUserName = inject("loginUserName")
+const loginUserId = inject("loginUserId")
 const username = computed(()=>sessionStorage.getItem("username"));
 
 // 購物車數量
@@ -118,9 +120,10 @@ const cartQt = inject("cartQt");
 
 function logout() {
     axiosapi.defaults.headers.authorization = "";
-    sessionStorage.removeItem("memberID");
-    sessionStorage.removeItem("username");
+    sessionStorage.clear();
     isLogin.value = false;
+    loginUserName.value = null;
+    loginUserId.value = null;
     cartQt.value = localStorage.getItem("cartList");
     router.push("/secure/login");
 }

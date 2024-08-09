@@ -19,9 +19,13 @@ import categoryBar from '@/layout/categoryBar.vue';
 
 const isLogin = inject("isLogin");
 const updateCartQt = inject("updateCartQt");
+const loginUserName = inject("loginUserName");
+const loginUserId = inject("loginUserId");
 
 onMounted(function(){
   isLogin.value = sessionStorage.getItem("username")? true : false;
+  loginUserName.value = sessionStorage.getItem("username");
+  loginUserId.value = sessionStorage.getItem("memberID");
   updateCartQt();
 })
 
