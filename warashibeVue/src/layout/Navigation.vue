@@ -1,10 +1,5 @@
 <template>
-    <!-- <div class="container"> -->
-    <!-- navbar黑色 -->
-    <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top"> -->
-    <!-- navbar透明 -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-
         <div class="container-fluid">
             <!-- 網站LOGO -->
             <RouterLink class="navbar-brand" to="/">
@@ -26,7 +21,6 @@
                         <RouterLink class="nav-link" to="#">商城/二手</RouterLink>
                     </li>
                     <!-- 搜尋列 -->
-
                     <form class="d-flex search-form d-none d-lg-flex mx-auto" role="search" @submit.prevent="search">
                         <input v-model="keyword" class="form-control me-1 search-bar" type="search" placeholder="Search"
                             aria-label="Search">
@@ -37,7 +31,10 @@
                     </form>
                     <!-- 右側功能選單 -->
                     <li class="nav-item d-none d-lg-block">
-                        <RouterLink class="nav-link" :to="{ name: 'cart' }">
+                        <RouterLink class="nav-link position-relative" :to="{ name: 'cart' }">
+                            <span class="position-absolute top-4 start-100 translate-middle badge rounded-pill bg-danger fs-6" v-if="cartQt > 0">
+                                {{ cartQt }}
+                            </span>
                             <font-awesome-icon :icon="['fas', 'cart-shopping']" />
                         </RouterLink>
                     </li>
@@ -49,18 +46,18 @@
                     <li class="nav-item d-none d-lg-block" @mouseover="showPopup" @mouseleave="hidePopup">
                         <NotificationPop :popupVisible="popupVisible" />
                     </li>
-                    <li class="nav-item" v-if="!user">
+                    <li class="nav-item" v-if="!isLogin">
                         <RouterLink class="nav-link" to="/secure/login"><font-awesome-icon
                                 :icon="['fas', 'right-to-bracket']" /></RouterLink>
                     </li>
-                    <li class="nav-item" v-if="!user">
+                    <li class="nav-item" v-if="!isLogin">
                         <RouterLink class="nav-link" to="/secure/registerOne"><font-awesome-icon
                                 icon="fa-solid fa-user-plus" /></RouterLink>
                     </li>
-                    <li class="nav-item" v-if="user">
-                        <span class="nav-link">{{ user?.username }}</span>
+                    <li class="nav-item" v-if="isLogin">
+                        <span class="nav-link">{{ username }}</span>
                     </li>
-                    <li class="nav-item" v-if="user">
+                    <li class="nav-item" v-if="isLogin">
                         <button class="nav-link active" @click="logout"><font-awesome-icon
                                 icon="fa-solid fa-right-from-bracket" /></button>
                     </li>
@@ -71,28 +68,26 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
                             <li>
-                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/secure/member')">會員中心
+                                <RouterLink class="dropdown-item" :to="{name: 'secure-member-link'}">會員中心
                                 </RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" to="#"
-                                    @click="checkAuth('/members/basicinformation')">會員基本資料
+                                <RouterLink class="dropdown-item" :to="{name: 'members-basicinformation-link'}">會員基本資料
                                 </RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/buyer/buyerorder')">買家訂單
+                                <RouterLink class="dropdown-item" :to="{name: 'buyer-BuyerOrder-link'}">買家訂單
                                 </RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/seller/sellerorder')">賣家訂單
+                                <RouterLink class="dropdown-item" :to="{name: 'seller-sellerorder-link'}">賣家訂單
                                 </RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" to="#"
-                                    @click="checkAuth('/seller/sellermanageproduct')">賣家商品管理</RouterLink>
+                                <RouterLink class="dropdown-item" :to="{name: 'seller-sellermanageproduct-link'}">賣家商品管理</RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" to="#" @click="checkAuth('/pages/productUploadPage')">
+                                <RouterLink class="dropdown-item" :to="{name: 'product-Upload-page-link'}">
                                     上架商品
                                 </RouterLink>
                             </li>
@@ -106,7 +101,7 @@
 </template>
 
 <script setup>
-import { ref, inject } from 'vue'
+import { ref, inject, computed, onMounted, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import NotificationPop from '@/components/NotificationPop.vue';
 import axiosapi from '@/plugins/axios';
@@ -115,13 +110,18 @@ import emitter from '@/plugins/events';
 const router = useRouter();
 
 // 登入相關
-const user = inject('user');
-const setUser = inject('setUser');
+const isLogin = inject('isLogin');
+const username = computed(()=>sessionStorage.getItem("username"));
+
+// 購物車數量
+const cartQt = inject("cartQt");
+
 function logout() {
     axiosapi.defaults.headers.authorization = "";
     sessionStorage.removeItem("memberID");
-    sessionStorage.removeItem("token");
-    setUser(false);
+    sessionStorage.removeItem("username");
+    isLogin.value = false;
+    cartQt.value = localStorage.getItem("cartList");
     router.push("/secure/login");
 }
 
@@ -138,7 +138,7 @@ const hidePopup = () => {
 };
 
 const checkAuth = (path) => {
-    if (!user.value) {
+    if (!isLogin.value) {
         router.push('/secure/login');
     } else {
         router.push(path);
@@ -170,9 +170,6 @@ async function search() {
             allowOutsideClick: false,
         });
     }
-
-
-
 }
 
 

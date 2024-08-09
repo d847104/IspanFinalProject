@@ -388,11 +388,36 @@ async function submitRating() {
             text: '評價提交成功',
             icon: 'success'
         });
+        // 新增通知
+        await createNotification(currentOrder.seller, currentOrder.orderID, productID);
         closeRatingModal();
     } catch (error) {
         console.log("Error submitting rating:", error);
         Swal.fire({
             text: "提交評價失敗：" + error.message,
+            icon: "error"
+        });
+    }
+}
+
+async function createNotification(receiverID, orderID, productID) {
+    const notifyDate = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const content = `有新的客人評價了您的商品 ${productNameMap.value[orderID] || '產品名稱未提供'}`;
+
+    try {
+        await axiosapi.post('/ajax/notification/insert', {
+            content: content,
+            isRead: "false",
+            notifyDate: notifyDate,
+            receiverID: receiverID,
+            senderID: BuyerID,
+            orderID: orderID
+        });
+        console.log('通知發送成功');
+    } catch (error) {
+        console.log("Error creating notification:", error);
+        Swal.fire({
+            text: "通知發送失敗：" + error.message,
             icon: "error"
         });
     }

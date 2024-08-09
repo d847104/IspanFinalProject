@@ -27,4 +27,8 @@ public interface CartRepository extends JpaRepository<Cart, Integer>, JpaSpecifi
 	default Long countBySpecId(Integer specId) {
 		return count((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("productSpec").get("specID"), specId));
 	}
+	
+	default Long countByMemberId(Integer memberId) {
+		return count((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("member").get("memberID"), memberId));
+	}
 }

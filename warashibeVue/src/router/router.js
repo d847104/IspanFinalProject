@@ -44,9 +44,7 @@ const router = createRouter({
 // 添加全局前置守卫
 router.beforeEach((to, from, next) => {
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-    const isAuthenticated = sessionStorage.getItem("token"); // 假设登录后会将token存储在sessionStorage
-
-    if (requiresAuth && !isAuthenticated) {
+    if (requiresAuth && sessionStorage.getItem("token")==null) {
         next({ name: 'Login' });
     } else {
         next();

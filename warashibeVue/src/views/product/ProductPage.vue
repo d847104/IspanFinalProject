@@ -87,11 +87,13 @@
         <div class="col-md-12">
         <h3>查看更多</h3>
         <div class="row">
-            <RelatedCard
-            v-for="product in relatedProducts"
-            :key="product.productID"
-            :product="product"
-            />
+            <template v-for="product in relatedProducts">
+                <RelatedCard                
+                v-if="product.productID != productID"
+                :key="product.productID"
+                :product="product"
+                />
+            </template>
         </div>
         <Paginate
             :page-count="pages"
@@ -113,7 +115,7 @@ import RelatedCard from '@/components/RelatedCard.vue';
 import Paginate from 'vuejs-paginate-next';
 import Swal from 'sweetalert2';
 
-const user = inject('user');
+const isLogin = inject('isLogin');
 const route = useRoute();
 const router = useRouter();
 const productID = ref(route.query.productID);
@@ -191,9 +193,9 @@ const navigateToSellerPage = () => {
 };
 
 const recordBrowsingHistory = async () => {
-    if (user.value && user.value.id && product.value.productID) {
+    if (isLogin.value && sessionStorage.getItem("memberID")!=null && product.value.productID) {
         const history = {
-        member: user.value.id,
+        member: sessionStorage.getItem("memberID"),
         product: product.value.productID,
         browseTime: new Date().toISOString(),
         };
@@ -385,12 +387,18 @@ const increaseQuantity = () => {
         );
     
         if (selectedSpec) {
-            const selectedSpecTwo = selectedSpec.specTwoNames
-            .flatMap((specTwoName) => specTwoName.specTwos)
-            .find((specTwo) => specTwo.specTwoID === selectedSpecTwoID.value);
+            if (selectedSpec.specTwoNames.length === 0) {
+                if (quantity.value < selectedSpec.specOneQt) {
+                    quantity.value += 1;
+                }
+            } else {
+                const selectedSpecTwo = selectedSpec.specTwoNames
+                    .flatMap((specTwoName) => specTwoName.specTwos)
+                    .find((specTwo) => specTwo.specTwoID === selectedSpecTwoID.value);
     
-            if (selectedSpecTwo && quantity.value < selectedSpecTwo.specTwoQt) {
-            quantity.value += 1;
+                if (selectedSpecTwo && quantity.value < selectedSpecTwo.specTwoQt) {
+                    quantity.value += 1;
+                }
             }
         }
     } else {
@@ -401,13 +409,13 @@ const increaseQuantity = () => {
 };
 
 const addToFavorite = async () => {
-    if (!user.value) {
+    if (!isLogin.value) {
         Swal.fire('請登入會員', '', 'warning');
         return;
     }
 
     const data = {
-        memberID: user.value.id,
+        memberID: sessionStorage.getItem("memberID"),
         productID: product.value.productID,
         sellerID: product.value.member,
     };
@@ -422,21 +430,21 @@ const addToFavorite = async () => {
 };
 
 const addToCart = async () => {
-    if (!user.value) {
+    if (!isLogin.value) {
         Swal.fire('請登入會員', '', 'warning');
         return;
     }
-    console.log(product.value.specs);
-    if ((!selectedSpecOneID.value || !selectedSpecTwoID.value) && product.value.specs) {
+
+    if ((!selectedSpecOneID.value || (selectedSpecOneID.value && product.value.specs.specOnes[0].specTwoNames.length > 0 && !selectedSpecTwoID.value)) && product.value.specs) {
         Swal.fire('失敗', '請選擇完整的商品規格', 'error');
         return;
     }
 
     const data = {
-        member: user.value.id,
+        member: sessionStorage.getItem("memberID"),
         product: product.value.productID,
         specOne: selectedSpecOneID.value,
-        specTwo: selectedSpecTwoID.value,
+        specTwo: product.value.specs.specOnes[0].specTwoNames.length > 0 ? selectedSpecTwoID.value : null,
         quantity: quantity.value,
         seller: product.value.member,
     };
@@ -451,7 +459,7 @@ const addToCart = async () => {
 };
 
 const buyNow = async () => {
-    if (!user.value) {
+    if (!isLogin.value) {
         Swal.fire('請登入會員', '', 'warning');
         return;
     }
@@ -462,7 +470,7 @@ const buyNow = async () => {
     }
 
     const data = {
-        member: user.value.id,
+        member: sessionStorage.getItem("memberID"),
         product: product.value.productID,
         specOne: selectedSpecOneID.value,
         specTwo: selectedSpecTwoID.value,

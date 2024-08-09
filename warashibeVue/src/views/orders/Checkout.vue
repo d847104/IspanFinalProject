@@ -9,7 +9,7 @@
                                 <!-- 商品圖片 -->
                                 <div class="col-md-3">
                                         <RouterLink :to="{name: 'pages-productpage-link', query: {productID: item.product.productID}}">
-                                                <img :src="path+item.product.productID" class="img-fluid rounded-start" :alt="item.product.productName">
+                                                <img :src="item.img" class="img-fluid rounded-start" :alt="item.product.productName">
                                         </RouterLink>
                                 </div>
                                 <div class="col-md align-self-center">
@@ -61,7 +61,7 @@
                                         <h4 class="fw-bold">運送方式</h4>
                                         <h4 class="text-center">運費 <span class="text-danger">NT$ {{ deliveryFee }}</span></h4>
                                 </div>
-                                <div class="col-lg-3" v-if="deliveries">
+                                <div class="col-lg-auto" v-if="deliveries">
                                         <div v-for="delivery in deliveries" class="form-check fs-4">
                                                 <input class="form-check-input" type="radio" name="exampleRadios" :id="'delievriId'+delivery.deliveryID" :value="delivery.deliveryID" 
                                                 @change="confirmDelivery(delivery.deliveryFee,delivery.deliveryID,$event)">
@@ -173,7 +173,15 @@
                 carts.value = items;
         }
         const carts = ref([]);
-        const path = `${import.meta.env.VITE_API_URL}/api/productImg/img/`;
+
+        // 若商品有圖片則選擇第一張的 ImgID 以網址 {id} 方式秀出圖片,否則使用 comingsoon
+        const path = computed(() => {
+                if (item.product.productImgs[0]) {
+                        return `${import.meta.env.VITE_API_URL}/api/productImg/img/${props.cart.product.productImgs[0]}`
+                } else {
+                        return `${import.meta.env.VITE_API_URL}/api/productImg/img/comingsoon`
+                }
+        })
         // 商品總金額
         const totalCarts = computed(() => carts.value.reduce((sum, item) => { return sum + (item.quantity * item.product.price); }, 0))
         // 運送方式清單

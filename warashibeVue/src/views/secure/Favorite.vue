@@ -11,16 +11,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, inject } from 'vue';
+import { ref, onMounted } from 'vue';
 import axiosapi from '@/plugins/axios';
 import FavoriteItem from '@/components/FavoriteItem.vue';
 
-const user = inject("user");
 const favorites = ref([]);
 
 const fetchFavorites = async () => {
     try {
-        const { data } = await axiosapi.get(`/ajax/favorite/member/${user.value.id}`);
+        const { data } = await axiosapi.get(`/ajax/favorite/member/${sessionStorage.getItem("memberID")}`);
         favorites.value = data.list;
     } catch (error) {
         console.error('獲取收藏訂單失敗:', error);

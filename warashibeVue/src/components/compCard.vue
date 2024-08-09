@@ -1,5 +1,5 @@
 <template>
-        <div class="col-lg-3 col-md-6 mb-5">
+        <div class="col-lg-4 col-md-6 mb-5">
                 <div class="card h-100 rounded-3">
                         <!-- 商品照片 -->
                         <RouterLink :to="{name: 'pages-productpage-link', query: {productID: product.productID}}">
@@ -38,11 +38,10 @@
                                                         <button type="button" class="btn btn-link btn-sm" @click="addCart">
                                                                 <font-awesome-icon :icon="['fas', 'cart-plus']" size="2x" pull="left" />
                                                         </button>
-                                                        <a href="#"></a>
                                                 </div>
                                                 
                                                 <!-- 數量按鈕群組 -->
-                                                <div class="input-group col">
+                                                <div class="input-group input-group-sm col">
                                                         <!-- 數量減少按鈕 -->
                                                         <button class="btn btn-outline-secondary" type="button" @click="removeOne" :disabled="quantity===1">
                                                                 <font-awesome-icon :icon="['fas', 'minus']" />
@@ -60,12 +59,8 @@
                                                 
                                                 <!-- 收藏愛心 -->
                                                 <div class="col-2">
-                                                        <a href="#"><font-awesome-icon :icon="['far', 'heart']" size="2x" beat
-                                                                style="color:lightcoral;--fa-beat-scale: 1.0" pull="right"
-                                                                @mouseover="(e) => { e.target.style.setProperty('--fa-beat-scale', 1.3) }"
-                                                                @mouseout="(e) => { e.target.style.setProperty('--fa-beat-scale', 1.0) }" 
-                                                                @click = "addToFavorite"/>
-                                                        </a>
+                                                        <font-awesome-icon :icon="['far', 'heart']" size="2x" beat style="color:lightcoral;--fa-beat-scale: 1.0" pull="right" 
+                                                        @mouseover="(e) => { e.target.style.setProperty('--fa-beat-scale', 1.3) }" @mouseout="(e) => { e.target.style.setProperty('--fa-beat-scale', 1.0) }" @click = "addFav"/>
                                                 </div>
                                         </div>
                                 </div>
@@ -73,6 +68,7 @@
                 </div>
         </div>
 </template>
+        
 
 <script setup>
         import { inject, computed, onMounted, ref, watch, nextTick } from 'vue';
@@ -81,6 +77,9 @@
         import axiosapi from '@/plugins/axios';
         import Swal from 'sweetalert2';
         
+        // 確認登入狀態
+        const isLogin = inject("isLogin");
+
         // 接收使用者資訊
         const user = inject("user");
 
@@ -91,11 +90,11 @@
 
         // 若商品有圖片則選擇第一張的 ImgID 以網址 {id} 方式秀出圖片,否則使用 comingsoon
         const path = computed(() => {
-                if (props.product.productImgs[0]) {
-                        return `${import.meta.env.VITE_API_URL}/api/productImg/img/${props.product.productImgs[0]}`
-                } else {
-                        return `${import.meta.env.VITE_API_URL}/api/productImg/img/comingsoon`
-                }
+        if (props.product.productImgs[0]) {
+                return `${import.meta.env.VITE_API_URL}/api/productImg/img/${props.product.productImgs[0]}`
+        } else {
+                return `${import.meta.env.VITE_API_URL}/api/productImg/img/comingsoon`
+        }
         })
 
         // 用於選擇的規格一
@@ -106,9 +105,163 @@
 
         // 計算屬性：過濾出符合選擇的規格一的規格二清單
         const filteredSpecTwos = computed(() => {
-                const specOne = props.product.specs.specOnes.find((specOne) => specOne.specOneID === selectedSpecOne.value);
-                return specOne && specOne.specTwoNames.length ? specOne.specTwoNames[0]?.specTwos : [];
+        const specOne = props.product.specs.specOnes.find((specOne) => specOne.specOneID === selectedSpecOne.value);
+        return specOne && specOne.specTwoNames.length ? specOne.specTwoNames[0]?.specTwos : [];
         });
+
+        function specOneChange(){
+        selectedSpecTwo.value = null; // 清空選擇的規格二
+        quantity.value = 1;     // 初始化數量
+        exceed.value = false;
+        console.log(`已選擇規格一ID${selectedSpecOne.value},庫存量剩餘${stock.value}`);
+        }
+
+        function specTwoChange(){
+        quantity.value = 1;     // 初始化數量
+        exceed.value = false;
+        console.log(`已選擇規格二ID${selectedSpecTwo.value},庫存量剩餘${stock.value}`);
+        }
+
+        // 初始化 Bootstrap tooltip
+        function initializeTooltips() {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(tooltipTriggerEl => {new Tooltip(tooltipTriggerEl);});
+        }
+
+        // 元件渲染完畢後初始化 Bootstrap tooltip; 計算規格下拉式清單
+        onMounted(async() => {
+        await nextTick(); // 等待 DOM 更新
+        initializeTooltips();
+        })
+
+        // 更新 tooltips 內容
+        watch(alertQt, () => {
+        nextTick(() => {
+                const tooltip = Tooltip.getInstance(quantityDOM.value);
+                if (tooltip) {
+                tooltip.setContent({ '.tooltip-inner': alertQt.value });
+                }
+        });
+        });
+
+        // 數量 INPUT 被鎖定時先取得修改前的值
+        var focusQt;
+        function focus(event){
+        if(props.product.specs){
+                if (selectedSpecOne.value == "" || selectedSpecOne.value == null){
+                event.target.blur();
+                Tooltip.getInstance(specDOM.value).show();
+                setTimeout(()=>Tooltip.getInstance(specDOM.value).hide(),1200);
+                event.preventDefault();
+                } else if (filteredSpecTwos.value.length != 0){
+                if (selectedSpecTwo.value == "" || selectedSpecTwo.value == null){
+                        event.target.blur();
+                        Tooltip.getInstance(specDOM.value).show();
+                        setTimeout(()=>Tooltip.getInstance(specDOM.value).hide(),1200);
+                        event.preventDefault();
+                }
+                }
+        }
+        focusQt = quantity.value;
+        }
+
+        // 數量 INPUT 被修改後檢查合法性,否則就恢復至 focusValue
+        function checkQt(){
+        exceed.value = false;
+        let newQt = parseInt(quantity.value);
+        if(!Number.isInteger(newQt) || newQt <1){
+                quantity.value = focusQt;
+                return;
+        }else if(newQt > stock.value){
+                quantity.value = stock.value;
+                exceed.value = true;
+                Tooltip.getInstance(quantityDOM.value).show();
+                setTimeout(()=>Tooltip.getInstance(quantityDOM.value).hide(),1200);
+        }else{
+                quantity.value = newQt;
+        }
+        console.log(`數量:${quantity.value}`);
+        }
+
+        // 數量增加按鈕
+        function addOne(){
+        if(props.product.specs){
+                if (selectedSpecOne.value == "" || selectedSpecOne.value == null){
+                Tooltip.getInstance(specDOM.value).show();
+                setTimeout(()=>Tooltip.getInstance(specDOM.value).hide(),1200);
+                return;
+                } else if (filteredSpecTwos.value.length != 0){
+                if (selectedSpecTwo.value == "" || selectedSpecTwo.value == null){
+                        Tooltip.getInstance(specDOM.value).show();
+                        setTimeout(()=>Tooltip.getInstance(specDOM.value).hide(),1200);
+                        return;
+                }
+                }
+        }
+        exceed.value = false;
+        let newQt = parseInt(quantity.value);
+        if(newQt < stock.value){
+                newQt++
+                quantity.value = newQt;
+        }else{
+                quantity.value = stock.value;
+                exceed.value = true;
+                Tooltip.getInstance(quantityDOM.value).show();
+                setTimeout(()=>Tooltip.getInstance(quantityDOM.value).hide(),1200);
+        }
+        console.log(`數量:${quantity.value}`);
+        }
+
+        // 數量減少按鈕
+        function removeOne(){
+        exceed.value = false;
+        let newQt = parseInt(quantity.value);
+        if(newQt > 1){
+                newQt--;
+                quantity.value = newQt;
+        }
+        console.log(`數量:${quantity.value}`);
+        }
+
+        // 加入購物車
+        function addCart(){
+        if(props.product.specs){
+                if (selectedSpecOne.value == "" || selectedSpecOne.value == null){
+                Tooltip.getInstance(specDOM.value).show();
+                setTimeout(()=>Tooltip.getInstance(specDOM.value).hide(),1200);
+                return;
+                } else if (filteredSpecTwos.value.length != 0){
+                if (selectedSpecTwo.value == "" || selectedSpecTwo.value == null){
+                        Tooltip.getInstance(specDOM.value).show();
+                        setTimeout(()=>Tooltip.getInstance(specDOM.value).hide(),1200);
+                        return;
+                }
+                }
+        }
+        emits("addCart",
+        props.product.productID,
+        props.product.member,
+        selectedSpecOne.value == null || selectedSpecOne.value == "" ? null : selectedSpecOne.value,
+        selectedSpecTwo.value == null || selectedSpecTwo.value == "" ? null : selectedSpecTwo.value,
+        quantity.value)
+        }
+
+        const addToFavorite = async () => {
+        try {
+                if(!user.value){
+                Swal.fire('請登入會員', '', 'warning');
+                }
+                await axiosapi.post('/ajax/favorite/insert', {
+                memberID: user.value.id,
+                productID: props.product.productID,
+                sellerID: props.product.member
+                });
+                Swal.fire('成功', '已將該商品加入最愛', 'success');
+        } catch (error) {
+                console.error('加入最愛失敗', error);
+                Swal.fire('失敗', '加入最愛失敗', 'error');
+        }
+        };
 
         // 計算屬性：過濾出符合選擇的規格一的規格二名字
         const filteredSpecTwoName = computed(() => {
@@ -295,22 +448,15 @@
                 quantity.value)
         }
 
-        const addToFavorite = async () => {
-                try {
-                        if(!user.value){
-                                Swal.fire('請登入會員', '', 'warning');
-                        }
-                        await axiosapi.post('/ajax/favorite/insert', {
-                        memberID: user.value.id,
-                        productID: props.product.productID,
-                        sellerID: props.product.member
-                        });
-                        Swal.fire('成功', '已將該商品加入最愛', 'success');
-                } catch (error) {
-                        console.error('加入最愛失敗', error);
-                        Swal.fire('失敗', '加入最愛失敗', 'error');
+        function addFav(){
+                if(!isLogin.value){
+                        Swal.fire({
+                                icon: "error",
+                                text: "請先登入會員",
+                                allowOutsideClick: false,
+                         })
                 }
-                };
+        }
 </script>
 
 <style scoped></style>

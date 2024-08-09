@@ -40,7 +40,7 @@
     </div>
 </div>
 </template>
-
+    
 <script setup>
 import { ref, computed, inject } from 'vue';
 import { useRouter } from 'vue-router';
@@ -49,7 +49,7 @@ import Swal from 'sweetalert2';
 
 const props = defineProps(["product"]);
 const router = useRouter();
-const user = inject("user");
+const isLogin = inject("isLogin");
 
 const selectedSpecOneID = ref('');
 const selectedSpecTwoID = ref('');
@@ -84,42 +84,49 @@ const decreaseQuantity = () => {
 };
 
 const increaseQuantity = () => {
-    if (props.product.specs && selectedSpecOneID.value && selectedSpecTwoID.value) {
+    if (props.product.specs) {
         const selectedSpecOne = props.product.specs.specOnes.find(
             (specOne) => specOne.specOneID === selectedSpecOneID.value
         );
-        const selectedSpecTwo = selectedSpecOne.specTwoNames
-            .flatMap(specTwoName => specTwoName.specTwos)
-            .find(specTwo => specTwo.specTwoID === selectedSpecTwoID.value);
 
-        if (selectedSpecTwo && quantity.value < selectedSpecTwo.specTwoQt) {
-            quantity.value += 1;
+        if (selectedSpecOne) {
+            if (selectedSpecOne.specTwoNames.length === 0) {
+                if (quantity.value < selectedSpecOne.specOneQt) {
+                    quantity.value += 1;
+                }
+            } else {
+                const selectedSpecTwo = selectedSpecOne.specTwoNames
+                    .flatMap(specTwoName => specTwoName.specTwos)
+                    .find(specTwo => specTwo.specTwoID === selectedSpecTwoID.value);
+
+                if (selectedSpecTwo && quantity.value < selectedSpecTwo.specTwoQt) {
+                    quantity.value += 1;
+                }
+            }
         }
-    } else if (!props.product.specs) {
+    } else {
         if (quantity.value < props.product.stock) {
             quantity.value += 1;
         }
-    } else {
-        quantity.value += 1;
     }
 };
 
 const addToCart = async () => {
-    if (!user.value) {
+    if (!isLogin.value) {
         Swal.fire('請登入會員', '', 'warning');
         return;
     }
 
-    if (props.product.specs && (!selectedSpecOneID.value || !selectedSpecTwoID.value)) {
+    if (props.product.specs && (!selectedSpecOneID.value || (filteredSpecTwos.value.length > 0 && !selectedSpecTwoID.value))) {
         Swal.fire('失敗', '請選擇完整的商品規格', 'error');
         return;
     }
 
     const data = {
-        member: user.value.id,
+        member: sessionStorage.getItem("memberID"),
         product: props.product.productID,
         specOne: selectedSpecOneID.value,
-        specTwo: selectedSpecTwoID.value,
+        specTwo: selectedSpecTwoID.value || null,
         quantity: quantity.value,
         seller: props.product.member,
     };
@@ -136,7 +143,7 @@ const addToCart = async () => {
 const addToFavorite = async () => {
     try {
         await axiosapi.post('/ajax/favorite/insert', {
-            memberID: user.value.id,
+            memberID: sessionStorage.getItem("memberID"),
             productID: props.product.productID,
             sellerID: props.product.member
         });

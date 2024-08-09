@@ -3,6 +3,7 @@ package com.ispan.warashibe.controller;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ispan.warashibe.model.Cart;
 import com.ispan.warashibe.service.CartService;
@@ -80,5 +82,15 @@ public class CartController {
 		}
 		responseBody.put("list", array);
 		return responseBody.toString();
+	}
+	
+	@GetMapping("/member/{id}/count")	// 以買家ID查詢數量
+	public String countByBuyerId(@PathVariable Integer id) {
+		JSONObject responseBody = new JSONObject();
+		Long count = cartServ.countByMemberId(id);
+		if(count!=null) {
+			return responseBody.put("list", count).toString();
+		}
+		return responseBody.put("success", false).put("message","查詢失敗").toString();
 	}
 }

@@ -117,11 +117,11 @@ async function getSellerInfo(sellerID) {
         if (seller.value[0] && seller.value[0].profileImg) {
             profileImgUrl.value = `data:image/png;base64,${seller.value[0].profileImg}`;
         } else {
-            profileImgUrl.value = '/default-person.png';
+            profileImgUrl.value = `${import.meta.env.VITE_API_URL}/images/default-person.png`;
         }
     }).catch(function(error) {
         console.error('Error get Seller:', error);
-        profileImgUrl.value = '/default-person.png';
+        profileImgUrl.value = `${import.meta.env.VITE_API_URL}/images/default-person.png`;
     });
 }
 

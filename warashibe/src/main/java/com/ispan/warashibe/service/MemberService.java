@@ -132,7 +132,7 @@ public class MemberService {
 			update.setUsername(username);
 			update.setMobile(mobile);
 			update.setGender(gender);
-			if(image.isEmpty()) {
+			if(image.isEmpty() && image !=null) {
 				update.setProfileImg(img);
 			}else {
 				update.setProfileImg(image.getBytes());	

@@ -99,4 +99,8 @@ public class CartService {
 	public List<Cart> findByMemberId(Integer buyerID) {	// 以買家ID查詢多筆
 		return cartRepo.findByMemberId(buyerID);
 	}
+	
+	public Long countByMemberId(Integer buyerID) {
+		return cartRepo.countByMemberId(buyerID);
+	}
 }
