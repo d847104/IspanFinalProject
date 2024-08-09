@@ -60,7 +60,7 @@
                                                 <!-- 收藏愛心 -->
                                                 <div class="col-2">
                                                         <font-awesome-icon :icon="['far', 'heart']" size="2x" beat style="color:lightcoral;--fa-beat-scale: 1.0" pull="right" 
-                                                        @mouseover="(e) => { e.target.style.setProperty('--fa-beat-scale', 1.3) }" @mouseout="(e) => { e.target.style.setProperty('--fa-beat-scale', 1.0) }" @click = "addFav"/>
+                                                        @mouseover="(e) => { e.target.style.setProperty('--fa-beat-scale', 1.3) }" @mouseout="(e) => { e.target.style.setProperty('--fa-beat-scale', 1.0) }" @click = "addToFavorite"/>
                                                 </div>
                                         </div>
                                 </div>
@@ -307,7 +307,7 @@
                 Swal.fire('請登入會員', '', 'warning');
                 }
                 await axiosapi.post('/ajax/favorite/insert', {
-                memberID: user.value.id,
+                memberID: sessionStorage.getItem('memberID'),
                 productID: props.product.productID,
                 sellerID: props.product.member
                 });

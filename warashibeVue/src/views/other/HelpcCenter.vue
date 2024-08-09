@@ -89,10 +89,20 @@ async function submitRequest() {
 
     try {
         await axiosapi.post('/api/help-center/submit', request);
-        alert('您的請求已提交');
+        Swal.fire({
+            title: '提交成功',
+            text: '您的請求已提交',
+            icon: 'success',
+            confirmButtonText: '好的'
+        });
     } catch (error) {
         console.error('提交請求失敗', error);
-        alert('提交請求失敗');
+        Swal.fire({
+            title: '提交失敗',
+            text: '請稍後再試。',
+            icon: 'error',
+            confirmButtonText: '好的'
+        });
     }
 }
 </script>
