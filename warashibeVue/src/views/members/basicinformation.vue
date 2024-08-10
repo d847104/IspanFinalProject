@@ -54,7 +54,16 @@
                                 :value="selectedMember.account" disabled>
                         </div>
                     </div>
-
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label text-end">商場/個人簡介</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" v-model="selectedMember.intro"
+                                :disabled="!isEditing.intro">
+                        </div>
+                        <button type="button" class="col-sm-1 btn btn-outline-secondary"
+                            :class="isEditing.intro ? 'btn-outline-secondary' : 'btn-outline-secondary'"
+                            @click="toggleEdit('intro')"><font-awesome-icon icon="fa-solid fa-pencil" /></button>
+                    </div>
                     <!-- gender判斷STAR -->
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label text-end">性別</label>
@@ -79,7 +88,7 @@
                         <label class="col-sm-2 col-form-label text-end">註冊時間</label>
                         <div class="col-sm-7">
                             <input type="text" class="form-control" id="floatingInputDisabled"
-                                :value="selectedMember.createTime" disabled>
+                                :value="formattedCreateTime" disabled>
                         </div>
                     </div>
 
@@ -87,7 +96,7 @@
                         <label class="col-sm-2 col-form-label text-end">最後登入</label>
                         <div class="col-sm-7">
                             <input type="text" class="form-control" id="floatingInputDisabled"
-                                :value="selectedMember.lastLogin" disabled>
+                                :value="formattedLastLogin" disabled>
                         </div>
                     </div>
                     <div class="d-flex justify-content-center">
@@ -131,6 +140,7 @@
 import { ref, onMounted, computed } from 'vue';
 import Swal from 'sweetalert2';
 import axiosapi from '@/plugins/axios';
+import { format } from 'date-fns';
 
 const member = ref({});
 const members = ref([]);
@@ -185,7 +195,7 @@ function cancelEdit() {
 
 function saveChanges() {
     Swal.fire({
-        text: "儲存中...",
+        text: "儲存中",
         allowOutsideClick: false,
         showConfirmButton: false
     });
@@ -210,7 +220,8 @@ function saveChanges() {
         id: selectedMember.value.id,
         username: selectedMember.value.username,
         mobile: selectedMember.value.mobile,
-        gender: selectedMember.value.gender
+        intro: selectedMember.value.intro,
+        lastLogin: new Date().toISOString() // 設定 lastLogin 為當前時間
     };
 
     // 添加 JSON 對象到 FormData 中
@@ -315,7 +326,19 @@ const onFileChange = async (event) => {
     }
 };
 
+// 計算屬性，格式化註冊時間
+const formattedCreateTime = computed(() => {
+    return selectedMember.value && selectedMember.value.createTime
+        ? format(new Date(selectedMember.value.createTime), 'yyyy-MM-dd HH:mm:ss')
+        : '';
+});
 
+// 計算屬性，格式化最後登入時間
+const formattedLastLogin = computed(() => {
+    return selectedMember.value && selectedMember.value.lastLogin
+        ? format(new Date(selectedMember.value.lastLogin), 'yyyy-MM-dd HH:mm:ss')
+        : '';
+});
 
 </script>
 
