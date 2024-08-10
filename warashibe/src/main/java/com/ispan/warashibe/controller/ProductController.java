@@ -170,7 +170,7 @@ public class ProductController {
 
     private Pageable createPageRequest(JSONObject request) throws JSONException {
         int start = request.optInt("start", 0); // 默認值為0
-        int max = request.optInt("max", 30); // 默認值為30
+        int max = request.optInt("max", 100); // 默認值為30
         boolean dir = request.optBoolean("dir", false); // 默認值為false
         String order = request.optString("order", "productID"); // 默認排序字段為productID
 

@@ -138,7 +138,7 @@ public class MemberService {
 				update.setProfileImg(image.getBytes());	
 			}
 			update.setIntro(intro);
-			update.setCreateTime(DatetimeConverter.parse(createTime, "yyyy-MM-dd"));
+//			update.setCreateTime(DatetimeConverter.parse(createTime, "yyyy-MM-dd"));
 			update.setLastLogin(DatetimeConverter.parse(lastLogin, "yyyy-MM-dd"));
 			update.setStatus(status);
 			return membersRepo.save(update);

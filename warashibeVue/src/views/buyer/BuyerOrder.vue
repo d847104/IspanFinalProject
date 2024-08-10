@@ -66,7 +66,7 @@
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-md-10">
-                        <h5>HI:{{ BuyerID }}</h5>
+                        <!-- <h5>HI:{{ BuyerID }}</h5> -->
                         <h5 style="color:#6C6C6C;">賣家：{{ order.seller }}</h5>
                         <div class="card mb-3">
                             <div class="row g-0" style="max-width: 1200px;">
