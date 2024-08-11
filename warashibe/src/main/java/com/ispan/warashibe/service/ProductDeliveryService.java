@@ -3,6 +3,7 @@ package com.ispan.warashibe.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -10,13 +11,27 @@ import org.springframework.stereotype.Service;
 
 import com.ispan.warashibe.model.ProductDelivery;
 import com.ispan.warashibe.model.ProductPayMethod;
+import com.ispan.warashibe.model.Products;
 import com.ispan.warashibe.repository.ProductDeliveryRepository;
+import com.ispan.warashibe.repository.ProductRepository;
 @Service
 public class ProductDeliveryService {
 	
 	@Autowired
 	private ProductDeliveryRepository productDeliveryRepo;
 	
+    @Autowired
+    private ProductRepository productsRepo;  // 添加对 ProductsRepository 的注入
+
+    public List<ProductDelivery> findByProductID(Integer productID) {
+        Optional<Products> productOptional = productsRepo.findById(productID);
+        if (productOptional.isPresent()) {
+            return productDeliveryRepo.findByProduct(productOptional.get());
+        } else {
+            return new ArrayList<>(); // 如果未找到产品，返回空列表
+        }
+    }
+    
 	public ProductDelivery create(String json) {
 		try {
 			JSONObject obj = new JSONObject(json);
