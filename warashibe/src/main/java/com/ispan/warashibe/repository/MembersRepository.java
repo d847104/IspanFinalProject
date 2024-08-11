@@ -12,4 +12,5 @@ public interface MembersRepository extends JpaRepository<Members, Integer> {
     
     Members findByAccount(String account);
     
+    
 }

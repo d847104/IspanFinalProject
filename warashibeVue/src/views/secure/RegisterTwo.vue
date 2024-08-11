@@ -45,7 +45,7 @@
                     </div>
 
                     <div class="pt-3 mb-4">
-                        <RouterLink @click="register" :to="{name: 'register-three-link'}" class="btn btn-info btn-lg btn-block" type="button">註冊</RouterLink>
+                        <RouterLink @click="register" :to="{name: 'secure-login-link'}" class="btn btn-info btn-lg btn-block" type="button">註冊</RouterLink>
                     </div>
 
                     <hr class="my-4">
@@ -103,7 +103,7 @@
             if(response.data.success) {
                 Swal.fire({
                     icon: "success",
-                    text: response.data.message,
+                    text: "註冊成功",
                 })
             }else {
                 Swal.fire({

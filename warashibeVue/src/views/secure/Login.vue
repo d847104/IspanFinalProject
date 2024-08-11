@@ -27,9 +27,8 @@
                         </div>
 
                         <div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-end">
-                            <RouterLink :to="{ name: 'register-one-link' }"
-                                class="link-secondary text-decoration-none">建立新帳號</RouterLink>
-                            <!-- <a href="#!" class="link-secondary text-decoration-none">忘記密碼</a> -->
+                            <RouterLink :to="{ name: 'register-one-link' }" class="link-secondary text-decoration-none">建立新帳號</RouterLink>
+                            <RouterLink :to="{ name: 'secure-forgetPwd-link' }" class="link-secondary text-decoration-none">忘記密碼</RouterLink>
                         </div>
 
                         <hr class="my-4">
@@ -66,6 +65,7 @@ const router = useRouter();
 const isLogin = inject("isLogin")
 const loginUserName = inject("loginUserName")
 const loginUserId = inject("loginUserId")
+const loginAccount = inject("loginAccount")
 const updateCartQt = inject("updateCartQt")
 
 function login() {
@@ -94,10 +94,12 @@ function login() {
                 axiosapi.defaults.headers.authorization = `Bearer ${response.data.token}`;
                 sessionStorage.setItem("token", response.data.token);
                 sessionStorage.setItem("memberID", response.data.memberID);
-                sessionStorage.setItem("username", response.data.username)
+                sessionStorage.setItem("username", response.data.username);
+                sessionStorage.setItem("account", response.data.account);
                 isLogin.value = true;
                 loginUserName.value = response.data.username;
                 loginUserId.value = response.data.memberID;
+                loginAccount.value = response.data.account;
                 updateCartQt()
                 router.push("/");
                 console.log("登入成功");

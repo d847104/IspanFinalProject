@@ -21,7 +21,7 @@
             <h5 class="card-title">帳戶相關</h5>
             <p class="card-text">管理個人帳戶資訊。</p>
             <button @click="navigateTo('/members/basicinformation')" class="btn btn-primary">個人資訊管理</button>
-            <button @click="navigateTo('/change-password')" class="btn btn-primary mt-2">密碼管理</button>
+            <button @click="navigateTo('/secure/modifyPwd')" class="btn btn-primary mt-2">密碼管理</button>
             <!-- <button @click="navigateTo('/wallet')" class="btn btn-primary mt-2">錢包管理</button> -->
             <!-- <button @click="navigateTo('/bank-accounts')" class="btn btn-primary mt-2">銀行帳戶管理</button> -->
         </div>
