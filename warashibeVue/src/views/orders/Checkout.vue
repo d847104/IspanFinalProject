@@ -14,8 +14,8 @@
                                 <div class="col">地址</div>
                         </div>
                 <div class="btn-group-vertical d-flex" role="group" aria-label="Vertical radio toggle button group" v-for="recepient in recepients">
-                        <input type="radio" class="btn-check" name="vbtn-radio" :id="'rc'+recepient.recepientID" autocomplete="off" checked>
-                        <label class="btn btn-outline-primary" :for="'rc'+recepient.recepientID">
+                        <input type="radio" class="btn-check" name="vbtn-radio" :id="'rc'+recepient.recepientID" autocomplete="off" v-model="selectedRecepient" :value="recepient">
+                        <label class="btn btn-outline-primary list-group-item-action text-center" :for="'rc'+recepient.recepientID">
                                 <div class="row">
                                         <div class="col">{{recepient.name}}</div>
                                         <div class="col">{{ recepient.mobile }}</div>
@@ -25,7 +25,7 @@
                 </div>
                 </div>
                 <div class="modal-footer">
-                        <button type="button" class="btn btn-primary">選擇</button>
+                        <button type="button" class="btn btn-primary" @click="confirmRecepient" data-bs-dismiss="modal">選擇</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
                 </div>
         </div>
@@ -129,6 +129,10 @@
                                                 @change="confirmDelivery(delivery.deliveryFee, delivery.deliveryID,$event)">
                                                 <label class="form-check-label" :for="'delievriId'+delivery.deliveryID">{{ delivery.delivery }}</label>
                                         </div>
+                                        <div class="mt-4" v-if="deliveryId==2 || deliveryId==3">
+                                                <button @click="callExpressMap">選擇門市</button>
+                                                <span v-if="expressmap!=null" v-html="expressmap"></span>
+                                        </div>
                                 </div>
                                 <div class="col-lg-auto">
                                         <h4 class="fw-bold">收件資訊</h4>
@@ -147,7 +151,7 @@
                                         <!-- 電話 -->
                                         <div class="row align-items-center fs-4">
                                                 <div class="col-4 text-end">
-                                                        <label for="phone" class="col-form-label">連絡電話</label>
+                                                        <label for="phone" class="col-form-label">電話</label>
                                                 </div>
                                                 <div class="col">
                                                         <input type="text" id="phone" class="form-control" v-model="phone">
@@ -162,7 +166,7 @@
                                                         <input type="text" id="address" class="form-control" v-model="address">
                                                 </div>
                                         </div>
-                                        <div class="row"><button type="button" class="btn btn-sm btn-info">新增常用收件人</button></div>
+                                        <div class="row"><button type="button" class="btn btn-sm btn-info" @click="addRecepient">新增常用收件人</button></div>
                                 </div>
 
                         </div>
@@ -229,6 +233,7 @@
         import axiosapi from '@/plugins/axios';
         import Swal from 'sweetalert2';
         import { useRouter } from 'vue-router';
+        import axios from 'axios';
 
         const router = useRouter();
         
@@ -281,6 +286,10 @@
         const address = ref("");
         // 常用收件人清單
         const recepients = ref([])
+        // 選取的常用收件人
+        const selectedRecepient = ref(null)
+
+        const expressmap = ref(null)
 
         function callRecepients(){
                 axiosapi.get(`/ajax/recepient/member/${sessionStorage.getItem("memberID")}`)
@@ -291,12 +300,61 @@
                         console.log(error.message);
                         Swal.fire({
                                 icon: "error",
-                                text: "錯誤",
+                                text: "錯誤:無法取得常用收件人列表",
                                 allowOutsideClick: false,
                         })
                 })
         }
 
+        function confirmRecepient(){
+               console.log(selectedRecepient.value);
+               recipient.value = selectedRecepient.value.name;
+               phone.value = selectedRecepient.value.mobile;
+               address.value = selectedRecepient.value.address;
+        }
+
+        function addRecepient(){
+                if(recipient.value==""){
+                        Swal.fire({
+                                icon: "warning",
+                                text: "請輸入收件人",
+                                allowOutsideClick: false,
+                        })
+                }else if(phone.value==""){
+                        Swal.fire({
+                                icon: "warning",
+                                text: "請輸入連絡電話",
+                                allowOutsideClick: false,
+                        })
+                }
+                let request = {
+                        "memberID": sessionStorage.getItem("memberID"),
+                        "name": recipient.value,
+                        "mobile": phone.value,
+                        "address": address.value
+                }
+                axiosapi.post("/ajax/recepient/insert", request)
+                .then(function(result){
+                        if(result.data.success){
+                                callRecepients();
+                                Swal.fire({
+                                        position: "center",
+                                        icon: "success",
+                                        title: "已新增常用收件人",
+                                        showConfirmButton: false,
+                                        timer: 800
+                                });
+                        }
+                }).catch(function(error){
+                        console.log("error",error);
+                        console.log(error.message);
+                        Swal.fire({
+                                icon: "error",
+                                text: "新增常用收件人失敗",
+                                allowOutsideClick: false,
+                        })
+                })
+        }
 
         // 呼叫 Delivery 清單
         function callDelivery(){
@@ -309,7 +367,7 @@
                         console.log(error.message);
                         Swal.fire({
                                 icon: "error",
-                                text: "錯誤",
+                                text: "錯誤:無法取得配送方式列表",
                                 allowOutsideClick: false,
                         })
                 })
@@ -332,7 +390,6 @@
                         document.getElementById(cart.cartID).style.border = "5px solid var(--bs-danger-border-subtle)";
                         deliveryAlert.value = "您選取的運送方式不支援部分結帳商品，請再次確認";
                 })
-                
         }
 
         // 呼叫 PayMethod 清單
@@ -346,7 +403,7 @@
                         console.log(error.message);
                         Swal.fire({
                                 icon: "error",
-                                text: "錯誤",
+                                text: "錯誤:無法取得付款方式列表",
                                 allowOutsideClick: false,
                         })
                 })
@@ -370,6 +427,44 @@
                 })
         }
 
+        // 超商電子地圖
+        function callExpressMap(){
+                const logisticsSubType = computed(()=>{
+                        if(deliveryId.value==2) return "UNIMARTC2C";
+                        if(deliveryId.value==3) return "FAMIC2C";
+                })
+                let request = {
+                        "LogisticsSubType": logisticsSubType.value,
+                        "IsCollection": payMethodId.value == 3 ? "Y" : "N"
+                }
+                axiosapi.post("/api/ECPayLogistic/expressMap",request)
+                .then(function(response){
+                        console.log(response);
+                        // Create a form and set it up for submission
+                        let form = document.createElement('form');
+                        form.method = 'post';
+                        form.action = 'https://logistics-stage.ecpay.com.tw/Express/map';
+                        
+                        // Parse the response HTML to extract hidden input fields
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(response.data, 'text/html');
+                        const inputs = doc.querySelectorAll('input');
+                        inputs.forEach(input => {
+                                let hiddenField = document.createElement('input');
+                                hiddenField.type = 'hidden';
+                                hiddenField.name = input.name;
+                                hiddenField.value = input.value;
+                                form.appendChild(hiddenField);
+                        });
+
+                        // Append form to the body and submit
+                        document.body.appendChild(form);
+                        form.submit();
+                }).catch(function(error){
+                        console.log(error);
+                })
+        }
+        
         // 確認付款並最後檢核
         function confirmCheckout(){
                 if(deliveryId.value == null){

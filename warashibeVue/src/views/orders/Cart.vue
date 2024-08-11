@@ -44,7 +44,7 @@
         import { useRouter } from 'vue-router';
         import axiosapi from "@/plugins/axios.js";
         import Swal from "sweetalert2";
-        import compCartList from '@/components/compCartList.vue';
+        import compCartList from '@/views/orders/compCartList.vue';
         import { inject } from 'vue';
         import emitter from '@/plugins/events';
 

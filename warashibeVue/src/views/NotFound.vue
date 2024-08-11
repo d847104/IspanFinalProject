@@ -1,5 +1,5 @@
 <template>
-    <h3>請登入查詢</h3>
+    <h3>找不到指定頁面</h3>
 </template>
     
 <script setup>
