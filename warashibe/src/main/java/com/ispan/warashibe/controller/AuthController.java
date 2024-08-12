@@ -124,7 +124,7 @@ public class AuthController {
             // 儲存驗證碼到內存中
             verificationCodes.put(account, verificationCode);
             // 發送郵件
-            String resetLink = "http://localhost:5173/secure/resetPwd?account=" + account + "&Link=" + verificationLink;
+            String resetLink = "http://192.168.23.56:6173/secure/resetPwd?account=" + account + "&Link=" + verificationLink;
         	mailService.sendPlainText(account, "您的驗證碼是："+ verificationCode, "請點擊連結以重設密碼： " + resetLink);
         	session.setAttribute("account", account);
         	session.setAttribute("verificationCode", verificationCode);
