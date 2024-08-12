@@ -47,13 +47,8 @@ createApp(App)
     .provide("cartQt", cartQt)
     .provide("loginUserName", loginUserName)
     .provide("loginUserId", loginUserId)
-<<<<<<< HEAD
-    .provide("updateCartQt", updateCartQt)
-    .provide("sendMessage", sendMessage) // 提供 sendMessage 方法
-=======
     .provide("loginAccount", loginAccount)
     .provide("updateCartQt", updateCartQt)
->>>>>>> dev
     .component('font-awesome-icon', FontAwesomeIcon)
     .mount('#app');
 

@@ -64,35 +64,33 @@ public class NotificationService {
 	} // end of deleteOne
 	
 	// 新增單筆
+	// 新增单笔
 	public Notification insert(String json) {
-        JSONObject obj = new JSONObject(json);
-        Integer notificationID = obj.isNull("notificationID") ? null : obj.getInt("notificationID");
-		Integer receiverID = obj.isNull("receiverID") ? null : obj.getInt("receiverID");
-		Integer senderID = obj.isNull("senderID") ? null : obj.getInt("senderID");
-		Integer orderID = obj.isNull("orderID") ? null : obj.getInt("orderID");
-        String content = obj.isNull("content") ? null : obj.getString("content");
-		String notifyDate = obj.isNull("notifyDate") ? null : obj.getString("notifyDate");
-		Boolean isRead = obj.isNull("isRead") ? null : obj.getBoolean("isRead");
-        
-        Optional<Members> receiver = membersRepo.findById(receiverID);
-        Optional<Members> sender = membersRepo.findById(senderID);
-        Optional<Orders> order = ordersRepo.findById(orderID);
-        
-        
-        if(notificationID == null) {
-        	Notification notification = new Notification();
-        	notification.setNotificationID(notificationID);
-        	notification.setReceiverID(receiver.get());
-        	notification.setSenderID(sender.get());
-        	notification.setOrderID(order.get());
-        	notification.setContent(content);
-        	notification.setNotifyDate(DatetimeConverter.parse(notifyDate, "yyyy-MM-dd"));
-        	notification.setIsRead(isRead);
-        	return notificationRepo.save(notification);
-        }
-        return null;
-        
+	    JSONObject obj = new JSONObject(json);
+	    Integer receiverID = obj.optInt("receiverID");
+	    Integer senderID = obj.optInt("senderID");
+	    Integer orderID = obj.optInt("orderID");  // 可能为null
+	    String content = obj.optString("content", null);
+	    String notifyDate = obj.optString("notifyDate", null);
+	    Boolean isRead = obj.optBoolean("isRead");
+
+	    Optional<Members> receiver = membersRepo.findById(receiverID);
+	    Optional<Members> sender = membersRepo.findById(senderID);
+	    Optional<Orders> order = orderID != null ? ordersRepo.findById(orderID) : Optional.empty();
+
+	    if(receiver.isPresent() && sender.isPresent()) {
+	        Notification notification = new Notification();
+	        notification.setReceiverID(receiver.get());
+	        notification.setSenderID(sender.get());
+	        notification.setOrderID(order.orElse(null));  // 如果 order 不存在，则设置为 null
+	        notification.setContent(content);
+	        notification.setNotifyDate(DatetimeConverter.parse(notifyDate, "yyyy-MM-dd"));
+	        notification.setIsRead(isRead);
+	        return notificationRepo.save(notification);
+	    }
+	    return null;
 	}
+
 	
 	// 修改單筆
 	public Notification modify(String json) {
