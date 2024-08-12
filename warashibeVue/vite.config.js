@@ -18,7 +18,8 @@ export default defineConfig({
   // base: '/warashibe/',
   server: {
     proxy: {
-      "/expressmap": "https://logistics-stage.ecpay.com.tw/Express/map"
+      "/api/ECPayLogistic/expressMap": "https://logistics-stage.ecpay.com.tw/Express/map",
+      "/api/ECPayPayment/pay": "https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5"
     }
   },
   define: {

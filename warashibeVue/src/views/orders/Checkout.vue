@@ -122,11 +122,12 @@
                                         <h4 class="fw-bold">運送方式</h4>
                                         <h4 class="text-center">運費 <span class="text-danger">NT$ {{ deliveryFee }}</span></h4>
                                 </div>
+                                <!-- 付款方式列表 -->
                                 <div class="col-lg-auto" v-if="deliveries">
                                         <div v-for="delivery in deliveries" class="form-check fs-4">
                                                 <input class="form-check-input" type="radio" name="exampleRadios" 
                                                 :id="'delievriId'+delivery.deliveryID" :value="delivery.deliveryID" 
-                                                @change="confirmDelivery(delivery.deliveryFee, delivery.deliveryID,$event)">
+                                                @change="confirmDelivery(delivery.deliveryFee, delivery.deliveryID, $event, delivery.delivery)">
                                                 <label class="form-check-label" :for="'delievriId'+delivery.deliveryID">{{ delivery.delivery }}</label>
                                         </div>
                                         <div class="mt-4" v-if="deliveryId==2 || deliveryId==3">
@@ -170,6 +171,7 @@
                                 </div>
 
                         </div>
+                        <!-- 付款方式列表 -->
                         <div class="row my-2">
                                 <h4 class="fw-bold">付款方式</h4>
                                 <div v-if="payMethods" class="my-4">
@@ -177,7 +179,7 @@
                                                 <template v-for="payMethod in payMethods">
                                                         <input type="radio" class="btn-check" name="btnradio" autocomplete="off" 
                                                         :id="'payMethodId'+payMethod.payMethodID" :value="payMethod.payMethodID" 
-                                                        @change="confirmPayMethod(payMethod.payMethodID, $event)">
+                                                        @change="confirmPayMethod(payMethod.payMethodID, $event, payMethod.payMethod)">
                                                         <label class="btn btn-light fs-4" :for="'payMethodId'+payMethod.payMethodID">{{ payMethod.payMethod }}</label>
                                                 </template>
                                         </div>
@@ -220,7 +222,7 @@
                         </div>
                         <div class="row my-4 d-flex flex-row justify-content-end">
                                 <div class="col-lg-3">
-                                        <button type="button" class="btn btn-success btn-lg" @click="confirmCheckout">確認付款</button>
+                                        <button type="button" class="btn btn-success btn-lg" @click="ecPay">確認付款</button>
                                 </div>
                         </div>
                 </div>
@@ -228,12 +230,11 @@
 </template>
 
 <script setup>
-        import { ref, onMounted, onUnmounted, nextTick, computed } from 'vue';
+        import { ref, onMounted, onUnmounted, nextTick, computed, inject } from 'vue';
         import emitter from '@/plugins/events';
         import axiosapi from '@/plugins/axios';
         import Swal from 'sweetalert2';
         import { useRouter } from 'vue-router';
-        import axios from 'axios';
 
         const router = useRouter();
         
@@ -250,6 +251,7 @@
         onUnmounted(() => {emitter.off('result', selectedItems);});
         const selectedItems = (items) => {
                 carts.value = items;
+                
         }
 
         // 若商品有圖片則選擇第一張的 ImgID 以網址 {id} 方式秀出圖片,否則使用 comingsoon
@@ -268,12 +270,16 @@
         const deliveryFee = ref(0);
         // 運送方式ID
         const deliveryId = ref(null);
+        // 運送方式名稱
+        const deliveryName = ref(null);
         // 訂單總金額
         const totalOrder = computed(() => totalCarts.value + deliveryFee.value);
         // 付款方式清單
         const payMethods = ref([]);
         // 付款方式ID
         const payMethodId = ref(null);
+        // 付款方式名稱
+        const payMethodName = ref(null);
         // 運送方式提示訊息
         const deliveryAlert = ref("");
         // 付款方式提示訊息
@@ -288,9 +294,15 @@
         const recepients = ref([])
         // 選取的常用收件人
         const selectedRecepient = ref(null)
+        // 注入 updateCartQt 更新購物車數量
+        const updateCartQt = inject("updateCartQt")
+
+        // 建立訂單成功後的訂單ID
+        const orderId = ref(null);
 
         const expressmap = ref(null)
 
+        // 呼叫常用收件人列表
         function callRecepients(){
                 axiosapi.get(`/ajax/recepient/member/${sessionStorage.getItem("memberID")}`)
                 .then(function(response){
@@ -306,6 +318,7 @@
                 })
         }
 
+        // 取回常用收件人
         function confirmRecepient(){
                console.log(selectedRecepient.value);
                recipient.value = selectedRecepient.value.name;
@@ -313,6 +326,7 @@
                address.value = selectedRecepient.value.address;
         }
 
+        //  新增常用收件人
         function addRecepient(){
                 if(recipient.value==""){
                         Swal.fire({
@@ -374,12 +388,13 @@
         }
 
         // 選擇運送方式回傳運費, 並檢核是否符合商品運送方式
-        function confirmDelivery(selectedFee, selectedId,event){
+        function confirmDelivery(selectedFee, selectedId, event, selectedName){
                 carts.value.forEach(cart=>document.getElementById(cart.cartID).style.border = null);
                 deliveryAlert.value = "";
                 if(event.target.checked){
                         deliveryFee.value = selectedFee;
                         deliveryId.value = selectedId;
+                        deliveryName.value = selectedName;
                 }
                 const cartsNotMeet = carts.value.map(cart=>{
                         const notMeets = !cart.product.productDeliveries.map(delivery => delivery.delivery.deliveryID).includes(selectedId);
@@ -410,11 +425,12 @@
         }
 
         // 選擇付款方式並檢核是否符合商品運送方式
-        function confirmPayMethod(selectedId, event){
+        function confirmPayMethod(selectedId, event, selectedName){
                 carts.value.forEach(cart=>document.getElementById(cart.cartID).style.backgroundColor = null);
                 payMethodAlert.value = "";
                 if(event.target.checked){
                         payMethodId.value = selectedId;
+                        payMethodName.value = selectedName;
                 }
                 const cartsNotMeet = carts.value.map(cart=>{
                         const notMeets = !cart.product.productPayMethods.map(method => method.payMethodID.payMethodID).includes(selectedId);
@@ -465,7 +481,7 @@
                 })
         }
         
-        // 確認付款並最後檢核
+        // 確認付款並最後檢核送出訂單
         function confirmCheckout(){
                 if(deliveryId.value == null){
                         Swal.fire({
@@ -509,7 +525,106 @@
                                 text: "請填寫聯絡電話資訊",
                                 allowOutsideClick: false,
                         })
+                }else if(address.value.length==0 && deliveryId.value==1){
+                        Swal.fire({
+                                icon: "warning",
+                                text: "請填寫收件地址資訊",
+                                allowOutsideClick: false,
+                        })
+                }else{
+                        Swal.fire({
+                                title: "確認下單?",
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonColor: "#3085d6",
+                                cancelButtonColor: "#d33",
+                                confirmButtonText: "我要下單",
+                                cancelButtonText: "取消"
+                        }).then((result) => {
+                                if (result.isConfirmed) {
+                                        let request = {
+                                                "seller": carts.value[0].sellerID.memberID,
+                                                "buyer": sessionStorage.getItem("memberID"),
+                                                "delivery": deliveryName.value,
+                                                "deliveryFee": deliveryFee.value,
+                                                "payMethod": payMethodName.value,
+                                                "total": totalOrder.value,
+                                                "recepient": recipient.value,
+                                                "phone": phone.value,
+                                                "address": address.value
+                                        }
+                                        axiosapi.post("/private/pages/orders/create", request)
+                                        .then(function(response){
+                                                if(response.data.success){
+                                                        orderId.value = response.data.orderID;
+                                                        // 建立訂單成功後建立訂單商品明細
+                                                        carts.value.forEach((cart)=>{
+                                                                let request = {
+                                                                        "order": response.data.orderID,
+                                                                        "product": cart.product.productID,
+                                                                        "productName": cart.product.productName,
+                                                                        "price": cart.product.price,
+                                                                        "quantity": cart.quantity
+                                                                }
+                                                                axiosapi.post("/private/pages/orderProducts/create", request)
+                                                                .then(console.log(`已建立訂單商品明細,商品名稱:${cart.product.productName}`)
+                                                                ).catch(function(error){
+                                                                        console.log(`建立訂單商品明細失敗,商品名稱:${cart.product.productName}`)
+                                                                })
+                                                                axiosapi.delete(`/api/cart/delete/${cart.cartID}`)
+                                                                .then(console.log(`已從購物車移除 cartID: ${cart.cartID}`))
+                                                                .catch(function(error){
+                                                                        console.log(`購物車移除失敗 cartID: ${cart.product.productName}`)
+                                                                })
+                                                        });
+                                                        Swal.fire({
+                                                                position: "center",
+                                                                icon: "success",
+                                                                title: "已下單",
+                                                                showConfirmButton: false,
+                                                                timer: 800
+                                                        })
+                                                        updateCartQt();
+                                                        // router.push({name: 'buyer-BuyerOrder-link'})
+                                                }else{
+                                                        Swal.fire({
+                                                                icon: "error",
+                                                                text: "建立訂單失敗",
+                                                                allowOutsideClick: false,
+                                                        })
+                                                }
+                                        }).catch(function(error){
+                                                Swal.fire({
+                                                        icon: "error",
+                                                        text: "建立訂單失敗",
+                                                        allowOutsideClick: false,
+                                                })
+                                        })
+                                }
+                        });
                 }
+        }
+
+        // 綠界金流
+        function ecPay(){
+                let productNames = "";
+                carts.value.forEach((cart)=>{
+                        productNames += cart.product.productName + "#";
+                })
+                
+                let request = {
+                        "MerchantTradeNo": "WARASHIBE1",
+                        "TotalAmount": totalOrder.value.toString(),
+                        "TradeDesc": "這是測試交易",
+                        "ItemName": productNames,
+                        "ClientBackURL": "http://localhost:5173/buyer/buyerorder"
+                }
+                axiosapi.post("/api/ECPayPayment/pay",request)
+                .then(function(response){
+                        console.log(response);
+                }).catch(function(error){
+                        console.log(error);
+                })
         }
 </script>
         

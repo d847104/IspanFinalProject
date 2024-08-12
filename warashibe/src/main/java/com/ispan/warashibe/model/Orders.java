@@ -64,6 +64,15 @@ public class Orders {
 
 	@Column(name = "total", nullable = false)
 	private Integer total;
+	
+	@Column(name = "recepient", nullable = false)
+	private String recepient;
+	
+	@Column(name = "phone", nullable = false)
+	private String phone;
+	
+	@Column(name = "address", nullable = true)
+	private String address;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
