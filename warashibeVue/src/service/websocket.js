@@ -1,21 +1,36 @@
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
-const socket = new SockJS(import.meta.env.VITE_API_URL + "/ws");
-const stompClient = Stomp.over(socket);
+let stompClient = null;
 
-export const connect = (onMessageReceived) => {
+export const connect = (onConnected) => {
+    const socket = new SockJS(import.meta.env.VITE_API_URL + "/ws");
+    stompClient = Stomp.over(socket);
+
     stompClient.connect({}, () => {
-        stompClient.subscribe("/topic/messages", (message) => {
-            onMessageReceived(JSON.parse(message.body));
-        });
+        if (onConnected) {
+            onConnected();
+        }
     });
 };
 
-export const sendMessage = (message) => {
-    if (stompClient.connected) {
-        stompClient.send("/app/chat", {}, JSON.stringify(message));
+export const subscribeToTopic = (topic, onMessageReceived) => {
+    if (stompClient) {
+        stompClient.subscribe(topic, message => {
+            if (onMessageReceived) {
+                onMessageReceived(message);
+            }
+        });
     } else {
         console.error('WebSocket is not connected.');
     }
 };
+
+export const sendMessage = (destination, message) => {
+    if (stompClient && stompClient.connected) {
+        stompClient.send(destination, {}, JSON.stringify(message));
+    } else {
+        console.error('WebSocket is not connected.');
+    }
+};
+

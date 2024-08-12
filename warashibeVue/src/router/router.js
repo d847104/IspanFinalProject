@@ -28,7 +28,7 @@ const routes = [
     { name: 'Checkout', path: '/checkout', component: Checkout },
     { name: 'messenger', path: '/messenger', component: Messenger },
     { name: 'chatlist', path: '/chatlist', component: ChatList },
-    { name: 'chatroom', path: '/chatroom/:id', component: ChatRoom, props: true },
+    { name: 'chatroom', path: '/chatroom', component: ChatRoom, props: true },
     ...routerSecure,
     ...routerPages,
     ...routerProduct,

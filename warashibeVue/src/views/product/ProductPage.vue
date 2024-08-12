@@ -269,7 +269,7 @@ const openChat = () => {
         return;
     }
     // 假设聊天页面为 /chatroom，并使用 sellerID 作为参数
-    router.push(`/chatroom?sellerID=${seller.value.memberID}`);
+    router.push(`/chatroom?sellerID=${seller.value.id}`);
 };
 
 const navigateToSellerPage = () => {

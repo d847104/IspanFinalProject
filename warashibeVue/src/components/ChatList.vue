@@ -11,22 +11,48 @@
 </template>
 
 <script>
+import { connect, subscribeToTopic } from '@/service/websocket';
+import axiosapi from '@/plugins/axios';
+
 export default {
-data() {
-    return {
-    chatRooms: []
-    };
-},
-methods: {
-    goToChatRoom(chatRoomId) {
-    this.$router.push(`/chatroom/${chatRoomId}`);
+    data() {
+        return {
+        chatRooms: []
+        };
     },
-    fetchChatRooms() {
-    // 调用API获取聊天列表
+    methods: {
+        goToChatRoom(chatRoomId) {
+        this.$router.push(`/chatroom/${chatRoomId}`);
+        },
+        async fetchChatRooms() {
+        try {
+            const response = await axiosapi.get(`/api/chat/rooms`);
+            this.chatRooms = response.data;
+
+            // 连接到 WebSocket
+            connect(() => {
+            this.chatRooms.forEach(chatRoom => {
+                this.subscribeToChatRoom(chatRoom.id);
+            });
+            });
+        } catch (error) {
+            console.error('Error fetching chat rooms:', error);
+        }
+        },
+        subscribeToChatRoom(chatRoomId) {
+        subscribeToTopic(`/topic/messages/${chatRoomId}`, message => {
+            const receivedMessage = JSON.parse(message.body);
+            const chatRoomIndex = this.chatRooms.findIndex(room => room.id === chatRoomId);
+
+            if (chatRoomIndex !== -1) {
+            this.chatRooms[chatRoomIndex].lastMessageTime = receivedMessage.timestamp;
+            // 如果需要，可以更新 chatRooms 的内容
+            }
+        });
+        }
+    },
+    created() {
+        this.fetchChatRooms();
     }
-},
-created() {
-    this.fetchChatRooms();
-}
 };
 </script>
