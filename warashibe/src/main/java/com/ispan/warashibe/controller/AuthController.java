@@ -6,6 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,6 +70,12 @@ public class AuthController {
             responseJson.put("message", "登入失敗");
             responseJson.put("success", false);
         } else {
+        	if ("ban".equalsIgnoreCase(member.getStatus())) {
+        		responseJson.put("success", false);
+        		responseJson.put("message", "您的帳號已被禁用，無法登入");
+                return responseJson.toString();
+            }
+        	
             httpSession.setAttribute("user", member);
             responseJson.put("message", "登入成功");
             responseJson.put("success", true);
