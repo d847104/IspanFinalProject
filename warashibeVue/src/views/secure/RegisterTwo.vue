@@ -93,7 +93,7 @@
             "username": username.value,
             "gender": gender.value,
             "mobile": mobile.value,
-            "intro": "",
+            "intro": null,
             "status": "active",
         }
 

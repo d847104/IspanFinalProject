@@ -90,7 +90,7 @@ public class MemberService {
 		String gender = obj.isNull("gender") ? null : obj.getString("gender");
 		byte[] profileImg = obj.isNull("profileImg") ? 
 			    img : obj.getString("profileImg").getBytes();
-		String intro = obj.isNull("intro") ? null : obj.getString("intro");
+		String intro = obj.isNull("intro") ? "歡迎來到我的賣場! 挑挑看選選看，買到撞到，錯過這村沒有這店唷!" : obj.getString("intro");
 //		String createTime = obj.isNull("createTime") ? null : obj.getString("createTime");
 //		String lastLogin = obj.isNull("lastLogin") ? null : obj.getString("lastLogin");
 		String status = obj.isNull("status") ? null : obj.getString("status");

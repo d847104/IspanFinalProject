@@ -1,5 +1,6 @@
 package com.ispan.warashibe.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -42,6 +43,9 @@ public class Orders {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "orderID")
 	private Integer orderID;
+	
+	@Column(name = "orderIDMix", nullable = false)
+	private String orderIDMix;
 
 	@ManyToOne
 	@JoinColumn(name = "sellerID")
@@ -106,7 +110,12 @@ public class Orders {
 		if (orderUpdate == null) {
 			orderUpdate = new Date();
 		}
+		if (orderIDMix == null) {
+			orderIDMix = "WRSB"+ buyer.getMemberID() + 
+					new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+		}
 	}
+	
 
 	@PreUpdate
 	public void onUpdate() {
