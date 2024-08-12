@@ -313,6 +313,16 @@
                 sellerID: props.product.member
                 });
                 Swal.fire('成功', '已將該商品加入最愛', 'success');
+                // 新增通知给卖家
+                const notificationContent = `會員${sessionStorage.getItem("username")}喜歡了你的商品${props.product.productName}`;
+                await axiosapi.post('/ajax/notification/insert', {
+                        content: notificationContent,
+                        isRead: false,
+                        notifyDate: new Date().toISOString().slice(0, 10),  // 当前日期
+                        receiverID: props.product.member,  // 商品卖家的ID
+                        senderID: sessionStorage.getItem("memberID"),
+                        orderID: null  // 这里设置为null
+                });
         } catch (error) {
                 console.error('加入最愛失敗', error);
                 Swal.fire('失敗', '加入最愛失敗', 'error');

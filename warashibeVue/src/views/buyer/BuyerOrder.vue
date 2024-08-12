@@ -402,7 +402,7 @@ async function submitRating() {
 
 async function createNotification(receiverID, orderID, productID) {
     const notifyDate = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-    const content = `有新的客人評價了您的商品 ${productNameMap.value[orderID] || '產品名稱未提供'}`;
+    const content = `會員${sessionStorage.getItem("username")}評價了您的商品 ${productNameMap.value[orderID] || '產品名稱未提供'}`;
 
     try {
         await axiosapi.post('/ajax/notification/insert', {
@@ -545,7 +545,8 @@ async function loadOrderTooltip(orderID) {
             orderTooltipContent.value[orderID] = productData.map(product => `
                 商品名稱: ${product.productName || '未提供'}\n
                 規格: ${product.specOneName || '未提供'}\n
-                數量價格: ${product.quantityPrice || '未提供'}
+                數量: ${product.quantity || '未提供'}\n
+                價格: ${product.price || '未提供'}
             `).join('\n');
         } else {
             orderTooltipContent.value[orderID] = '無產品資料';

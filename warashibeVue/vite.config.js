@@ -14,7 +14,7 @@ export default defineConfig({
       util: 'rollup-plugin-polyfill-node/polyfills/util', // 必要的 polyfill
     }
   },
-  build: {chunkSizeWarningLimit: 20000},
+  build: { chunkSizeWarningLimit: 20000 },
   // base: '/warashibe/',
   server: {
     proxy: {
