@@ -545,7 +545,8 @@ async function loadOrderTooltip(orderID) {
             orderTooltipContent.value[orderID] = productData.map(product => `
                 商品名稱: ${product.productName || '未提供'}\n
                 規格: ${product.specOneName || '未提供'}\n
-                數量價格: ${product.quantityPrice || '未提供'}
+                數量: ${product.quantity || '未提供'}\n
+                價格: ${product.price || '未提供'}
             `).join('\n');
         } else {
             orderTooltipContent.value[orderID] = '無產品資料';
