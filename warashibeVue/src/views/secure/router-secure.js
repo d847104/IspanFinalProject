@@ -5,6 +5,9 @@ import RegisterThree from './RegisterThree.vue';
 import Member from './Member.vue';
 import BrowseHistory from "./BrowseHistory.vue";
 import Favorite from "./Favorite.vue";
+import ForgetPwd from "./ForgetPwd.vue";
+import ResetPwd from "./ResetPwd.vue";
+import modifyPwd from "./modifyPwd.vue";
 
 export default [
     { name: "login-link", path: "/secure/Login", component: Login },
@@ -15,4 +18,7 @@ export default [
     { name: "secure-member-link", path: "/secure/member", component: Member, meta: { requiresAuth: true } },
     { name: "secure-browsehistory-link", path: "/secure/browseHistory", component: BrowseHistory },
     { name: "secure-favorite-link", path: "/secure/favorite", component: Favorite },
+    { name: "secure-forgetPwd-link", path: "/secure/forgetPwd", component: ForgetPwd },
+    { name: "secure-resetPwd-link", path: "/secure/resetPwd", component: ResetPwd },
+    { name: "secure-modifyPwd-link", path: "/secure/modifyPwd", component: modifyPwd },
 ]

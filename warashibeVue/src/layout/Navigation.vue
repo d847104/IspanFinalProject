@@ -18,28 +18,30 @@
                         <RouterLink class="nav-link" to="/"><font-awesome-icon icon="fa-solid fa-house" /></RouterLink>
                     </li>
                     <li class="nav-item">
-                        <RouterLink class="nav-link" to="#">商城/二手</RouterLink>
+                        <RouterLink class="nav-link" to="/">物換心儀</RouterLink>
                     </li>
                     <!-- 搜尋列 -->
                     <form class="d-flex search-form d-none d-lg-flex mx-auto" role="search" @submit.prevent="search">
                         <input v-model="keyword" class="form-control me-1 search-bar" type="search" placeholder="Search"
                             aria-label="Search">
                         </input>
-                        <div @click="search" class="btn btn-outline-success search-button" type="submit">
+                        <div @click="search" class="btn btn-outline-secondary search-button" type="submit">
                             <font-awesome-icon icon="fa-solid fa-search" />
                         </div>
                     </form>
                     <!-- 右側功能選單 -->
                     <li class="nav-item d-none d-lg-block">
                         <RouterLink class="nav-link position-relative" :to="{ name: 'cart' }">
-                            <span class="position-absolute top-4 start-100 translate-middle badge rounded-pill bg-danger fs-6" v-if="cartQt > 0">
+                            <span
+                                class="position-absolute top-4 start-100 translate-middle badge rounded-pill bg-danger fs-6"
+                                v-if="cartQt > 0">
                                 {{ cartQt }}
                             </span>
                             <font-awesome-icon :icon="['fas', 'cart-shopping']" />
                         </RouterLink>
                     </li>
                     <li class="nav-item d-none d-lg-block">
-                        <RouterLink class="nav-link" :to="{ name: 'messenger' }">
+                        <RouterLink class="nav-link" to="/chatlist">
                             <font-awesome-icon icon="fa-solid fa-comments" />
                         </RouterLink>
                     </li>
@@ -68,26 +70,27 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
                             <li>
-                                <RouterLink class="dropdown-item" :to="{name: 'secure-member-link'}">會員中心
+                                <RouterLink class="dropdown-item" :to="{ name: 'secure-member-link' }">會員中心
                                 </RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" :to="{name: 'members-basicinformation-link'}">會員基本資料
+                                <RouterLink class="dropdown-item" :to="{ name: 'members-basicinformation-link' }">會員基本資料
                                 </RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" :to="{name: 'buyer-BuyerOrder-link'}">買家訂單
+                                <RouterLink class="dropdown-item" :to="{ name: 'buyer-BuyerOrder-link' }">買家訂單
                                 </RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" :to="{name: 'seller-sellerorder-link'}">賣家訂單
+                                <RouterLink class="dropdown-item" :to="{ name: 'seller-sellerorder-link' }">賣家訂單
                                 </RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" :to="{name: 'seller-sellermanageproduct-link'}">賣家商品管理</RouterLink>
+                                <RouterLink class="dropdown-item" :to="{ name: 'seller-sellermanageproduct-link' }">賣家商品管理
+                                </RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item" :to="{name: 'product-Upload-page-link'}">
+                                <RouterLink class="dropdown-item" :to="{ name: 'product-Upload-page-link' }">
                                     上架商品
                                 </RouterLink>
                             </li>
@@ -113,7 +116,7 @@ const router = useRouter();
 const isLogin = inject('isLogin');
 const loginUserName = inject("loginUserName")
 const loginUserId = inject("loginUserId")
-const username = computed(()=>sessionStorage.getItem("username"));
+const username = computed(() => sessionStorage.getItem("username"));
 
 // 購物車數量
 const cartQt = inject("cartQt");

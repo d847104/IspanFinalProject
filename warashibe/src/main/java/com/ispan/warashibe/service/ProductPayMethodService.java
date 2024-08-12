@@ -10,13 +10,27 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import com.ispan.warashibe.model.ProductPayMethod;
+import com.ispan.warashibe.model.Products;
 import com.ispan.warashibe.repository.ProductPayMethodRepository;
+import com.ispan.warashibe.repository.ProductRepository;
 @Service
 
 public class ProductPayMethodService {
 
 	@Autowired
 	private ProductPayMethodRepository productPayMethodRepo;
+	
+	@Autowired
+    private ProductRepository productsRepo;  // 添加对 ProductsRepository 的注入
+
+    public List<ProductPayMethod> findByProductID(Integer productID) {
+        Optional<Products> productOptional = productsRepo.findById(productID);
+        if (productOptional.isPresent()) {
+            return productPayMethodRepo.findByProduct(productOptional.get());
+        } else {
+            return new ArrayList<>(); // 如果未找到产品，返回空列表
+        }
+    }
 	
 	public ProductPayMethod create(String json) {
 		try {

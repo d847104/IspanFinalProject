@@ -23,6 +23,30 @@ import com.ispan.warashibe.service.ProductDeliveryService;
 public class ProductDeliveryController {
 	@Autowired
 	private ProductDeliveryService productDeliveryService;
+	
+	@GetMapping("/productDelivery/product/{productID}")
+    public String findByProductID(@PathVariable Integer productID) throws JSONException {
+        JSONObject responseBody = new JSONObject();
+        JSONArray array = new JSONArray();
+
+        List<ProductDelivery> productDeliveries = productDeliveryService.findByProductID(productID);
+
+        if (productDeliveries != null && !productDeliveries.isEmpty()) {
+            for (ProductDelivery productDelivery : productDeliveries) {
+                JSONObject item = new JSONObject()
+                        .put("id", productDelivery.getId())
+                        .put("deliveryID", productDelivery.getDeliveryID())
+                        .put("productID", productDelivery.getProductID());
+                array.put(item);
+            }
+            responseBody.put("list", array);
+            responseBody.put("success", true);
+        } else {
+            responseBody.put("message", "No Delivery found for productID: " + productID);
+            responseBody.put("success", false);
+        }
+        return responseBody.toString();
+    }
 
 	@PostMapping("/productDelivery")
 	public String create(@RequestBody String body) throws JSONException {

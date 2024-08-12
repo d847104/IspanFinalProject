@@ -4,41 +4,61 @@ import router from '@/router/router';
 import FontAwesomeIcon from '@/plugins/fontawesome.js';
 import axiosapi from '@/plugins/axios';
 import addCartApi from '@/plugins/cart_add';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-vue-next/dist/bootstrap-vue-next.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import { connect, sendMessage } from '@/service/websocket'; // 引入 WebSocket 服务
 
 const isLogin = ref(false);
 const cartQt = ref(null);
 const loginUserName = ref(null);
 const loginUserId = ref(null);
+const loginAccount = ref(null);
 
-async function updateCartQt(){
-    if(!isLogin.value){
-        if(localStorage.getItem("cartList")) cartQt.value = JSON.parse(localStorage.getItem("cartList")).length;
-    }else{
+async function updateCartQt() {
+    if (!isLogin.value) {
+        if (localStorage.getItem("cartList")) cartQt.value = JSON.parse(localStorage.getItem("cartList")).length;
+    } else {
         let response;
-        if(localStorage.getItem("cartList")){
+        if (localStorage.getItem("cartList")) {
             let cartList = JSON.parse(localStorage.getItem("cartList"));
-            let addCartPromises = cartList.map(cart => 
+            let addCartPromises = cartList.map(cart =>
                 addCartApi(sessionStorage.getItem("memberID"),
                     cart.product, cart.seller, cart.specOne, cart.specTwo, cart.quantity)
             );
-            Promise.all(addCartPromises).then(localStorage.removeItem("cartList")).then(async ()=>{
-                try {response = await axiosapi.get(`/api/cart/member/${sessionStorage.getItem("memberID")}/count`);
-                    cartQt.value = response.data.list} catch (error) {console.log(error);}
+            Promise.all(addCartPromises).then(localStorage.removeItem("cartList")).then(async () => {
+                try {
+                    response = await axiosapi.get(`/api/cart/member/${sessionStorage.getItem("memberID")}/count`);
+                    cartQt.value = response.data.list
+                } catch (error) { console.log(error); }
             });
-        }else{
-            try {response = await axiosapi.get(`/api/cart/member/${sessionStorage.getItem("memberID")}/count`);
-            cartQt.value = response.data.list} catch (error) {console.log(error);}
+        } else {
+            try {
+                response = await axiosapi.get(`/api/cart/member/${sessionStorage.getItem("memberID")}/count`);
+                cartQt.value = response.data.list
+            } catch (error) { console.log(error); }
         }
     }
 }
 
 createApp(App)
     .use(router)
-    .provide("isLogin",isLogin)
-    .provide("cartQt",cartQt)
-    .provide("loginUserName",loginUserName)
-    .provide("loginUserId",loginUserId)
-    .provide("updateCartQt",updateCartQt)
+    .provide("isLogin", isLogin)
+    .provide("cartQt", cartQt)
+    .provide("loginUserName", loginUserName)
+    .provide("loginUserId", loginUserId)
+<<<<<<< HEAD
+    .provide("updateCartQt", updateCartQt)
+    .provide("sendMessage", sendMessage) // 提供 sendMessage 方法
+=======
+    .provide("loginAccount", loginAccount)
+    .provide("updateCartQt", updateCartQt)
+>>>>>>> dev
     .component('font-awesome-icon', FontAwesomeIcon)
     .mount('#app');
 
+// 在 Vue 应用启动时连接 WebSocket
+connect((message) => {
+    console.log("Received message:", message);
+    // 可以在这里处理接收到的消息，例如更新聊天记录
+});

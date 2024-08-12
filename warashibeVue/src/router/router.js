@@ -16,6 +16,8 @@ import routerProduct from '@/views/product/router-product';
 import routerSeller from '@/views/seller/router-seller';
 import routerOther from '@/views/other/router-other';
 import routerPages from '@/views/pages/router-pages';
+import ChatRoom from '@/components/ChatRoom.vue';
+import ChatList from '@/components/ChatList.vue';
 
 // 2. 定義網頁路由
 const routes = [
@@ -25,6 +27,8 @@ const routes = [
     { name: 'cart', path: '/cart', component: Cart, meta:{requiresAuth: true} },
     { name: 'checkout', path: '/checkout', component: Checkout},
     { name: 'messenger', path: '/messenger', component: Messenger },
+    { name: 'chatlist', path: '/chatlist', component: ChatList },
+    { name: 'chatroom', path: '/chatroom', component: ChatRoom, props: true },
     ...routerSecure,
     ...routerPages,
     ...routerProduct,
@@ -45,11 +49,11 @@ const router = createRouter({
 // 添加全局前置守卫
 router.beforeEach((to, from, next) => {
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-    if (requiresAuth && sessionStorage.getItem("token")==null) {
+    if (requiresAuth && sessionStorage.getItem("token") == null) {
         Swal.fire({
             text: "請登入會員",
             icon: "error"
-        }).then(function(){
+        }).then(function () {
             next({ name: 'Login' });
         })
     } else {

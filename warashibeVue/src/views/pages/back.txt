@@ -1,0 +1,40 @@
+            <div class="form-floating mb-3">
+                <div class="btn-group w-100" role="group" aria-label="Basic checkbox toggle button group">
+                    <span style="margin-right: 30px;" class="col-md-3">付款方式：</span>
+                    <input v-model="payRequest1" type="checkbox" class="btn-check" id="btncheck1" autocomplete="off">
+                    <label v-if="payMethods[0]" style="margin-right: 30px;"
+                        class="btn btn-outline-secondary col-md-3 rounded-pill w-50" for="btncheck1">{{
+                        payMethods[0].payMethod }}</label>
+
+                    <input v-model="payRequest2" type="checkbox" class="btn-check" id="btncheck2" autocomplete="off">
+                    <label v-if="payMethods[1]" style="margin-right: 30px;"
+                        class="btn btn-outline-secondary col-md-3 rounded-pill w-50" for="btncheck2">{{
+                        payMethods[1].payMethod }}</label>
+
+                    <input v-model="payRequest3" type="checkbox" class="btn-check" id="btncheck3" autocomplete="off">
+                    <label v-if="payMethods[2]" style="margin-right: 30px;"
+                        class="btn btn-outline-secondary col-md-3 rounded-pill w-50" for="btncheck3">{{
+                        payMethods[2].payMethod }}</label>
+                </div>
+            </div>
+
+            <div class="form-floating mb-3">
+                <div class="btn-group w-100" role="group" aria-label="Basic checkbox toggle button group">
+                    <span style="margin-right: 30px;" class="col-md-3">運送方式：</span>
+                    <input v-model="delRequest1" class="btn-check" type="checkbox" id="inlineCheckbox1"
+                        value="option1"></input>
+                    <label v-if="deliverys[0]" style="margin-right: 30px;"
+                        class="btn btn-outline-secondary col-md-3 rounded-pill w-50" for="inlineCheckbox1">
+                        {{ deliverys[0].delivery }}</label>
+
+                    <input v-model="delRequest2" class="btn-check" type="checkbox" id="inlineCheckbox2" value="option2">
+                    <label v-if="deliverys[1]" style="margin-right: 30px;"
+                        class="btn btn-outline-secondary col-md-3 rounded-pill w-50 " for="inlineCheckbox2">
+                        {{ deliverys[1].delivery }}</label>
+
+                    <input v-model="delRequest3" class="btn-check" type="checkbox" id="inlineCheckbox3" value="option3">
+                    <label v-if="deliverys[2]" class="btn btn-outline-secondary col-md-3 rounded-pill w-50 "
+                        for="inlineCheckbox3">
+                        {{ deliverys[2].delivery }}</label>
+                </div>
+            </div>

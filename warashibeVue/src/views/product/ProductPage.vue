@@ -43,9 +43,42 @@
                 <span class="seller-intro">{{ seller.intro }}</span>
             </div>
         </div>
+        <!-- 新增聊天圖示按鈕 -->
+        <button class="chat-button" @click="openChat">
+            <font-awesome-icon :icon="['fas', 'comments']" />
+        </button>
         <h1>{{ product.productName }}</h1>
         <p class="price">NT$ {{ product.price }}</p>
         <p class="description">{{ product.description }}</p>
+
+        <!-- 運送方式 -->
+        <div class="delivery-methods" v-if="deliveryMethods.length">
+            <h5>運送方式：</h5>
+            <div>
+            <button
+                v-for="method in deliveryMethods"
+                :key="method"
+                class="btn btn-outline-secondary delivery-method"
+            >
+                {{ method }}
+            </button>
+            </div>
+        </div>
+
+        <!-- 付款方式 -->
+        <div class="payment-methods" v-if="paymentMethods.length">
+            <h5>付款方式：</h5>
+            <div>
+            <button
+                v-for="method in paymentMethods"
+                :key="method"
+                class="btn btn-outline-secondary payment-method"
+            >
+                {{ method }}
+            </button>
+            </div>
+        </div>
+
         <div class="specs" v-if="groupedSpecs && Object.keys(groupedSpecs).length">
             <div v-for="(specs, specName) in groupedSpecs" :key="specName" class="spec">
             <h5 style="margin-top: 15px;">{{ specName }}</h5>
@@ -140,6 +173,8 @@ const total = ref(0);
 const pages = ref(0);
 const current = ref(1);
 const rows = ref(4);
+const deliveryMethods = ref([]);
+const paymentMethods = ref([]);
 
 const fetchProduct = async () => {
     resetProductData();
@@ -154,6 +189,9 @@ const fetchProduct = async () => {
     }
     combineImages();
     await fetchRelatedProducts(data.subCategory);
+
+    await fetchDeliveryMethods(); // 调用获取运送方式的方法
+    await fetchPaymentMethods(); // 调用获取付款方式的方法
 
     await recordBrowsingHistory();
     await fetchSellerInfo(product.value.member);
@@ -175,6 +213,42 @@ const resetProductData = () => {
     selectedSpecImage.value = '';
 };
 
+const fetchDeliveryMethods = async () => {
+    const { data } = await axiosapi.get(`/productDelivery/product/${productID.value}`);
+    if (data.success) {
+        deliveryMethods.value = data.list.map(item => {
+            switch (item.deliveryID) {
+                case 1:
+                    return '中華郵政 $45';
+                case 2:
+                    return '7-11交貨便 $60';
+                case 3:
+                    return '全家店到店 $60';
+                default:
+                    return '未知的運送方式';
+            }
+        });
+    }
+};
+
+const fetchPaymentMethods = async () => {
+    const { data } = await axiosapi.get(`/productPayMethod/product/${productID.value}`);
+    if (data.success) {
+        paymentMethods.value = data.list.map(item => {
+            switch (item.payMethodID) {
+                case 1:
+                    return 'LINE Pay';
+                case 2:
+                    return '藍新金流';
+                case 3:
+                    return '貨到付款';
+                default:
+                    return '未知的付款方式';
+            }
+        });
+    }
+};
+
 const fetchSellerInfo = async (memberID) => {
     const { data } = await axiosapi.get(`/ajax/members/${memberID}`);
     if (data.list && data.list.length > 0) {
@@ -186,6 +260,16 @@ const fetchSellerInfo = async (memberID) => {
     else{
         sellerImg.value = '/src/img/海棉寶.png';
     }
+};
+
+// 添加的openChat函数，用于打开聊天对话
+const openChat = () => {
+    if (!isLogin.value) {
+        Swal.fire('請登入會員', '', 'warning');
+        return;
+    }
+    // 假设聊天页面为 /chatroom，并使用 sellerID 作为参数
+    router.push(`/chatroom?sellerID=${seller.value.id}`);
 };
 
 const navigateToSellerPage = () => {
@@ -651,5 +735,44 @@ margin: 0 5px;
 
 .seller-intro {
     color: #666;
+}
+
+/* 新增的聊天图标按钮样式 */
+.chat-button {
+background: none;
+border: none;
+color: #007bff;
+font-size: 24px;
+cursor: pointer;
+margin-left: 10px;
+}
+
+.delivery-methods, .payment-methods {
+margin-top: 1rem;
+}
+
+.delivery-methods ul, .payment-methods ul {
+padding-left: 0;
+list-style: none;
+}
+
+.delivery-methods li, .payment-methods li {
+margin-bottom: 0.5rem;
+}
+
+.delivery-method {
+width: auto;
+margin: 5px 10px 5px 0;
+cursor: auto;
+background-color: #007bff;
+color: white;
+}
+
+.payment-method {
+width: auto;
+margin: 5px 10px 5px 0;
+cursor: auto;
+background-color: #28a745;
+color: white;
 }
 </style>

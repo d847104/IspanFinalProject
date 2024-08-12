@@ -124,5 +124,28 @@ public class ProductPayMethodController {
 		}
 		return responseBody.toString();
 	}
+	
+	@GetMapping("/productPayMethod/product/{productID}")
+	public String findByProductID(@PathVariable Integer productID) throws JSONException {
+	    JSONObject responseBody = new JSONObject();
+	    JSONArray array = new JSONArray();
 
+	    List<ProductPayMethod> productPayMethods = proPayMethodService.findByProductID(productID);
+
+	    if (productPayMethods != null && !productPayMethods.isEmpty()) {
+	        for (ProductPayMethod productPayMethod : productPayMethods) {
+	            JSONObject item = new JSONObject()
+	                    .put("id", productPayMethod.getId())
+	                    .put("payMethodID", productPayMethod.getpayMethodID())
+	                    .put("productID", productPayMethod.getProductID());
+	            array.put(item);
+	        }
+	        responseBody.put("list", array);
+	        responseBody.put("success", true);
+	    } else {
+	        responseBody.put("message", "No PayMethod found for productID: " + productID);
+	        responseBody.put("success", false);
+	    }
+	    return responseBody.toString();
+	}
 }

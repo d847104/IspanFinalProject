@@ -308,7 +308,7 @@
                 Swal.fire('請登入會員', '', 'warning');
                 }
                 await axiosapi.post('/ajax/favorite/insert', {
-                memberID: loginUserId.value,
+                memberID: sessionStorage.getItem('memberID'),
                 productID: props.product.productID,
                 sellerID: props.product.member
                 });
