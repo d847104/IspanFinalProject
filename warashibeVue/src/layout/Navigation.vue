@@ -40,11 +40,11 @@
                             <font-awesome-icon :icon="['fas', 'cart-shopping']" />
                         </RouterLink>
                     </li>
-                    <li class="nav-item d-none d-lg-block">
+                    <!-- <li class="nav-item d-none d-lg-block">
                         <RouterLink class="nav-link" to="/chatlist">
                             <font-awesome-icon icon="fa-solid fa-comments" />
                         </RouterLink>
-                    </li>
+                    </li> -->
                     <li class="nav-item d-none d-lg-block" @mouseover="showPopup" @mouseleave="hidePopup">
                         <NotificationPop :popupVisible="popupVisible" />
                     </li>
