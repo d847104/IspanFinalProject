@@ -5,17 +5,17 @@
         <div class="notification-list">
         <div class="notification-item" v-for="notification in notifications" :key="notification.notificationID">
             <div class="notification-info">
-                <img :src="notification.senderProfileImg || '/default-avatar.png'" alt="用戶頭像" class="notification-image" />
+                <img :src="notification.senderProfileImg || '/default-avatar.png'" alt="用戶頭像" class="notification-image" @click="navigateToSellerPage(notification.senderID)"/>
                 <div class="notification-details">
                     <p>
-                        <span class="sender">{{ notification.senderName }}</span>
+                        <!-- <span class="sender">{{ notification.senderName }}</span> -->
                         {{ notification.content }}
                         <span class="action">{{ notification.action }}</span>
                     </p>
                 </div>
             </div>
             <div class="notification-action">
-                <button class="action-button">前往商品管理</button>
+                <button class="action-button" @click="gotoManageProduct">前往商品管理</button>
             </div>
         </div>
     </div>
@@ -64,6 +64,10 @@ const fetchNotifications = async () => {
 const gotoManageProduct = ()=>{
     router.push("/seller/sellermanageproduct");
 }
+
+const navigateToSellerPage = (senderID) => {
+    router.push(`/pages/productSellerPage?sellerID=${senderID}`);
+};
 
 onMounted(fetchNotifications);
 </script>

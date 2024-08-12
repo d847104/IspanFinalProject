@@ -159,14 +159,6 @@ const addToFavorite = async () => {
             senderID: sessionStorage.getItem("memberID"),
             orderID: null  // 这里设置为null
         });
-        console.log({
-            content: notificationContent,
-            isRead: false,
-            notifyDate: new Date().toISOString().slice(0, 10),  // 当前日期
-            receiverID: props.product.member,  // 商品卖家的ID
-            senderID: sessionStorage.getItem("memberID"),
-            orderID: null  // 这里设置为null
-        });
     } catch (error) {
         console.error('加入最愛失敗', error);
         Swal.fire('失敗', '加入最愛失敗', 'error');

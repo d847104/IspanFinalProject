@@ -14,8 +14,8 @@ export default defineConfig({
       util: 'rollup-plugin-polyfill-node/polyfills/util', // 必要的 polyfill
     }
   },
-  build: {chunkSizeWarningLimit: 20000},
-  base: '/warashibe/',
+  build: { chunkSizeWarningLimit: 20000 },
+  // base: '/warashibe/',
   server: {
     proxy: {
       "/expressmap": "https://logistics-stage.ecpay.com.tw/Express/map"

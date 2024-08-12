@@ -44,9 +44,9 @@
             </div>
         </div>
         <!-- 新增聊天圖示按鈕 -->
-        <button class="chat-button" @click="openChat">
+        <!-- <button class="chat-button" @click="openChat">
             <font-awesome-icon :icon="['fas', 'comments']" />
-        </button>
+        </button> -->
         <h1>{{ product.productName }}</h1>
         <p class="price">NT$ {{ product.price }}</p>
         <p class="description">{{ product.description }}</p>
@@ -507,6 +507,16 @@ const addToFavorite = async () => {
     try {
         await axiosapi.post('/ajax/favorite/insert', data);
         Swal.fire('成功', '已將該商品加入最愛', 'success');
+        // 新增通知给卖家
+        const notificationContent = `會員${sessionStorage.getItem("username")}喜歡了你的商品${product.value.productName}`;
+        await axiosapi.post('/ajax/notification/insert', {
+            content: notificationContent,
+            isRead: false,
+            notifyDate: new Date().toISOString().slice(0, 10),  // 当前日期
+            receiverID: product.value.member,  // 商品卖家的ID
+            senderID: sessionStorage.getItem("memberID"),
+            orderID: null  // 这里设置为null
+        });
     } catch (error) {
         console.error('加入最愛失敗', error);
         Swal.fire('失敗', '加入最愛失敗', 'error');

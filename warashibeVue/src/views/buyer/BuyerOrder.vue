@@ -402,7 +402,7 @@ async function submitRating() {
 
 async function createNotification(receiverID, orderID, productID) {
     const notifyDate = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-    const content = `有新的客人評價了您的商品 ${productNameMap.value[orderID] || '產品名稱未提供'}`;
+    const content = `會員${sessionStorage.getItem("username")}評價了您的商品 ${productNameMap.value[orderID] || '產品名稱未提供'}`;
 
     try {
         await axiosapi.post('/ajax/notification/insert', {
