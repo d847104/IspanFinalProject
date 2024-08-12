@@ -21,11 +21,13 @@ const isLogin = inject("isLogin");
 const updateCartQt = inject("updateCartQt");
 const loginUserName = inject("loginUserName");
 const loginUserId = inject("loginUserId");
+const loginAccount = inject("loginAccount");
 
 onMounted(function(){
   isLogin.value = sessionStorage.getItem("username")? true : false;
   loginUserName.value = sessionStorage.getItem("username");
   loginUserId.value = sessionStorage.getItem("memberID");
+  loginAccount.value = sessionStorage.getItem("account");
   updateCartQt();
 })
 
