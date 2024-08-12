@@ -15,7 +15,7 @@ export default defineConfig({
     }
   },
   build: {chunkSizeWarningLimit: 20000},
-  base: '/warashibe/',
+  // base: '/warashibe/',
   server: {
     proxy: {
       "/expressmap": "https://logistics-stage.ecpay.com.tw/Express/map"

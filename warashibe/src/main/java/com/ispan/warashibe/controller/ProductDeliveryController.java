@@ -35,7 +35,7 @@ public class ProductDeliveryController {
             for (ProductDelivery productDelivery : productDeliveries) {
                 JSONObject item = new JSONObject()
                         .put("id", productDelivery.getId())
-                        .put("deliveryID", productDelivery.getDeliveryID())
+                        .put("deliveryID", productDelivery.getDelivery())
                         .put("productID", productDelivery.getProductID());
                 array.put(item);
             }

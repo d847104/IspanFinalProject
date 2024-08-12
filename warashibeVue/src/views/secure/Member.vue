@@ -56,16 +56,9 @@
 
 <script setup>
     import { inject } from 'vue';
-import { useRouter } from 'vue-router';
+    import { useRouter } from 'vue-router';
 
-<<<<<<< HEAD
-    const seller = inject('loginUserId');
-    const router = useRouter();
-=======
     const router = useRouter()
-    const loginUserId = inject("loginUserId")
->>>>>>> dev
-
     const navigateTo = (path) => {
         router.push(path)
     }

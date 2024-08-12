@@ -136,7 +136,7 @@ public class ProductPayMethodController {
 	        for (ProductPayMethod productPayMethod : productPayMethods) {
 	            JSONObject item = new JSONObject()
 	                    .put("id", productPayMethod.getId())
-	                    .put("payMethodID", productPayMethod.getpayMethodID())
+	                    .put("payMethodID", productPayMethod.getPayMethodID())
 	                    .put("productID", productPayMethod.getProductID());
 	            array.put(item);
 	        }

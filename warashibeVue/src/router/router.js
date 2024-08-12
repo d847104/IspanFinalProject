@@ -16,8 +16,8 @@ import routerProduct from '@/views/product/router-product';
 import routerSeller from '@/views/seller/router-seller';
 import routerOther from '@/views/other/router-other';
 import routerPages from '@/views/pages/router-pages';
-import ChatRoom from '@/components/ChatRoom.vue';
-import ChatList from '@/components/ChatList.vue';
+// import ChatRoom from '@/components/ChatRoom.vue';
+// import ChatList from '@/components/ChatList.vue';
 
 // 2. 定義網頁路由
 const routes = [
@@ -27,8 +27,8 @@ const routes = [
     { name: 'cart', path: '/cart', component: Cart, meta:{requiresAuth: true} },
     { name: 'checkout', path: '/checkout', component: Checkout},
     { name: 'messenger', path: '/messenger', component: Messenger },
-    { name: 'chatlist', path: '/chatlist', component: ChatList },
-    { name: 'chatroom', path: '/chatroom', component: ChatRoom, props: true },
+    // { name: 'chatlist', path: '/chatlist', component: ChatList },
+    // { name: 'chatroom', path: '/chatroom', component: ChatRoom, props: true },
     ...routerSecure,
     ...routerPages,
     ...routerProduct,
