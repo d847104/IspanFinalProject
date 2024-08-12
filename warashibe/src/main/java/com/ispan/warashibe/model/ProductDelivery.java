@@ -1,7 +1,10 @@
 package com.ispan.warashibe.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,6 +22,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Table(name = "ProductDelivery")
 public class ProductDelivery {
 
@@ -29,8 +33,7 @@ public class ProductDelivery {
 
 	@ManyToOne
 	@JoinColumn(name = "deliveryID")
-
-	@JsonIdentityReference(alwaysAsId = true)
+	@JsonIncludeProperties({"delivery","deliveryID"})
 	private Delivery delivery;
 
 	@ManyToOne
@@ -44,20 +47,10 @@ public class ProductDelivery {
 		this.delivery.setDeliveryID(delivery);
 	}
 
-	@JsonProperty("deliveryID")
-	public Integer getDeliveryID() {
-		return (this.delivery != null) ? this.delivery.getDeliveryID() : null;
-	}
-
 	@JsonProperty("productID")
 	public void setProductID(Integer productId) {
 		this.productID = new Products();
 		this.productID.setProductID(productId);
-	}
-
-	@JsonProperty("productID")
-	public Integer getProductID() {
-		return (this.productID != null) ? this.productID.getProductID() : null;
 	}
 
 }

@@ -13,6 +13,7 @@ const isLogin = ref(false);
 const cartQt = ref(null);
 const loginUserName = ref(null);
 const loginUserId = ref(null);
+const loginAccount = ref(null);
 
 async function updateCartQt() {
     if (!isLogin.value) {
@@ -46,8 +47,13 @@ createApp(App)
     .provide("cartQt", cartQt)
     .provide("loginUserName", loginUserName)
     .provide("loginUserId", loginUserId)
+<<<<<<< HEAD
     .provide("updateCartQt", updateCartQt)
     .provide("sendMessage", sendMessage) // 提供 sendMessage 方法
+=======
+    .provide("loginAccount", loginAccount)
+    .provide("updateCartQt", updateCartQt)
+>>>>>>> dev
     .component('font-awesome-icon', FontAwesomeIcon)
     .mount('#app');
 

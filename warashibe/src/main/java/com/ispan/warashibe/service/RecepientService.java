@@ -65,7 +65,7 @@ public class RecepientService {
         
         if(recepientID == null) {
         	Recepient recepient = new Recepient();
-        	recepient.setMemberID(member.get());
+        	recepient.setMember(member.get());
         	recepient.setName(name);
         	recepient.setMobile(mobile);
         	recepient.setAddress(address);
@@ -93,6 +93,11 @@ public class RecepientService {
 			return recepientRepo.save(update);
 		}
 		return null;
+	}
+	
+	// 依會員ID查詢多筆
+	public List<Recepient> findByMemberId(Integer memberId){
+		return recepientRepo.findByMemberId(memberId);
 	}
 	
 	

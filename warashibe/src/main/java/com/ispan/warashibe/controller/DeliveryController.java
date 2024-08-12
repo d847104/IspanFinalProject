@@ -30,9 +30,6 @@ public class DeliveryController {
 	@Autowired
 	private DeliveryService deliveryService;
 	
-	@Autowired
-	private ObjectMapper objMapper;
-
 	@PostMapping("/delivery")
 	public String create(@RequestBody String body) throws JSONException {
 		JSONObject responseBody = new JSONObject();
@@ -143,5 +140,23 @@ public class DeliveryController {
 
         return responseBody.toString();
 	}
-
+	
+	@GetMapping("/delivery/all")
+	public String findAll() throws JSONException {
+		JSONObject responseBody = new JSONObject();
+		JSONArray array = new JSONArray();
+		List<Delivery> deliveries = deliveryService.findAll();
+		if(deliveries!=null && !deliveries.isEmpty()) {
+			for(Delivery delivery : deliveries) {
+				JSONObject item = new JSONObject()
+						.put("deliveryID", delivery.getDeliveryID())
+						.put("delivery", delivery.getDelivery())
+						.put("deliveryFee", delivery.getDeliveryFee());
+				array = array.put(item);
+			}
+		}
+		responseBody.put("list", array);
+		return responseBody.toString();
+	}
+	
 }

@@ -1,21 +1,54 @@
 <template>
-        <div class="container p-5">
+        <!-- 常用收件人Modal -->
+        <div class="modal fade" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+                <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">選擇常用收件人</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                        <div class="row mx-1 my-3 text-center">
+                                <div class="col">收件人</div>
+                                <div class="col">連絡電話</div>
+                                <div class="col">地址</div>
+                        </div>
+                <div class="btn-group-vertical d-flex" role="group" aria-label="Vertical radio toggle button group" v-for="recepient in recepients">
+                        <input type="radio" class="btn-check" name="vbtn-radio" :id="'rc'+recepient.recepientID" autocomplete="off" checked>
+                        <label class="btn btn-outline-primary" :for="'rc'+recepient.recepientID">
+                                <div class="row">
+                                        <div class="col">{{recepient.name}}</div>
+                                        <div class="col">{{ recepient.mobile }}</div>
+                                        <div class="col">{{ recepient.address }}</div>
+                                </div>
+                        </label>
+                </div>
+                </div>
+                <div class="modal-footer">
+                        <button type="button" class="btn btn-primary">選擇</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                </div>
+        </div>
+        </div>
+        </div>
+        <!-- 常用收件人Modal結束 -->
+        <div class="container">
                 <div class="my-4">
                         <h2 class="fw-bold">結帳商品列表</h2>
                 </div>
-                <div v-for="item in carts" class="container">
-                        <div class="card mb-3 col">
+                <div v-for="item in carts" class="container d-flex justify-content-center">
+                        <div class="card mb-3 col" :id="item.cartID">
                         <div class="row g-0">
                                 <!-- 商品圖片 -->
-                                <div class="col-md-3">
+                                <div class="col">
                                         <RouterLink :to="{name: 'pages-productpage-link', query: {productID: item.product.productID}}">
-                                                <img :src="item.img" class="img-fluid rounded-start" :alt="item.product.productName">
+                                                <img :src="item.img" class="img-fluid rounded-start object-fit-fit" :alt="item.product.productName">
                                         </RouterLink>
                                 </div>
                                 <div class="col-md align-self-center">
                                         <div class="card-body">
                                                 <!-- 商品名稱 -->
-                                                <h4 class="card-title">{{ item.product.productName }}</h4>
+                                                <h4 class="card-title fw-bold">{{ item.product.productName }}</h4>
                                                 <p class="card-text text-end fs-4">
                                                         <!-- 商品規格(若存在) -->
                                                         <template v-if="item.specOne">
@@ -39,7 +72,7 @@
                                                         <!-- 商品規格結束 -->
                                                         <div class="row mt-2">
                                                                 <!-- 金額 -->
-                                                                <div class="col text-start text-danger">
+                                                                <div class="col text-center text-danger">
                                                                         NT$ {{ item.product.price }}
                                                                 </div>
                                                                 <!-- 數量 LABEL -->
@@ -48,11 +81,39 @@
                                                                         {{ item.quantity }}
                                                                 </div>
                                                         </div>
+                                                        <div class="row mt-4">
+                                                                <div class="col text-center justify-content-center">
+                                                                        配送方式
+                                                                        <div class="vstack gap-1" v-for="delivery in item.product.productDeliveries">
+                                                                                <div class="p-1 fs-6 alert alert-success">{{delivery.delivery.delivery}}</div>
+                                                                        </div>
+                                                                </div>
+                                                                <div class="col text-center justify-content-center">
+                                                                        付款方式
+                                                                        <div class="vstack gap-1" v-for="method in item.product.productPayMethods">
+                                                                                <div class="p-1 fs-6 alert alert-info">{{method.payMethodID.payMethod}}</div>
+                                                                        </div>
+                                                                </div>
+                                                                <!-- 垃圾桶按鈕 -->
+                                                                <div class="col d-flex align-items-center justify-content-center">
+                                                                        <span>
+                                                                                <button type="button" style="font-size: 1.5em; border: none; background-color: inherit;" class="text-danger" @click="remove">
+                                                                                        <font-awesome-icon :icon="['fas', 'trash-can']" />
+                                                                                </button>
+                                                                        </span>
+                                                                </div>
+                                                        </div>
                                                 </p>
                                         </div>
                                 </div>
                         </div>
                         </div>
+                </div>
+                <div class="alert alert-danger fs-4 text-center" role="alert" v-if="deliveryAlert!=''">
+                        <font-awesome-icon :icon="['fas', 'triangle-exclamation']" /> {{ deliveryAlert }}
+                </div>
+                <div class="alert alert-warning fs-4 text-center" role="alert" v-if="payMethodAlert!=''">
+                        <font-awesome-icon :icon="['fas', 'triangle-exclamation']" /> {{ payMethodAlert }}
                 </div>
                 <div class="my-4">
                         <h2 class="fw-bold">填寫結帳資訊</h2>
@@ -63,12 +124,16 @@
                                 </div>
                                 <div class="col-lg-auto" v-if="deliveries">
                                         <div v-for="delivery in deliveries" class="form-check fs-4">
-                                                <input class="form-check-input" type="radio" name="exampleRadios" :id="'delievriId'+delivery.deliveryID" :value="delivery.deliveryID" 
-                                                @change="confirmDelivery(delivery.deliveryFee,delivery.deliveryID,$event)">
+                                                <input class="form-check-input" type="radio" name="exampleRadios" 
+                                                :id="'delievriId'+delivery.deliveryID" :value="delivery.deliveryID" 
+                                                @change="confirmDelivery(delivery.deliveryFee, delivery.deliveryID,$event)">
                                                 <label class="form-check-label" :for="'delievriId'+delivery.deliveryID">{{ delivery.delivery }}</label>
                                         </div>
                                 </div>
-                                <div class="col-lg-auto"><h4 class="fw-bold">收件資訊</h4></div>
+                                <div class="col-lg-auto">
+                                        <h4 class="fw-bold">收件資訊</h4>
+                                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#myModal">常用收件人</button>
+                                </div>
                                 <div class="col-lg">
                                         <!-- 收件人 -->
                                         <div class="row align-items-center fs-4">
@@ -76,7 +141,7 @@
                                                         <label for="recipient" class="col-form-label">收件人</label>
                                                 </div>
                                                 <div class="col">
-                                                        <input type="text" id="recipient" class="form-control">
+                                                        <input type="text" id="recipient" class="form-control" v-model="recipient">
                                                 </div>
                                         </div>
                                         <!-- 電話 -->
@@ -85,7 +150,7 @@
                                                         <label for="phone" class="col-form-label">連絡電話</label>
                                                 </div>
                                                 <div class="col">
-                                                        <input type="text" id="phone" class="form-control">
+                                                        <input type="text" id="phone" class="form-control" v-model="phone">
                                                 </div>
                                         </div>
                                         <!-- 地址 -->
@@ -94,9 +159,10 @@
                                                         <label for="address" class="col-form-label">地址</label>
                                                 </div>
                                                 <div class="col">
-                                                        <input type="text" id="address" class="form-control">
+                                                        <input type="text" id="address" class="form-control" v-model="address">
                                                 </div>
                                         </div>
+                                        <div class="row"><button type="button" class="btn btn-sm btn-info">新增常用收件人</button></div>
                                 </div>
 
                         </div>
@@ -105,7 +171,9 @@
                                 <div v-if="payMethods" class="my-4">
                                         <div class="btn-group btn-group-lg" role="group">
                                                 <template v-for="payMethod in payMethods">
-                                                        <input type="radio" class="btn-check" name="btnradio" :id="'payMethodId'+payMethod.payMethodID" autocomplete="off" :value="payMethod.payMethodID">
+                                                        <input type="radio" class="btn-check" name="btnradio" autocomplete="off" 
+                                                        :id="'payMethodId'+payMethod.payMethodID" :value="payMethod.payMethodID" 
+                                                        @change="confirmPayMethod(payMethod.payMethodID, $event)">
                                                         <label class="btn btn-light fs-4" :for="'payMethodId'+payMethod.payMethodID">{{ payMethod.payMethod }}</label>
                                                 </template>
                                         </div>
@@ -148,7 +216,7 @@
                         </div>
                         <div class="row my-4 d-flex flex-row justify-content-end">
                                 <div class="col-lg-3">
-                                        <button type="button" class="btn btn-success btn-lg" @click="payconfirm">確認付款</button>
+                                        <button type="button" class="btn btn-success btn-lg" @click="confirmCheckout">確認付款</button>
                                 </div>
                         </div>
                 </div>
@@ -160,19 +228,24 @@
         import emitter from '@/plugins/events';
         import axiosapi from '@/plugins/axios';
         import Swal from 'sweetalert2';
+        import { useRouter } from 'vue-router';
 
+        const router = useRouter();
+        
+        const carts = ref([]);
+        // 接收從購物車傳遞過來的資料
         onMounted(async() => {
                 emitter.on('result', selectedItems);
                 await nextTick();
+                if(carts.value.length==0){router.push({name: "cart"})};
+                callRecepients();
                 callDelivery();
                 callPayMethod();
         })
         onUnmounted(() => {emitter.off('result', selectedItems);});
-
         const selectedItems = (items) => {
                 carts.value = items;
         }
-        const carts = ref([]);
 
         // 若商品有圖片則選擇第一張的 ImgID 以網址 {id} 方式秀出圖片,否則使用 comingsoon
         const path = computed(() => {
@@ -194,16 +267,40 @@
         const totalOrder = computed(() => totalCarts.value + deliveryFee.value);
         // 付款方式清單
         const payMethods = ref([]);
+        // 付款方式ID
+        const payMethodId = ref(null);
+        // 運送方式提示訊息
+        const deliveryAlert = ref("");
+        // 付款方式提示訊息
+        const payMethodAlert = ref("");
+        // 收件人
+        const recipient = ref("");
+        // 電話
+        const phone = ref("");
+        // 地址
+        const address = ref("");
+        // 常用收件人清單
+        const recepients = ref([])
+
+        function callRecepients(){
+                axiosapi.get(`/ajax/recepient/member/${sessionStorage.getItem("memberID")}`)
+                .then(function(response){
+                        recepients.value = response.data.list;
+                }).catch(function(error){
+                        console.log("error",error)
+                        console.log(error.message);
+                        Swal.fire({
+                                icon: "error",
+                                text: "錯誤",
+                                allowOutsideClick: false,
+                        })
+                })
+        }
+
 
         // 呼叫 Delivery 清單
         function callDelivery(){
-                let request = {
-                        "start": 0,
-                        "max": 5,
-                        "dir": true,
-                        "delivery1": "deliveryID"
-                }
-                axiosapi.post("/delivery/find", request)
+                axiosapi.get("/delivery/all")
                 .then(function(response){
                         deliveries.value =  response.data.list;
                 })
@@ -218,23 +315,29 @@
                 })
         }
 
-        // 選擇運送方式回傳運費
-        function confirmDelivery(selectedFee,selectedId,event){
+        // 選擇運送方式回傳運費, 並檢核是否符合商品運送方式
+        function confirmDelivery(selectedFee, selectedId,event){
+                carts.value.forEach(cart=>document.getElementById(cart.cartID).style.border = null);
+                deliveryAlert.value = "";
                 if(event.target.checked){
                         deliveryFee.value = selectedFee;
                         deliveryId.value = selectedId;
                 }
+                const cartsNotMeet = carts.value.map(cart=>{
+                        const notMeets = !cart.product.productDeliveries.map(delivery => delivery.delivery.deliveryID).includes(selectedId);
+                        return{cartID: cart.cartID, notMeets}
+                });
+                cartsNotMeet.filter(function(cart){return cart.notMeets==true;})
+                .forEach(cart=>{
+                        document.getElementById(cart.cartID).style.border = "5px solid var(--bs-danger-border-subtle)";
+                        deliveryAlert.value = "您選取的運送方式不支援部分結帳商品，請再次確認";
+                })
+                
         }
 
         // 呼叫 PayMethod 清單
         function callPayMethod() {
-                let request = {
-                        "start": 0,
-                        "max": 5,
-                        "dir": true,
-                        "payMethod1": "payMethodID"
-                }
-                axiosapi.post("/payMethod/find", request)
+                axiosapi.get("/payMethod/all")
                 .then(function(response){
                         payMethods.value =  response.data.list;
                 })
@@ -249,9 +352,68 @@
                 })
         }
 
-        function payconfirm(){
-                let request = {
+        // 選擇付款方式並檢核是否符合商品運送方式
+        function confirmPayMethod(selectedId, event){
+                carts.value.forEach(cart=>document.getElementById(cart.cartID).style.backgroundColor = null);
+                payMethodAlert.value = "";
+                if(event.target.checked){
+                        payMethodId.value = selectedId;
+                }
+                const cartsNotMeet = carts.value.map(cart=>{
+                        const notMeets = !cart.product.productPayMethods.map(method => method.payMethodID.payMethodID).includes(selectedId);
+                        return{cartID: cart.cartID, notMeets}
+                });
+                cartsNotMeet.filter(function(cart){return cart.notMeets==true;})
+                .forEach(cart=>{
+                        document.getElementById(cart.cartID).style.backgroundColor = "var(--bs-warning-border-subtle)";
+                        payMethodAlert.value = "您選取的付款方式不支援部分結帳商品，請再次確認";
+                })
+        }
 
+        // 確認付款並最後檢核
+        function confirmCheckout(){
+                if(deliveryId.value == null){
+                        Swal.fire({
+                                icon: "warning",
+                                text: "請選擇運送方式",
+                                allowOutsideClick: false,
+                        })
+                }else if(payMethodId.value == null){
+                        Swal.fire({
+                                icon: "warning",
+                                text: "請選擇付款方式",
+                                allowOutsideClick: false,
+                        })
+                }else if(deliveryAlert.value!="" && payMethodAlert.value!=""){
+                        Swal.fire({
+                                icon: "warning",
+                                text: "請選擇結帳商品可支援的運送及付款方式",
+                                allowOutsideClick: false,
+                        })
+                }else if(deliveryAlert.value!="" && payMethodAlert.value==""){
+                        Swal.fire({
+                                icon: "warning",
+                                text: "請選擇結帳商品可支援的運送方式",
+                                allowOutsideClick: false,
+                        })
+                }else if(deliveryAlert.value=="" && payMethodAlert.value!=""){
+                        Swal.fire({
+                                icon: "warning",
+                                text: "請選擇結帳商品可支援的付款方式",
+                                allowOutsideClick: false,
+                        })
+                }else if(recipient.value.length==0){
+                        Swal.fire({
+                                icon: "warning",
+                                text: "請填寫收件人資訊",
+                                allowOutsideClick: false,
+                        })
+                }else if(phone.value.length==0){
+                        Swal.fire({
+                                icon: "warning",
+                                text: "請填寫聯絡電話資訊",
+                                allowOutsideClick: false,
+                        })
                 }
         }
 </script>

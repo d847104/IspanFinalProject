@@ -91,7 +91,7 @@ public class Members {
         lastLogin = new Date();
     }
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "memberID")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "member")
     @JsonIdentityReference(alwaysAsId = true)
     private List<Recepient> byRecepioent;
 

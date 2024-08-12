@@ -148,4 +148,8 @@ public class DeliveryService {
 	public Delivery findById(Integer deliveryID) {
 		return deliveryRepo.findById(deliveryID).orElse(null);
 	}
+	
+	public List<Delivery> findAll(){
+		return deliveryRepo.findAll();
+	}
 }

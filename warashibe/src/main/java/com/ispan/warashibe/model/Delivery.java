@@ -2,6 +2,10 @@ package com.ispan.warashibe.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,6 +23,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "deliveryID")
 @Table(name = "Delivery")
 public class Delivery {
 
@@ -34,6 +39,7 @@ public class Delivery {
 	private Integer deliveryFee;
 
 	@OneToMany(mappedBy = "delivery")
+	@JsonIdentityReference(alwaysAsId = true)
 	private List<Delivery> deliverys;
 
 //	@Override

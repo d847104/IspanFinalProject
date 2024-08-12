@@ -135,4 +135,12 @@ public class Products {
     @OneToOne(mappedBy = "product")
     @JsonIncludeProperties({"specOneName","specOneNameID","specOnes"})
     private SpecOneNames specs;
+    
+    @OneToMany(mappedBy = "productID")
+    @JsonIncludeProperties({"delivery"})
+    private List<ProductDelivery> productDeliveries;
+    
+    @OneToMany(mappedBy = "productID")
+    @JsonIncludeProperties({"payMethodID"})
+    private List<ProductPayMethod> productPayMethods;
 }

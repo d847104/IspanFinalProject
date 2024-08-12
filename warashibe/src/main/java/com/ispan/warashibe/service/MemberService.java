@@ -3,7 +3,6 @@ package com.ispan.warashibe.service;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,6 +46,15 @@ public class MemberService {
 		return null;	
 	}
 	
+	//查詢單筆
+	public Members findByAccount(String account) {
+		Members result = membersRepo.findByAccount(account);
+		if(result != null) {
+			return result;
+		}
+		return null;	
+	}
+	
 	//查詢全部
 	public List<Members> findAllMem() {
 		return membersRepo.findAll();
@@ -68,9 +76,6 @@ public class MemberService {
 		is.close();
 		this.img = os.toByteArray();
 	}
-	
-	
-	
 	
 	//新增單筆(註冊)
 	public Members insert(String json) {
@@ -151,7 +156,7 @@ public class MemberService {
 			return membersRepo.existsById(id);
 		}
 		return false;
-	}
+	}	
 	
 	// 刪除單筆
 	public Boolean deleteOne(Integer id) {

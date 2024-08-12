@@ -265,7 +265,7 @@
                 }).then((result) => {
                         if (result.isConfirmed) {
                                 const selectedItems = getSelectedItems();
-                                router.push({name: 'Checkout'}).then(()=>{
+                                router.push({name: 'checkout'}).then(()=>{
                                         emitter.emit('result',selectedItems);
                                 });
                         }

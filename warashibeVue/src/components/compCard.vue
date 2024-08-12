@@ -79,6 +79,7 @@
         
         // 確認登入狀態
         const isLogin = inject("isLogin");
+        const loginUserId = inject("loginUserId");
 
         // 接收父元件資料
         const props = defineProps(["product"]);

@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ispan.warashibe.model.PayMethod;
 import com.ispan.warashibe.service.PayMethodService;
 
@@ -24,6 +26,9 @@ public class PayMethodController {
 
 	@Autowired
 	private PayMethodService payMethodService;
+	
+	@Autowired
+	private ObjectMapper objMapper;
 
 	@PostMapping("/payMethod")
 	public String create(@RequestBody String body) throws JSONException {
@@ -131,5 +136,19 @@ public class PayMethodController {
 	        responseBody.put("error", "PayMethod not found");
 	    }
 	    return responseBody.toString();
+	}
+	
+	@GetMapping("/payMethod/all")
+	public String findAll() throws JsonProcessingException, JSONException {
+		JSONObject responseBody = new JSONObject();
+		JSONArray array = new JSONArray();
+		List<PayMethod> payMethods = payMethodService.findAll();
+		for(PayMethod payMethod : payMethods) {
+			if(payMethod!=null) {
+				array.put(new JSONObject(objMapper.writeValueAsString(payMethod)));
+			}
+		}
+		responseBody.put("list", array);
+		return responseBody.toString();
 	}
 }

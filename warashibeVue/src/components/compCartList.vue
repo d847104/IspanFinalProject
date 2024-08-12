@@ -10,7 +10,7 @@
                         <div class="col-md-7 align-self-center">
                                 <div class="card-body">
                                         <!-- 商品名稱 -->
-                                        <h4 class="card-title">{{ cart.product.productName }}</h4>
+                                        <h4 class="card-title fw-bold">{{ cart.product.productName }}</h4>
                                         <p class="card-text text-end fs-4">
                                                 <!-- 商品規格(若存在) -->
                                                 <template v-if="cart.specOne">
@@ -34,11 +34,11 @@
                                                 <!-- 商品規格結束 -->
                                                 <div class="row mt-2">
                                                         <!-- 金額 -->
-                                                         <div class="col-lg text-start text-danger">
+                                                         <div class="col-lg text-center text-danger fw-bold">
                                                                 NT$ {{ cart.product.price }}
                                                          </div>
                                                         <!-- 數量 LABEL -->
-                                                        <label :for="cart.cartID" class="col-lg justify-content-center">
+                                                        <label :for="'qt'+cart.cartID" class="col-lg justify-content-center">
                                                                 數量
                                                         </label>
                                                         <!-- 數量按鈕群組 -->
@@ -49,7 +49,7 @@
                                                                 </button>
 
                                                                 <!-- 數量 -->
-                                                                <input type="text" class="form-control text-center" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="manual" :title="alert" ref="quantityDOM" v-model="quantity" :id="cart.cartID" @change="checkQt" @focus="focus">
+                                                                <input type="text" class="form-control text-center" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="manual" :title="alert" ref="quantityDOM" v-model="quantity" :id="'qt'+cart.cartID" @change="checkQt" @focus="focus">
 
                                                                 <!-- 數量增加按鈕 -->
                                                                 <button class="btn btn-outline-secondary" type="button" @click="addOne" :disabled="exceed">
@@ -58,13 +58,27 @@
                                                         </div>
                                                         <!-- 數量按鈕群組結束 -->
                                                 </div>
-                                                <!-- 垃圾桶按鈕 -->
-                                                <div class="row mt-4 text-end">
-                                                        <span>
-                                                                <button type="button" style="font-size: 1.5em; border: none; background-color: inherit;" class="text-danger" @click="remove">
-                                                                        <font-awesome-icon :icon="['fas', 'trash-can']" />
-                                                                </button>
-                                                        </span>
+                                                <div class="row mt-4">
+                                                        <div class="col text-center justify-content-center">
+                                                                配送方式
+                                                                <div class="vstack gap-1" v-for="delivery in cart.product.productDeliveries">
+                                                                        <div class="p-1 fs-6 alert alert-success">{{delivery.delivery.delivery}}</div>
+                                                                </div>
+                                                        </div>
+                                                        <div class="col text-center justify-content-center">
+                                                                付款方式
+                                                                <div class="vstack gap-1" v-for="method in cart.product.productPayMethods">
+                                                                        <div class="p-1 fs-6 alert alert-info">{{method.payMethodID.payMethod}}</div>
+                                                                </div>
+                                                        </div>
+                                                        <!-- 垃圾桶按鈕 -->
+                                                        <div class="col d-flex align-items-center justify-content-center">
+                                                                <span>
+                                                                        <button type="button" style="font-size: 1.5em; border: none; background-color: inherit;" class="text-danger" @click="remove">
+                                                                                <font-awesome-icon :icon="['fas', 'trash-can']" />
+                                                                        </button>
+                                                                </span>
+                                                        </div>
                                                 </div>
                                         </p>
                                 </div>
@@ -72,7 +86,7 @@
                         <!-- 選取商品 CHECKBOX -->
                         <div class="card-body col-md-1 align-self-stretch d-flex align-items-center justify-content-center" style="background-color: var(--bs-light);">
                                 <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" style="width:2em; height:2em;" value="" :id="cart.cartID" v-model="isSelected" :disabled="chbdisabled" @change="emits('upddateChb',isSelected,cart.seller.memberID)">
+                                        <input class="form-check-input" type="checkbox" style="width:2em; height:2em;" value="" :id="'chk'+cart.cartID" v-model="isSelected" :disabled="chbdisabled" @change="emits('upddateChb',isSelected,cart.seller.memberID)">
                                 </div>
                         </div>
                 </div>
