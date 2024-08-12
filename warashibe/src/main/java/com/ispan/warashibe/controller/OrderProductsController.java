@@ -33,7 +33,7 @@ public class OrderProductsController {
 		JSONObject responseBody = new JSONObject();
 		OrderProducts product = orderProductsServ.create(body);
 		return product!=null ?
-				responseBody.put("success", true).put("message", "新增成功").toString() :
+				responseBody.put("success", true).put("message", "新增成功").put("productName", product.getProductName()).toString() :
 					responseBody.put("success", false).put("message", "新增失敗").toString();
 	}
 	

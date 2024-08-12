@@ -2,7 +2,7 @@
 
 
     <!-- sidebar + content -->
-    <section class="">
+    <section class="" v-if="item.productStatus == 1">
         <div class="container">
             <div class="row">
 
@@ -137,14 +137,14 @@ const fetchImage = async () => {
             if (base64Image) {
                 imageSrc.value = `data:image/png;base64,${base64Image}`;
             } else {
-                imageSrc.value = "../../src/assets/images/no-image.jpg";
+                imageSrc.value = `${import.meta.env.VITE_API_URL}/api/productImg/img/comingsoon`;
             }
         }else {
-            imageSrc.value = "../../src/assets/images/no-image.jpg";
+            imageSrc.value = `${import.meta.env.VITE_API_URL}/api/productImg/img/comingsoon`;
         }
     } catch (error) {
         console.error('讀取圖片失敗:', error);
-        imageSrc.value = "../../src/assets/images/no-image.jpg";
+        imageSrc.value = `${import.meta.env.VITE_API_URL}/api/productImg/img/comingsoon`;
     }
 };
 
@@ -165,7 +165,7 @@ async function getProductsRank() {
             // 提取 ranking 數值並計算總和
             const totalRanking = rankingList.reduce((sum, item) => sum + item.ranking, 0);
             // 計算平均值
-            productRank.value = totalRanking / rankingList.length;
+            productRank.value = (totalRanking / rankingList.length).toFixed(1);
         } else {
             productRank.value = 0; // 如果沒有資料，設置平均值為 0 或其他適當值
         }
