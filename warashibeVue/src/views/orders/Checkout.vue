@@ -222,7 +222,7 @@
                         </div>
                         <div class="row my-4 d-flex flex-row justify-content-end">
                                 <div class="col-lg-3">
-                                        <button type="button" class="btn btn-success btn-lg" @click="ecPay">確認付款</button>
+                                        <button type="button" class="btn btn-success btn-lg" @click="confirmCheckout">確認付款</button>
                                 </div>
                         </div>
                 </div>
@@ -298,7 +298,7 @@
         const updateCartQt = inject("updateCartQt")
 
         // 建立訂單成功後的訂單ID
-        const orderId = ref(null);
+        const orderIdMix = ref(null);
 
         const expressmap = ref(null)
 
@@ -455,7 +455,6 @@
                 }
                 axiosapi.post("/api/ECPayLogistic/expressMap",request)
                 .then(function(response){
-                        console.log(response);
                         // Create a form and set it up for submission
                         let form = document.createElement('form');
                         form.method = 'post';
@@ -556,7 +555,7 @@
                                         axiosapi.post("/private/pages/orders/create", request)
                                         .then(function(response){
                                                 if(response.data.success){
-                                                        orderId.value = response.data.orderID;
+                                                        orderIdMix.value = response.data.orderIDMix;
                                                         // 建立訂單成功後建立訂單商品明細
                                                         carts.value.forEach((cart)=>{
                                                                 let request = {
@@ -585,7 +584,7 @@
                                                                 timer: 800
                                                         })
                                                         updateCartQt();
-                                                        // router.push({name: 'buyer-BuyerOrder-link'})
+                                                        ecPay()
                                                 }else{
                                                         Swal.fire({
                                                                 icon: "error",
@@ -611,9 +610,8 @@
                 carts.value.forEach((cart)=>{
                         productNames += cart.product.productName + "#";
                 })
-                
                 let request = {
-                        "MerchantTradeNo": "WARASHIBE1",
+                        "MerchantTradeNo": orderIdMix.value,
                         "TotalAmount": totalOrder.value.toString(),
                         "TradeDesc": "這是測試交易",
                         "ItemName": productNames,
@@ -621,7 +619,26 @@
                 }
                 axiosapi.post("/api/ECPayPayment/pay",request)
                 .then(function(response){
-                        console.log(response);
+                        // Create a form and set it up for submission
+                        let form = document.createElement('form');
+                        form.method = 'post';
+                        form.action = 'https://payment-stage.ecPay.com.tw/Cashier/AioCheckOut/V5';
+                        
+                        // Parse the response HTML to extract hidden input fields
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(response.data, 'text/html');
+                        const inputs = doc.querySelectorAll('input');
+                        inputs.forEach(input => {
+                                let hiddenField = document.createElement('input');
+                                hiddenField.type = 'hidden';
+                                hiddenField.name = input.name;
+                                hiddenField.value = input.value;
+                                form.appendChild(hiddenField);
+                        });
+
+                        // Append form to the body and submit
+                        document.body.appendChild(form);
+                        form.submit();
                 }).catch(function(error){
                         console.log(error);
                 })
