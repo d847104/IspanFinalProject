@@ -48,7 +48,7 @@ public class Notification {
 	private Members senderID;
 	
 	@ManyToOne
-	@JoinColumn(name = "orderID")
+	@JoinColumn(name = "orderID", nullable = true)
 	@JsonIdentityReference(alwaysAsId = true)
 	private Orders orderID;
 	
