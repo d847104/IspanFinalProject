@@ -111,8 +111,10 @@ public class MembersController {
 	
 	//修改單筆會員資料 
     @PutMapping("/members/update/{id}")
-    public String modify(@PathVariable(name = "id") Integer id,@RequestParam(value = "image", required = false) MultipartFile image, @RequestParam String body) throws IOException {
-    	
+    public String modify(
+    		@PathVariable(name = "id") Integer id,
+    		@RequestParam(value = "image", required = false) MultipartFile image,
+    		@RequestParam String body) throws IOException {
     	
         JSONObject responseBody = new JSONObject();
         if (id == null) {
@@ -124,6 +126,31 @@ public class MembersController {
                 responseBody.put("message", "Id不存在");
             } else {
                 Members member = memberService.modify(body, image);
+                if (member == null) {
+                    responseBody.put("success", false);
+                    responseBody.put("message", "修改失敗");
+                } else {
+                    responseBody.put("success", true);
+                    responseBody.put("message", "修改成功");
+                }
+            }
+        }
+        return responseBody.toString();
+    }
+    
+    //簡易修改
+    @PutMapping("/members/simple-update/{id}")
+    public String simpleModify(@PathVariable(name = "id") Integer id, @RequestParam String body) {
+        JSONObject responseBody = new JSONObject();
+        if (id == null) {
+            responseBody.put("success", false);
+            responseBody.put("message", "Id是必要欄位");
+        } else {
+            if (!memberService.exists(id)) {
+                responseBody.put("success", false);
+                responseBody.put("message", "Id不存在");
+            } else {
+                Members member = memberService.simpleModify(body); // 使用新的简单修改方法
                 if (member == null) {
                     responseBody.put("success", false);
                     responseBody.put("message", "修改失敗");

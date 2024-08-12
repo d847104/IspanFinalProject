@@ -19,6 +19,7 @@ import com.ispan.warashibe.repository.MembersRepository;
 import com.ispan.warashibe.util.DatetimeConverter;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 
 @Service
 public class MemberService {
@@ -112,7 +113,36 @@ public class MemberService {
 		return null;
 	} // end of insert
 	
+	@Transactional
+	public Members simpleModify(String json) {
+	    JSONObject obj = new JSONObject(json);
+
+	    Integer memberID = obj.isNull("id") ? null : obj.getInt("id");
+	    Optional<Members> optional = membersRepo.findById(memberID);
+	    
+	    if (optional.isPresent()) {
+	        Members update = optional.get();
+	        
+	        String username = obj.isNull("username") ? update.getUsername() : obj.getString("username");
+	        String mobile = obj.isNull("mobile") ? update.getMobile() : obj.getString("mobile");
+	        String gender = obj.isNull("gender") ? update.getGender() : obj.getString("gender");
+	        String status = obj.isNull("status") ? update.getStatus() : obj.getString("status");
+
+	        // 更新基础字段
+	        update.setUsername(username);
+	        update.setMobile(mobile);
+	        update.setGender(gender);
+	        update.setStatus(status);
+	        
+	        return membersRepo.save(update);
+	    }
+	    
+	    return null;
+	}
+
+	
 	// 修改單筆
+	@Transactional
 	public Members modify(String json, MultipartFile image) throws IOException {
 		JSONObject obj = new JSONObject(json);
 

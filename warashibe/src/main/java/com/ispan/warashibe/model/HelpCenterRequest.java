@@ -30,6 +30,9 @@ public class HelpCenterRequest {
     private Long relatedProductId;
     private String description;
     private LocalDateTime requestTime;
+    
+    // 新增字段: 处理情形
+    private String status; // "已處理" 或 "未處理"
 
     @PrePersist
     public void onCreate() {

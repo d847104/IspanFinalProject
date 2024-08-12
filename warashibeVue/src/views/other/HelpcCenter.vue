@@ -50,6 +50,7 @@
 <script setup>
 import { ref, watch, inject } from 'vue';
 import axiosapi from '@/plugins/axios';
+import Swal from 'sweetalert2';
 
 const requestType = ref('');
 const relatedOrderId = ref('');
